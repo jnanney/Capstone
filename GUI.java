@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.Popup;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
@@ -28,6 +29,7 @@ public class GUI
    
    private static final int WINDOW_HEIGHT = 250;
    private static final int WINDOW_WIDTH = 500;
+
    /*
     * Creates and displays a new GUI object
     **/
@@ -47,12 +49,13 @@ public class GUI
 
       GUI gui = new GUI();
    }
+   
 
    private void createGUI(final Container pane)
    {
       final ArrayList<File> fileList = new ArrayList<File>();
       JPanel firstPanel = createFirstPanel(pane, fileList);
-      JPanel secondPanel = createSecondPanel(pane);
+      JPanel secondPanel = createSecondPanel(pane, fileList);
 
       JTabbedPane tabbedPane = new JTabbedPane();
       tabbedPane.add("Add Files", firstPanel);
@@ -60,16 +63,17 @@ public class GUI
       pane.add(tabbedPane);
 
    }
-   private JPanel createSecondPanel(final Container pane)
+   private JPanel createSecondPanel(final Container pane, final List<File> fileList)
    {
       JPanel second = new JPanel();
       return second;
    }
 
-   private JPanel createFirstPanel(final Container pane, final List<File> 
+   private JPanel createFirstTab(final Container pane, final List<File> 
       fileList)
    {
       JButton addFileButton = new JButton("Add File");  
+      JButton encryptButton = new JButton("Encrypt Files");
       final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
       JScrollPane scrollingFileText = new JScrollPane(fileText);
       JPanel panel = new JPanel(); 
@@ -77,7 +81,7 @@ public class GUI
 
       panel.add(scrollingFileText, BorderLayout.PAGE_START);
       panel.add(addFileButton, BorderLayout.LINE_START);
-
+      panel.add(encryptButton, BorderLayout.LINE_END);
       addFileButton.addActionListener(new ActionListener() 
       {
          public void actionPerformed(ActionEvent evt)
@@ -91,6 +95,19 @@ public class GUI
                int num = fileList.size();
                fileText.append(num + ") " + selectedFile.getName() + "\n");
 
+            }
+         }
+      });
+
+      encryptButton.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt)
+         {
+            for(File current : fileList)
+            {
+               JOptionPane newFilenamePrompt = new JOptionPane();
+               String newFilename = newFilenamePrompt.showInputDialog(pane, 
+                  "Type a new filename for " + current.getName());
             }
          }
       });
