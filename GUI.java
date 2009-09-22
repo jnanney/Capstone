@@ -6,53 +6,84 @@
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.Popup;
 import javax.swing.JScrollPane;
+import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class GUI
 {
-   private static final int TEXTAREA_ROWS=10;
-   private static final int TEXTAREA_COLS=10;
-
+   private static final int TEXTAREA_ROWS = 10;
+   private static final int TEXTAREA_COLS = 10;
+   
+   private static final int WINDOW_HEIGHT = 250;
+   private static final int WINDOW_WIDTH = 500;
+   /*
+    * Creates and displays a new GUI object
+    **/
    public GUI()
    {
-      createGUI();
+      JFrame frame = new JFrame("File Encryption With OpenPGP");
+      frame.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+      final Container contentPane = frame.getContentPane();
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      createGUI(contentPane);
+      frame.pack();
+      frame.setVisible(true);
    }
 
    public static void main(String[] args)
    {
+
       GUI gui = new GUI();
    }
 
-   public void createGUI()
+   private void createGUI(final Container pane)
    {
-      final JFrame frame = new JFrame("File Encryption With OpenPGP");
-      Container contentPane = frame.getContentPane();
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
-      JButton addFileButton = new JButton("Add File");  
-      JButton encryptButton = new JButton("Encrypt Files");
       final ArrayList<File> fileList = new ArrayList<File>();
-      JScrollPane scrollingFileText = new JScrollPane(fileText);
+      JPanel firstPanel = createFirstPanel(pane, fileList);
+      JPanel secondPanel = createSecondPanel(pane);
 
-      contentPane.add(scrollingFileText, BorderLayout.PAGE_START);
-      contentPane.add(addFileButton, BorderLayout.LINE_START);
-      contentPane.add(encryptButton, BorderLayout.LINE_END);
+      JTabbedPane tabbedPane = new JTabbedPane();
+      tabbedPane.add("Add Files", firstPanel);
+      tabbedPane.add("Options", secondPanel);
+      pane.add(tabbedPane);
+
+   }
+   private JPanel createSecondPanel(final Container pane)
+   {
+      JPanel second = new JPanel();
+      return second;
+   }
+
+   private JPanel createFirstPanel(final Container pane, final List<File> 
+      fileList)
+   {
+      JButton addFileButton = new JButton("Add File");  
+      final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
+      JScrollPane scrollingFileText = new JScrollPane(fileText);
+      JPanel panel = new JPanel(); 
+      panel.setLayout(new BorderLayout());
+
+      panel.add(scrollingFileText, BorderLayout.PAGE_START);
+      panel.add(addFileButton, BorderLayout.LINE_START);
 
       addFileButton.addActionListener(new ActionListener() 
       {
          public void actionPerformed(ActionEvent evt)
          {
             JFileChooser chooser = new JFileChooser();
-            int returnValue = chooser.showOpenDialog(frame);
+            int returnValue = chooser.showOpenDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION)
             {
                File selectedFile = chooser.getSelectedFile();
@@ -63,16 +94,7 @@ public class GUI
             }
          }
       });
-
-      encryptButton.addActionListener(new ActionListener()
-      {
-         public void actionPerformed(ActionEvent evt)
-         {
-            
-         }
-      });
-
-      frame.pack();
-      frame.setVisible(true);
+      return panel;
    }
+
 }
