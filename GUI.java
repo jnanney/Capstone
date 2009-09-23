@@ -24,7 +24,9 @@ import java.util.List;
 
 public class GUI
 {
+   //The number of rows in the file list text area
    private static final int TEXTAREA_ROWS = 10;
+   //The number of columns in the file list text area
    private static final int TEXTAREA_COLS = 10;
    
    private static final int WINDOW_HEIGHT = 250;
@@ -54,22 +56,24 @@ public class GUI
    private void createGUI(final Container pane)
    {
       final ArrayList<File> fileList = new ArrayList<File>();
-      JPanel firstPanel = createFirstPanel(pane, fileList);
-      JPanel secondPanel = createSecondPanel(pane, fileList);
+      JPanel firstPanel = createEncryptionPanel(pane, fileList);
+      JPanel secondPanel = createDecryptionPanel(pane, fileList);
 
       JTabbedPane tabbedPane = new JTabbedPane();
-      tabbedPane.add("Add Files", firstPanel);
-      tabbedPane.add("Options", secondPanel);
+      tabbedPane.add("Encrypt Files", firstPanel);
+      tabbedPane.add("Decrypt Files", secondPanel);
       pane.add(tabbedPane);
 
    }
-   private JPanel createSecondPanel(final Container pane, final List<File> fileList)
+
+   private JPanel createDecryptionPanel(final Container pane, 
+      final List<File> fileList)
    {
       JPanel second = new JPanel();
       return second;
    }
 
-   private JPanel createFirstTab(final Container pane, final List<File> 
+   private JPanel createEncryptionPanel(final Container pane, final List<File> 
       fileList)
    {
       JButton addFileButton = new JButton("Add File");  
@@ -82,7 +86,7 @@ public class GUI
       panel.add(scrollingFileText, BorderLayout.PAGE_START);
       panel.add(addFileButton, BorderLayout.LINE_START);
       panel.add(encryptButton, BorderLayout.LINE_END);
-      addFileButton.addActionListener(new ActionListener() 
+      addFileButton.addActionListener(new ActionListener()
       {
          public void actionPerformed(ActionEvent evt)
          {
@@ -108,6 +112,7 @@ public class GUI
                JOptionPane newFilenamePrompt = new JOptionPane();
                String newFilename = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
+               //TODO: put these files in a list and encrypt them.
             }
          }
       });
