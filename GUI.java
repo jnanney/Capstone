@@ -12,6 +12,7 @@ import javax.swing.Popup;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
@@ -58,10 +59,12 @@ public class GUI
       final ArrayList<File> fileList = new ArrayList<File>();
       JPanel firstPanel = createEncryptionPanel(pane, fileList);
       JPanel secondPanel = createDecryptionPanel(pane, fileList);
+      JPanel thirdPanel = createRSAOptionPanel(pane);
 
       JTabbedPane tabbedPane = new JTabbedPane();
       tabbedPane.add("Encrypt Files", firstPanel);
       tabbedPane.add("Decrypt Files", secondPanel);
+      tabbedPane.add("RSA Options", thirdPanel);
       pane.add(tabbedPane);
 
    }
@@ -119,4 +122,15 @@ public class GUI
       return panel;
    }
 
+   private JPanel createRSAOptionPanel(final Container pane)
+   {
+      JPanel panel = new JPanel();
+      panel.setLayout(new BorderLayout());
+      JButton keyLocation = new JButton("Choose a key location");
+      JTextField keyLength = new JTextField("1024", 10);      
+      panel.add(keyLocation, BorderLayout.LINE_END);
+      panel.add(keyLength, BorderLayout.PAGE_START);
+
+      return panel;
+   }
 }
