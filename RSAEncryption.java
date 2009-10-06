@@ -1,14 +1,23 @@
 import java.io.File;
-
-public class RSAEncryption implements EncryptionInterface
+import java.util.ArrayList;
+import java.math.BigInteger;
+public class RSAEncryption 
 {
-   public File encrypt()
+   private String plaintext;
+   private String cyphertext;
+
+   public RSAEncryption(String message)
    {
-      return null;
+      plaintext = message;   
+      RSAKey key = new RSAKey(1024);
+      chunkify(key.getPrimeProduct(), new BigInteger(plaintext)); 
    }
 
-   public File decrypt()
+
+   public String[] splitInHalf(BigInteger number)
    {
-      return null;
+      String temp = number.toString();
+      int sublength = temp.length() / 2;
+      temp  
    }
 }

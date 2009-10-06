@@ -126,9 +126,10 @@ public class GUI
    {
       JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
-      JButton keyLocation = new JButton("Choose a key location");
+      JButton newKey = new JButton("Generate a new key");
+      JButton existingKey = new JButton("Use an existing key");
       JTextField keyLength = new JTextField("1024", 10);      
-      panel.add(keyLocation, BorderLayout.LINE_END);
+      panel.add(newKey, BorderLayout.LINE_END);
       panel.add(keyLength, BorderLayout.PAGE_START);
 
       return panel;

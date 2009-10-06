@@ -16,7 +16,7 @@ public class RSAKey
       int primeCertainty = 100;
       prime1 = new BigInteger(numBits, primeCertainty, random);
       prime2 = new BigInteger(numBits, primeCertainty, random);
-      BigInteger n = prime1.multiply(prime2);
+      n = prime1.multiply(prime2);
       totient = (prime1.subtract(BigInteger.ONE)).multiply(prime2.subtract(BigInteger.ONE));
       do
       {
@@ -25,6 +25,29 @@ public class RSAKey
          System.out.println(encryptionExponent.gcd(totient));
       } while (!(encryptionExponent.gcd(totient)).equals(BigInteger.ONE));
       decryptionExponent = encryptionExponent.modInverse(totient);
+   }
+
+   public BigInteger[] getPrimes()
+   {
+      BigInteger[] primes = new BigInteger[2];
+      primes[0] = prime1;
+      primes[1] = prime2;
+      return primes;
+   }
+
+   public BigInteger getEncryptionExponent()
+   {
+      return encryptionExponent;
+   }
+
+   public BigInteger getDecryptionExponent()
+   {
+      return decryptionExponent;
+   }
+
+   public BigInteger getPrimeProduct()
+   {
+      return n;
    }
 
 }
