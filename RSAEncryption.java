@@ -3,21 +3,46 @@ import java.util.ArrayList;
 import java.math.BigInteger;
 public class RSAEncryption 
 {
-   private String plaintext;
+   private String original;
    private String cyphertext;
+   private RSAKey key;
 
-   public RSAEncryption(String message)
+   public RSAEncryption(String message, int keylength)
    {
-      plaintext = message;   
-      RSAKey key = new RSAKey(1024);
-      chunkify(key.getPrimeProduct(), new BigInteger(plaintext)); 
+	  original = message;
+      key = new RSAKey(keylength);
+   }
+   
+   public String encrypt()
+   {
+	   BigInteger n = key.getPrimeProduct();
+	   String numString = Common.makeNumberString(original);
+	   String splitText[] = Common.split(numString, n.toString().length() - 1);
+	   cyphertext = "";
+	   for(String current : splitText)
+	   {
+		   BigInteger num = new BigInteger(current);
+		   cyphertext +=  num.modPow(key.getEncryptionExponent(), n);
+	   }
+	   return cyphertext;
+   }
+   
+   public String decrypt()
+   {
+	   BigInteger n = key.getPrimeProduct();
+	   String result = "";
+	   int length = key.getPrimeProduct().toString().length();
+	   String splitText[] = Common.split(cyphertext, length);
+	   for(String current : splitText)
+	   {
+		   BigInteger temp = new BigInteger(current);
+		   temp = temp.modPow(key.getDecryptionExponent(), n);
+		   result += temp.toString();
+	   }
+	   result = Common.addLeadingZeros(new BigInteger(result), Common.CHAR_SIZE);
+	   result = Common.makeCharString(result);
+	   return result;
    }
 
 
-   public String[] splitInHalf(BigInteger number)
-   {
-      String temp = number.toString();
-      int sublength = temp.length() / 2;
-      temp  
-   }
 }

@@ -22,7 +22,6 @@ public class RSAKey
       {
          encryptionExponent = new BigInteger(32, primeCertainty, random);
          
-         System.out.println(encryptionExponent.gcd(totient));
       } while (!(encryptionExponent.gcd(totient)).equals(BigInteger.ONE));
       decryptionExponent = encryptionExponent.modInverse(totient);
    }
