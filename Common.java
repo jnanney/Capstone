@@ -7,6 +7,18 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
+   
+   public static String showBinary(long num)
+   {
+      String result = "";
+      while(num != 0)
+      {
+         result = (num & 1) + result;
+         num = num >>> 1;
+      }
+      return result;
+    
+   }
 
    public static String makeNumberString(String string)
    {
