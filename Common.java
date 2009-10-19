@@ -7,7 +7,23 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
-  
+   
+   public static int[] splitLong(long num)
+   {
+      int result[] = new int[2];
+      long mask = 0xFFFFFFFF; //4 solid bytes
+      result[0] = (int) (num & mask);
+      result[1] = (int) ((num >> 32) & mask);
+      return result;
+   }
+
+   public static int rotationalLeftShift(int num, int shiftLength)
+   {
+      //Note: I did not think this up.  This was taken from a question at
+      //Stackoverflow available at: http://tinyurl.com/yktm9dq
+      return (num << shiftLength | num >> Integer.SIZE);
+   }
+
    public static long switchBits(long original, int newPositions[])
    {
       long result = 0;
