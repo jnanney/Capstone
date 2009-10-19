@@ -16,7 +16,6 @@ public class Common
       {
          long mask = 1;
          int shiftValue = newPositions.length - newPositions[i];
-         System.out.println("shiftValue is " + shiftValue);
          mask = mask << shiftValue;
          if ((original & mask) > 0)
          {
@@ -27,7 +26,6 @@ public class Common
             temp = 0;
          }
          int newShift = newPositions.length - i - 1;
-         System.out.println("Mask is " + Common.showBinary(mask));
          result = result | (temp << newShift);
       }
 
