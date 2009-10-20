@@ -7,28 +7,30 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
-   
-   public static int[] splitLong(long num)
+  
+   public static long makeLong(int left, int right)
    {
-      int result[] = new int[2];
-      long mask = 0xFFFFFFFF; //4 solid bytes
-      result[0] = (int) (num & mask);
-      result[1] = (int) ((num >> 32) & mask);
+      System.out.println("Left: " + showBinary(left));
+      System.out.println("Right: " + showBinary(right));
+      long result = ((long) left) << 32;
+      result = result | right;
       return result;
    }
 
-   public static int rotationalLeftShift(int num, int shiftLength)
+   public static int[] splitLong(long num)
    {
-      //Note: I did not think this up.  This was taken from a question at
-      //Stackoverflow available at: http://tinyurl.com/yktm9dq
-      return (num << shiftLength | num >> Integer.SIZE);
+      int result[] = new int[2];
+      int mask = 0xFFFFFFFF; //4 solid bytes
+      result[1] = (int) (num & mask); //left half
+      result[0] = (int) ((num >> 32) & mask); //right half
+      return result;
    }
 
    public static long switchBits(long original, int newPositions[])
    {
       long result = 0;
       long temp = 0;
-      for(int i = 0; i < newPositions.length; i++)
+      for (int i = 0; i < newPositions.length; i++)
       {
          long mask = 1;
          int shiftValue = newPositions.length - newPositions[i];

@@ -62,8 +62,36 @@ public class DESKey
       return key;
    }
 
-   public long keyScheduler(int iteration, long key)
+   public long keyScheduler(int iteration, long key) 
+      throws InvalidIterationException
    {
-      return 0;
+      int MIN_ITERATION = 1;
+      int MAX_ITERATION = numShifts.length;
+
+      if (iteration < MIN_ITERATION || iteration > MAX_ITERATION)
+      {
+         throw InvalidIterationException(iteration + " is not valid");
+      }
+      long c = switchBits(key, permutedChoice1C);
+      long d = switchBits(key, permutedChoice1D);
+      
+      int shiftPositions = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
+                           16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 
+                           28, 1};
+
+      for(int i = 0; i < iteration; i++)
+      {
+         for(int j = 0; j < numShifts[i]; j++)
+         {
+            c = Common.switchBits(c, shiftPositions);
+            d = Common.switchBits(d, shiftPositions);
+         }
+      }
+      long mask = 0xFFFFFFF;
+      long result = (c << 28) & d;
+      result = Common.switchBits(result, permutedChoice2);
+      return result;
    }
+
 }
+

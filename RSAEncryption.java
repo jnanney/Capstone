@@ -9,7 +9,7 @@ public class RSAEncryption
 
    public RSAEncryption(String message, int keylength)
    {
-	  original = message;
+      original = message;
       key = new RSAKey(keylength);
    }
    
