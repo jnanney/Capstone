@@ -7,7 +7,34 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
-  
+   
+   /**
+    * Gets either a 0 or a 1 from the given position.  Note that the leftmost
+    * bit is bit 1 (not bit 0) because that's what the DES standard wants.
+    * @param number - the number to get the bit from
+    * @param position - the spot in the number where the bit is
+    * @return a byte that stores 0 or 1 depending on the bit
+    **/
+   public static byte getBit(long number, int position) 
+      throws InvalidNumberException
+   {
+      if (position > Long.SIZE || position < 1)
+      {
+         throw new InvalidNumberException(position + " is not a valid bit " + 
+            "position");
+      }
+      long mask = 1;
+      long value = (mask << (Long.SIZE - position)) & number;
+      if (value > 0)
+      {
+         return 1;
+      }
+      else
+      {
+         return 0;
+      }
+   }
+
    public static long makeLong(int left, int right)
    {
       System.out.println("Left: " + showBinary(left));
