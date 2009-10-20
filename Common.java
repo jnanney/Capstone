@@ -65,30 +65,6 @@ public class Common
       return result;
    }
 
-   /*public static long switchBits(long original, int newPositions[])
-   {
-      long result = 0;
-      long temp = 0;
-      for (int i = 0; i < newPositions.length; i++)
-      {
-         long mask = 1;
-         int shiftValue = newPositions.length - newPositions[i];
-         mask = mask << shiftValue;
-         if ((original & mask) > 0)
-         {
-            temp = 1;
-         }
-         else
-         {
-            temp = 0;
-         }
-         int newShift = newPositions.length - i - 1;
-         result = result | (temp << newShift);
-      }
-
-      return result;
-   }*/
-
    public static String showBinary(long num)
    {
       String result = "";
