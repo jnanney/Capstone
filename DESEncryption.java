@@ -46,18 +46,18 @@ public class DESEncryption
       key = new DESKey();
    }
 
-   /*public long encrypt()
+   public long encrypt()
    {
    }
 
    private long cypherFunction(long block, long shortKey)
    {
       long expandedBlock = Common.switchBits(block, expandPositions);
-      //shortKey ^ expandedBlock;
+      long temp = shortKey ^ expandedBlock;
    }
 
    private byte sFunction(byte sixBits, int[][] sTable)
    {
-   }*/
+   }
 
 }
