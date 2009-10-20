@@ -62,7 +62,7 @@ public class DESKey
       return key;
    }
 
-   public long keyScheduler(int iteration, long key) 
+   public long keyScheduler(int iteration) 
       throws InvalidNumberException
    {
       int MIN_ITERATION = 1;

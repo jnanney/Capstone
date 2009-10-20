@@ -4,7 +4,7 @@ public class DESEncryption
    private long cyphertext;
    private DESKey key;
 
-   private static final int[] initialPermutation = 
+   private final int[] initialPermutation = 
    {
       58, 50, 42, 34, 26, 18, 10, 2,
       60, 52, 44, 36, 28, 20, 12, 4,
@@ -16,7 +16,7 @@ public class DESEncryption
       63, 55, 47, 39, 31, 23, 15, 7
    };
 
-   private static final int[] inversePermutation = 
+   private final int[] inversePermutation = 
    {
       40, 8, 48, 16, 56, 24, 64, 32, 
       39, 7, 47, 15, 55, 23, 63, 31, 
@@ -28,7 +28,7 @@ public class DESEncryption
       33, 1, 41, 9, 49, 17, 57, 25
    };
 
-   private static final int[] expandPositions =
+   private final int[] expandPositions =
    {
       32, 1, 2, 3, 4, 5,
       4, 5, 6, 7, 8, 9,
@@ -46,11 +46,44 @@ public class DESEncryption
       key = new DESKey();
    }
 
-   /*public long encrypt()
+   public long encrypt() throws InvalidNumberException
    {
-   }*/
+      int[] flipPositions = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 
+         45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 
+         62, 63, 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
+         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
 
-   private long cypherFunction(long block, long shortKey) 
+      long result = Common.switchBits(plaintext, initialPermutation);
+      for (int i = 1; i <= 16; i++)
+      {
+         int left = (int) Common.getBits(result, 1, 33);
+         int right = (int) Common.getBits(result, 33, 65);
+         result = encryptionIteration(left, right, i);
+      }
+      result = Common.switchBits(result, flipPositions);
+      result = Common.switchBits(result, inversePermutation);
+      cyphertext = result;
+      return result;
+   }
+
+   public long decrypt() throws InvalidNumberException
+   {
+      for (int i = 16; i >= 1; i--)
+      {
+      }
+   }
+   
+   public long encryptionIteration(int left, int right, int iteration)
+      throws InvalidNumberException
+   {
+      //TODO: check to make sure int is automatically converted to long
+      long result = ((long) right) << Integer.SIZE - 1;
+      long shortkey = key.keyScheduler(iteration);  
+      result = result | (left ^ cypherFunction(right, shortkey));
+      return result;
+   }
+
+   private int cypherFunction(int block, long shortKey) 
       throws InvalidNumberException
    {
       long result = 0;
@@ -62,7 +95,7 @@ public class DESEncryption
          result = result | (sub << (i * 4));
       }
       result = Common.switchBits(result, DESArrays.getPermutationFunction());
-      return result;
+      return (int) result;
    }
 
    public byte sFunction(byte sixBits, byte[][] sTable) 
