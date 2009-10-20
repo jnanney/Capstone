@@ -8,6 +8,26 @@ public class Common
    public static final int CHAR_SIZE = 5;
    private Common() {}
    
+   public static byte getBit(byte number, int position)
+      throws InvalidNumberException
+   {
+      if (position > Byte.SIZE || position < 1)
+      {
+         throw new InvalidNumberException(position + " is not a valid bit " + 
+            "position");
+      }
+      byte mask = 1;
+      byte value = (mask << (Byte.SIZE - position)) & number;
+      if (value > 0)
+      {
+         return 1;
+      }
+      else
+      {
+         return 0;
+      }
+   }
+
    /**
     * Gets either a 0 or a 1 from the given position.  Note that the leftmost
     * bit is bit 1 (not bit 0) because that's what the DES standard wants.

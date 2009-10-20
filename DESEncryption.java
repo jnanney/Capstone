@@ -58,6 +58,11 @@ public class DESEncryption
 
    private byte sFunction(byte sixBits, int[][] sTable)
    {
+      byte firstBitPosition = 3;
+      byte lastBitPosition = 8;
+      //get first and last bit as the row, get the middle 4 bits as the col
+      byte row = (Common.getBits(sixBits, firstBitPosition) << 1) | 
+         (Common.getBits(sixBits, lastBitPosition));
    }
 
 }
