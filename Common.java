@@ -52,8 +52,20 @@ public class Common
       result[0] = (int) ((num >> 32) & mask); //right half
       return result;
    }
+   
+   public static long switchBits(long original, int newPositions[]) 
+      throws InvalidNumberException
+   {
+      long result = 0;
+      for(int i = 0; i < newPositions.length; i++)
+      {
+         long bit = getBit(original, newPositions[i]);
+         result = result | (bit << Long.SIZE - i - 1);
+      }
+      return result;
+   }
 
-   public static long switchBits(long original, int newPositions[])
+   /*public static long switchBits(long original, int newPositions[])
    {
       long result = 0;
       long temp = 0;
@@ -75,7 +87,7 @@ public class Common
       }
 
       return result;
-   }
+   }*/
 
    public static String showBinary(long num)
    {
