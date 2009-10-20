@@ -46,23 +46,39 @@ public class DESEncryption
       key = new DESKey();
    }
 
-   public long encrypt()
+   /*public long encrypt()
    {
-   }
+   }*/
 
-   private long cypherFunction(long block, long shortKey)
+   private long cypherFunction(long block, long shortKey) 
+      throws InvalidNumberException
    {
+      long result = 0;
       long expandedBlock = Common.switchBits(block, expandPositions);
       long temp = shortKey ^ expandedBlock;
+      for(int i = 0; i < 8; i++)
+      {
+         byte sub = (byte) Common.getBits(temp, i * 6 + 1, (i + 1) * 6 + 1);
+         result = result | (sub << (i * 4));
+      }
+      result = Common.switchBits(result, DESArrays.getPermutationFunction());
+      return result;
    }
 
-   private byte sFunction(byte sixBits, int[][] sTable)
+   public byte sFunction(byte sixBits, byte[][] sTable) 
+      throws InvalidNumberException
    {
       byte firstBitPosition = 3;
       byte lastBitPosition = 8;
       //get first and last bit as the row, get the middle 4 bits as the col
-      byte row = (Common.getBits(sixBits, firstBitPosition) << 1) | 
-         (Common.getBits(sixBits, lastBitPosition));
+      int row = (Common.getBit(sixBits, firstBitPosition) << 1) | 
+         (Common.getBit(sixBits, lastBitPosition));
+      int col = 0;
+      for(int i = firstBitPosition + 1; i < lastBitPosition; i++)
+      {
+         col = col | (Common.getBit(sixBits, i) << (7 - i));
+      }
+      return sTable[row][col];
    }
 
 }

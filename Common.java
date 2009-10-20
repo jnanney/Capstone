@@ -7,7 +7,32 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
-   
+  
+   /**
+    * Gets the bits from the starting to the ending position.  Starting bit is
+    * included, end bit is not.  
+    * @param number - the number to get the bits from
+    * @param start - the starting bit position (inclusive)
+    * @param end - the ending bit position (exclusive)
+    * @return a number containing the selected bits on the right
+    * */
+   public static long getBits(long number, int start, int end)
+      throws InvalidNumberException
+   {
+      long result = 0;
+      int shiftLength = end - start - 1;
+      if (start > end || start < 1 || end > Long.SIZE + 1)
+      {
+         throw new InvalidNumberException("Invalid bit positions");
+      }
+      for(int i = start; i < end; i++)
+      {
+         result = result | (getBit(number, i) << shiftLength);
+         shiftLength--; 
+      }
+      return result;
+   }
+
    public static byte getBit(byte number, int position)
       throws InvalidNumberException
    {
@@ -17,7 +42,7 @@ public class Common
             "position");
       }
       byte mask = 1;
-      byte value = (mask << (Byte.SIZE - position)) & number;
+      int value = (mask << (Byte.SIZE - position)) & number;
       if (value > 0)
       {
          return 1;
