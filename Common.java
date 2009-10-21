@@ -70,7 +70,7 @@ public class Common
       }
       long mask = 1;
       long value = (mask << (Long.SIZE - position)) & number;
-      if (value > 0)
+      if (value != 0)
       {
          return 1;
       }
@@ -82,8 +82,6 @@ public class Common
 
    public static long makeLong(int left, int right)
    {
-      System.out.println("Left: " + showBinary(left));
-      System.out.println("Right: " + showBinary(right));
       long result = ((long) left) << 32;
       result = result | right;
       return result;
