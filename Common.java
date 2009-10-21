@@ -19,6 +19,22 @@ public class Common
    public static long getBits(long number, int start, int end)
       throws InvalidNumberException
    {
+      if (start > end || start < 1 || end > Long.SIZE + 1)
+      {
+         throw new InvalidNumberException("Invalid bit positions");
+      }
+      long result = 0;
+      for(int i = start++; i < end; i++)
+      {
+         result = result << 1;
+         result = result | getBit(number, i);
+      }
+      return result;
+   }
+
+   /*public static long getBits(long number, int start, int end)
+      throws InvalidNumberException
+   {
       long result = 0;
       int shiftLength = end - start - 1;
       if (start > end || start < 1 || end > Long.SIZE + 1)
@@ -31,7 +47,7 @@ public class Common
          shiftLength--; 
       }
       return result;
-   }
+   }*/
 
    public static byte getBit(byte number, int position)
       throws InvalidNumberException

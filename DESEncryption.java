@@ -55,14 +55,17 @@ public class DESEncryption
    public long encrypt() throws InvalidNumberException
    {
       long result = Common.switchBits(plaintext, initialPermutation);
-      int left = (int) Common.getBits(result, 1, 33);
-      int right = (int) Common.getBits(result, 33, 65);
+      long left = Common.getBits(result, 1, 33);
+      long right = Common.getBits(result, 33, 65);
       for (int i = 1; i <= 16; i++)
       {
-         left = (int) Common.getBits(result, 1, 33);
-         right = (int) Common.getBits(result, 33, 65);
-         System.out.println("Left " + Common.showBinary(left) + " Right: " + Common.showBinary(right));
          result = encryptionIteration(left, right, i);
+         System.out.println("i is " + i);
+         //System.out.println("Left " + Common.showBinary(left) + " Right: " + Common.showBinary(right));
+         left = Common.getBits(result, 1, 33);
+         System.out.println("Left   " + Common.showBinary(left));
+         right = Common.getBits(result, 33, 65);
+         System.out.println("Right  " + Common.showBinary(right));
       }
       result = Common.switchBits(result, flipPositions);
       result = Common.switchBits(result, inversePermutation);
@@ -70,22 +73,7 @@ public class DESEncryption
       return result;
    }
 
-   public long decrypt() throws InvalidNumberException
-   {
-
-      long result = Common.switchBits(cyphertext, initialPermutation);
-      for (int i = 16; i >= 1; i--)
-      {
-         int left = (int) Common.getBits(result, 1, 33);
-         int right = (int) Common.getBits(result, 33, 65);
-         result = encryptionIteration(right, left, i);
-      }
-      result = Common.switchBits(result, flipPositions);
-      result = Common.switchBits(result, inversePermutation);
-      return result;
-   }
-   
-   public long encryptionIteration(int left, int right, int iteration)
+   public long encryptionIteration(long left, long right, int iteration)
       throws InvalidNumberException
    {
       //System.out.println("Iteration " + iteration+ " right is " + Common.showBinary(right));
@@ -95,7 +83,7 @@ public class DESEncryption
       return result;
    }
 
-   private int cypherFunction(int block, long shortKey) 
+   private int cypherFunction(long block, long shortKey) 
       throws InvalidNumberException
    {
       long result = 0;
@@ -112,6 +100,22 @@ public class DESEncryption
       result = Common.switchBits(result, DESArrays.getPermutationFunction());
       return (int) result;
    }
+
+   public long decrypt() throws InvalidNumberException
+   {
+      long result = Common.switchBits(cyphertext, initialPermutation);
+      for (int i = 16; i >= 1; i--)
+      {
+         int left = (int) Common.getBits(result, 1, 33);
+         int right = (int) Common.getBits(result, 33, 65);
+         result = encryptionIteration(right, left, i);
+      }
+      result = Common.switchBits(result, flipPositions);
+      result = Common.switchBits(result, inversePermutation);
+      return result;
+   }
+   
+
 
    public byte sFunction(byte sixBits, byte[][] sTable) 
       throws InvalidNumberException
