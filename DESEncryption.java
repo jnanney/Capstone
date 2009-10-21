@@ -60,12 +60,12 @@ public class DESEncryption
       for (int i = 1; i <= 16; i++)
       {
          result = encryptionIteration(left, right, i);
-         System.out.println("i is " + i);
+         //System.out.println("i is " + i);
          //System.out.println("Left " + Common.showBinary(left) + " Right: " + Common.showBinary(right));
          left = Common.getBits(result, 1, 33);
-         System.out.println("Left   " + Common.showBinary(left));
+         //System.out.println("Left   " + Common.showBinary(left));
          right = Common.getBits(result, 33, 65);
-         System.out.println("Right  " + Common.showBinary(right));
+         //System.out.println("Right  " + Common.showBinary(right));
       }
       result = Common.switchBits(result, flipPositions);
       result = Common.switchBits(result, inversePermutation);
