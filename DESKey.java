@@ -40,6 +40,11 @@ public class DESKey
      generateKey();
    }
 
+   public DESKey(long key)
+   {
+      this.key = key;
+   }
+
    private void generateKey()
    {
       //TODO: make every 8th bit a 1 or 0 depending on parity
@@ -74,7 +79,10 @@ public class DESKey
       }
       long c = Common.switchBits(key, permutedChoice1C);
       long d = Common.switchBits(key, permutedChoice1D);
-      
+      c = c >>> 36; //XXX
+      d = d >>> 36;
+      System.out.println("C: " + Common.showBinary(c));
+      System.out.println("D: " + Common.showBinary(d));
       int[] shiftPositions = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
                            16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 
                            28, 1};
@@ -83,14 +91,24 @@ public class DESKey
       {
          for(int j = 0; j < numShifts[i]; j++)
          {
-            c = Common.switchBits(c, shiftPositions);
-            d = Common.switchBits(d, shiftPositions);
+            c = shift28Rotational(c);
+            d = shift28Rotational(d);
+            /*c = Common.switchBits(c, shiftPositions);
+            d = Common.switchBits(d, shiftPositions);*/
          }
       }
       long mask = 0xFFFFFFF;
       long result = (c << 28) & d;
+      System.out.println("C: " + Common.showBinary(c));
+      System.out.println("D: " + Common.showBinary(d));
       result = Common.switchBits(result, permutedChoice2);
       return result;
+   }
+
+   public long shift28Rotational(long num)
+   {
+      long mask = 0xFFFFFFF;
+      return (mask & (num << 1 | num >>> 27));
    }
 
 }

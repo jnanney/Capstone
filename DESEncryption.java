@@ -3,6 +3,10 @@ public class DESEncryption
    private long plaintext;
    private long cyphertext;
    private DESKey key;
+   private final int[] flipPositions = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 
+      43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 
+      61, 62, 63, 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
+      17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
 
    private final int[] initialPermutation = 
    {
@@ -43,15 +47,12 @@ public class DESEncryption
    public DESEncryption(long plaintext)
    {
       this.plaintext = plaintext;
-      key = new DESKey();
+      //key = new DESKey();
+      //key = new DESKey(16001461381721531952);
    }
 
    public long encrypt() throws InvalidNumberException
    {
-      int[] flipPositions = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 
-         45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 
-         62, 63, 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
-         17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
 
       long result = Common.switchBits(plaintext, initialPermutation);
       for (int i = 1; i <= 16; i++)
@@ -68,9 +69,17 @@ public class DESEncryption
 
    public long decrypt() throws InvalidNumberException
    {
+
+      long result = Common.switchBits(cyphertext, initialPermutation);
       for (int i = 16; i >= 1; i--)
       {
+         int left = (int) Common.getBits(result, 1, 33);
+         int right = (int) Common.getBits(result, 33, 65);
+         result = encryptionIteration(right, left, i);
       }
+      result = Common.switchBits(result, flipPositions);
+      result = Common.switchBits(result, inversePermutation);
+      return result;
    }
    
    public long encryptionIteration(int left, int right, int iteration)
