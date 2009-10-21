@@ -96,16 +96,24 @@ public class Common
       return result;
    }
    
-   public static long switchBits(long original, int newPositions[]) 
+   public static long switchBits(long original, int newPositions[], boolean flag) 
       throws InvalidNumberException
    {
       long result = 0;
       for(int i = 0; i < newPositions.length; i++)
       {
          long bit = getBit(original, newPositions[i]);
+         if(flag) //TODO: remove this and other function
+            System.out.println("Filling bit " + (i + 1) + " with " + newPositions[i] + " which is " + bit);
          result = result | (bit << Long.SIZE - i - 1);
       }
       return result;
+   }
+
+   public static long switchBits(long original, int newPositions[])
+      throws InvalidNumberException
+   {
+      return switchBits(original, newPositions, false);
    }
 
    public static String showBinary(long num)

@@ -3,6 +3,7 @@ public class DESEncryption
    private long plaintext;
    private long cyphertext;
    private DESKey key;
+
    private final int[] flipPositions = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 
       43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 
       61, 62, 63, 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
@@ -48,17 +49,19 @@ public class DESEncryption
    {
       this.plaintext = plaintext;
       //key = new DESKey();
-      //key = new DESKey(16001461381721531952);
+      key = new DESKey(0x3b3898371520f75eL);
    }
 
    public long encrypt() throws InvalidNumberException
    {
-
       long result = Common.switchBits(plaintext, initialPermutation);
+      int left = (int) Common.getBits(result, 1, 33);
+      int right = (int) Common.getBits(result, 33, 65);
       for (int i = 1; i <= 16; i++)
       {
-         int left = (int) Common.getBits(result, 1, 33);
-         int right = (int) Common.getBits(result, 33, 65);
+         left = (int) Common.getBits(result, 1, 33);
+         right = (int) Common.getBits(result, 33, 65);
+         System.out.println("Left " + Common.showBinary(left) + " Right: " + Common.showBinary(right));
          result = encryptionIteration(left, right, i);
       }
       result = Common.switchBits(result, flipPositions);
@@ -85,7 +88,7 @@ public class DESEncryption
    public long encryptionIteration(int left, int right, int iteration)
       throws InvalidNumberException
    {
-      //TODO: check to make sure int is automatically converted to long
+      //System.out.println("Iteration " + iteration+ " right is " + Common.showBinary(right));
       long result = ((long) right) << Integer.SIZE - 1;
       long shortkey = key.keyScheduler(iteration);  
       result = result | (left ^ cypherFunction(right, shortkey));
@@ -97,7 +100,10 @@ public class DESEncryption
    {
       long result = 0;
       long expandedBlock = Common.switchBits(block, expandPositions);
+      /*System.out.println("E : " + Common.showBinary(expandedBlock));
+      System.out.println("KS: " + Common.showBinary(shortKey));*/
       long temp = shortKey ^ expandedBlock;
+      //System.out.println("E xor KS: " + Common.showBinary(temp));
       for(int i = 0; i < 8; i++)
       {
          byte sub = (byte) Common.getBits(temp, i * 6 + 1, (i + 1) * 6 + 1);

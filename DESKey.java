@@ -19,6 +19,18 @@ public class DESKey
       21, 13, 5, 28, 20, 12, 4
    };
 
+   private int[] permutedChoice1 = 
+   {
+      57, 49, 41, 33, 25, 17, 9,
+      1, 58, 50, 42, 34, 26, 18,
+      10, 2, 59, 51, 43, 35, 27,
+      19, 11, 3, 60, 52, 44, 36,
+      63, 55, 47, 39, 31, 23, 15,
+      7, 62, 54, 46, 38, 30, 22,
+      14, 6, 61, 53, 45, 37, 29,
+      21, 13, 5, 28, 20, 12, 4
+   };
+
    private int[] permutedChoice2 = 
    {
       14, 17, 11, 24, 1, 5,
@@ -77,31 +89,24 @@ public class DESKey
       {
          throw new InvalidNumberException(iteration + " is not valid");
       }
-      long c = Common.switchBits(key, permutedChoice1C);
+      long c = Common.switchBits(key, permutedChoice1C, false);
       long d = Common.switchBits(key, permutedChoice1D);
-      c = c >>> 36; //XXX
+      c = c >>> 36; //Shift 36 so that c and d will be on the right side
       d = d >>> 36;
-      System.out.println("C: " + Common.showBinary(c));
-      System.out.println("D: " + Common.showBinary(d));
-      int[] shiftPositions = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
-                           16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 
-                           28, 1};
-
       for(int i = 0; i < iteration; i++)
       {
          for(int j = 0; j < numShifts[i]; j++)
          {
             c = shift28Rotational(c);
             d = shift28Rotational(d);
-            /*c = Common.switchBits(c, shiftPositions);
-            d = Common.switchBits(d, shiftPositions);*/
          }
       }
       long mask = 0xFFFFFFF;
-      long result = (c << 28) & d;
-      System.out.println("C: " + Common.showBinary(c));
-      System.out.println("D: " + Common.showBinary(d));
-      result = Common.switchBits(result, permutedChoice2);
+      long result = ((c << 28) | d) << 8;
+      result = (Common.switchBits(result, permutedChoice2)) >>> 16;
+      /*System.out.println("Iteration " + iteration);
+      System.out.println("The result is " + result);
+      System.out.println("In binary " + Common.showBinary(result));*/
       return result;
    }
 
