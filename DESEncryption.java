@@ -77,11 +77,10 @@ public class DESEncryption
       throws InvalidNumberException
    {
       System.out.println("Iteration " + iteration);
-      long result = ((long) right) << Integer.SIZE - 1;
+      long result = right << 32;
       long shortkey = key.keyScheduler(iteration);  
       long cypherResult = cypherFunction(right, shortkey);
       System.out.println("CypherFunction : " + Common.showBinary(cypherResult));
-      System.out.println("Left           : " + Common.showBinary(left));
       result = result | (left ^ cypherResult);
       System.out.println("Result         : " + Common.showBinary(result));
       return result;
