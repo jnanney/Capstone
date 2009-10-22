@@ -7,8 +7,11 @@ public class Test
 {
    public static void main(String[] args) throws InvalidNumberException
    {
-      DESEncryption des = new DESEncryption(12345); 
-      System.out.println(des.encrypt());
-      System.out.println(des.decrypt());
+      long num = 30821965994830L;
+      num = num << 16;
+      System.out.println(num);
+      long temp = Common.getBits(num, 1,7);
+      System.out.println(temp);
+      System.out.println(Common.showBinary(temp));
    }
 }

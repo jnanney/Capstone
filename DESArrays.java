@@ -1,6 +1,6 @@
 public class DESArrays
 {
-   public static byte[][] getSelectionTables(byte tableNum)
+   public static byte[][] getSelectionTables(int tableNum)
    {
       final byte[][] s1 =
       {

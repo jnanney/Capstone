@@ -79,7 +79,9 @@ public class DESEncryption
       //System.out.println("Iteration " + iteration+ " right is " + Common.showBinary(right));
       long result = ((long) right) << Integer.SIZE - 1;
       long shortkey = key.keyScheduler(iteration);  
+      System.out.println("Iteration " + iteration);
       result = result | (left ^ cypherFunction(right, shortkey));
+      System.out.println(
       return result;
    }
 
@@ -87,17 +89,24 @@ public class DESEncryption
       throws InvalidNumberException
    {
       long result = 0;
+      block = block << 32;
       long expandedBlock = Common.switchBits(block, expandPositions);
-      /*System.out.println("E : " + Common.showBinary(expandedBlock));
-      System.out.println("KS: " + Common.showBinary(shortKey));*/
+      expandedBlock = expandedBlock >>> 16;
       long temp = shortKey ^ expandedBlock;
-      //System.out.println("E xor KS: " + Common.showBinary(temp));
+      temp = temp << 16;
+      System.out.println("E xor KS: " + Common.showBinary(temp));
+      //XXX there seems to be a problem in this loop, my sboxes aren't valid
       for(int i = 0; i < 8; i++)
       {
-         byte sub = (byte) Common.getBits(temp, i * 6 + 1, (i + 1) * 6 + 1);
-         result = result | (sub << (i * 4));
+         byte sixBits =  (byte) Common.getBits(temp, i * 6 + 1, (i + 1) * 6 + 1);
+         byte[][] sTable = DESArrays.getSelectionTables(i + 1);
+         byte fourBits = sFunction(sixBits, sTable);
+         result = result << 4;
+         result = result | fourBits;
       }
+      result = result << 32;
       result = Common.switchBits(result, DESArrays.getPermutationFunction());
+      result = result >>> 32;
       return (int) result;
    }
 
