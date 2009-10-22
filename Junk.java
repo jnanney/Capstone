@@ -8,8 +8,10 @@ public class Junk
       /*long dude = 15;
       System.out.println(Common.getBits(dude, 61, 65));*/
       DESEncryption des = new DESEncryption(1234);
-      System.out.println(des.encrypt());
-      //System.out.println(des.decrypt());
+      long result = des.encrypt();
+      long decrypt = des.decrypt();
+      System.out.println("Encrypted " + Long.toHexString(result));
+      System.out.println("Decrypted " + decrypt);
     final int[] expandPositions =
    {
       32, 1, 2, 3, 4, 5,
