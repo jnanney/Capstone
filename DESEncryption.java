@@ -76,26 +76,27 @@ public class DESEncryption
    public long encryptionIteration(long left, long right, int iteration)
       throws InvalidNumberException
    {
-      //System.out.println("Iteration " + iteration+ " right is " + Common.showBinary(right));
+      System.out.println("Iteration " + iteration);
       long result = ((long) right) << Integer.SIZE - 1;
       long shortkey = key.keyScheduler(iteration);  
-      System.out.println("Iteration " + iteration);
-      result = result | (left ^ cypherFunction(right, shortkey));
-      System.out.println(
+      long cypherResult = cypherFunction(right, shortkey);
+      System.out.println("CypherFunction : " + Common.showBinary(cypherResult));
+      System.out.println("Left           : " + Common.showBinary(left));
+      result = result | (left ^ cypherResult);
+      System.out.println("Result         : " + Common.showBinary(result));
       return result;
    }
 
-   private int cypherFunction(long block, long shortKey) 
+   private long cypherFunction(long block, long shortKey) 
       throws InvalidNumberException
    {
+      System.out.println("Block is : " + Common.showBinary((block)));
       long result = 0;
       block = block << 32;
       long expandedBlock = Common.switchBits(block, expandPositions);
       expandedBlock = expandedBlock >>> 16;
       long temp = shortKey ^ expandedBlock;
       temp = temp << 16;
-      System.out.println("E xor KS: " + Common.showBinary(temp));
-      //XXX there seems to be a problem in this loop, my sboxes aren't valid
       for(int i = 0; i < 8; i++)
       {
          byte sixBits =  (byte) Common.getBits(temp, i * 6 + 1, (i + 1) * 6 + 1);
@@ -107,7 +108,7 @@ public class DESEncryption
       result = result << 32;
       result = Common.switchBits(result, DESArrays.getPermutationFunction());
       result = result >>> 32;
-      return (int) result;
+      return result;
    }
 
    public long decrypt() throws InvalidNumberException
