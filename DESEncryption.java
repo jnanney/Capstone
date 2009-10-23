@@ -1,7 +1,6 @@
 public class DESEncryption
 {
-   private long plaintext;
-   private long cyphertext;
+   private long original;
    private DESKey key;
 
    private final int[] flipPositions = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 
@@ -45,16 +44,21 @@ public class DESEncryption
       28, 29, 30, 31, 32, 1
    };
 
-   public DESEncryption(long plaintext)
+   public DESEncryption(long original)
    {
-      this.plaintext = plaintext;
-      //key = new DESKey();
-      key = new DESKey(0x3b3898371520f75eL);
+      this.original = original;
+      key = new DESKey();
+   }
+
+   public DESEncryption(long original, DESKey key)
+   {
+      this.original = original;
+      this.key = key;
    }
 
    public long encrypt() throws InvalidNumberException
    {
-      long result = Common.switchBits(plaintext, initialPermutation);
+      long result = Common.switchBits(original, initialPermutation);
       long left = Common.getBits(result, 1, 33);
       long right = Common.getBits(result, 33, 65);
       for (int i = 1; i <= 16; i++)
@@ -65,7 +69,6 @@ public class DESEncryption
       }
       result = Common.switchBits(result, flipPositions);
       result = Common.switchBits(result, inversePermutation);
-      cyphertext = result;
       return result;
    }
 
@@ -104,7 +107,7 @@ public class DESEncryption
 
    public long decrypt() throws InvalidNumberException
    {
-      long result = Common.switchBits(cyphertext, initialPermutation);
+      long result = Common.switchBits(original, initialPermutation);
       long left = Common.getBits(result, 1, 33);
       long right = Common.getBits(result, 33, 65);
       for (int i = 16; i >= 1; i--)
@@ -115,7 +118,6 @@ public class DESEncryption
       }
       result = Common.switchBits(result, flipPositions);
       result = Common.switchBits(result, inversePermutation);
-      cyphertext = result;
       return result;
    }
    
@@ -133,6 +135,11 @@ public class DESEncryption
          col = col | (Common.getBit(sixBits, i) << (7 - i));
       }
       return sTable[row][col];
+   }
+
+   public DESKey getKey()
+   {
+      return key;
    }
 
 }

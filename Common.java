@@ -7,7 +7,32 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
-  
+   
+   public static long makeLongFromChars(char a, char b, char c, char d)
+   {
+      long result = 0;
+      result = result | a;
+      result = result << Character.SIZE;
+      result = result | b;
+      result = result << Character.SIZE;
+      result = result | c;
+      result = result << Character.SIZE;
+      result = result | d;
+      return result;
+   }
+
+   public static String makeStringFromLong(long input)
+      throws InvalidNumberException
+   {
+      String result = "";
+      for(int i = 0; i < 4; i++)
+      {
+         char temp = (char) getBits(input, i*16 + 1, (i+1)*16+1);
+         result += temp;
+      }
+      return result;
+   }
+
    /**
     * Gets the bits from the starting to the ending position.  Starting bit is
     * included, end bit is not.  
@@ -32,22 +57,6 @@ public class Common
       return result;
    }
 
-   /*public static long getBits(long number, int start, int end)
-      throws InvalidNumberException
-   {
-      long result = 0;
-      int shiftLength = end - start - 1;
-      if (start > end || start < 1 || end > Long.SIZE + 1)
-      {
-         throw new InvalidNumberException("Invalid bit positions");
-      }
-      for(int i = start; i < end; i++)
-      {
-         result = result | (getBit(number, i) << shiftLength);
-         shiftLength--; 
-      }
-      return result;
-   }*/
 
    public static byte getBit(byte number, int position)
       throws InvalidNumberException
