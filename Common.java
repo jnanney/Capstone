@@ -27,7 +27,7 @@ public class Common
       String result = "";
       for(int i = 0; i < 4; i++)
       {
-         char temp = (char) getBits(input, i*16 + 1, (i+1)*16+1);
+         char temp = (char) getBits(input, i*16 + 1, (i+1)*16);
          result += temp;
       }
       return result;
