@@ -22,7 +22,7 @@ public class Common
    }
 
    public static String makeStringFromLong(long input)
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       String result = "";
       for(int i = 0; i < 4; i++)
@@ -42,11 +42,11 @@ public class Common
     * @return a number containing the selected bits on the right
     * */
    public static long getBits(long number, int start, int end)
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       if (start > end || start < 1 || end > Long.SIZE + 1)
       {
-         throw new InvalidNumberException("Invalid bit positions");
+         throw new InvalidSelectionException("Invalid bit positions");
       }
       long result = 0;
       for(int i = start++; i < end; i++)
@@ -59,11 +59,11 @@ public class Common
 
 
    public static byte getBit(byte number, int position)
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       if (position > Byte.SIZE || position < 1)
       {
-         throw new InvalidNumberException(position + " is not a valid bit " + 
+         throw new InvalidSelectionException(position + " is not a valid bit " + 
             "position");
       }
       byte mask = 1;
@@ -86,11 +86,11 @@ public class Common
     * @return a byte that stores 0 or 1 depending on the bit
     **/
    public static byte getBit(long number, int position) 
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       if (position > Long.SIZE || position < 1)
       {
-         throw new InvalidNumberException(position + " is not a valid bit " + 
+         throw new InvalidSelectionException(position + " is not a valid bit " + 
             "position");
       }
       long mask = 1;
@@ -122,7 +122,7 @@ public class Common
    }
    
    public static long switchBits(long original, int newPositions[], boolean flag) 
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       long result = 0;
       for(int i = 0; i < newPositions.length; i++)
@@ -136,7 +136,7 @@ public class Common
    }
 
    public static long switchBits(long original, int newPositions[])
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       return switchBits(original, newPositions, false);
    }

@@ -2,7 +2,7 @@ public class DESEncryption
 {
    private long original;
    private DESKey key;
-
+   private static final int ENCRYPTION_ITERATIONS = 16;
    private final int[] flipPositions = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 
       43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 
       61, 62, 63, 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
@@ -56,24 +56,13 @@ public class DESEncryption
       this.key = key;
    }
 
-   public long encrypt() throws InvalidNumberException
+   public long encrypt() throws InvalidSelectionException
    {
-      long result = Common.switchBits(original, initialPermutation);
-      long left = Common.getBits(result, 1, 33);
-      long right = Common.getBits(result, 33, 65);
-      for (int i = 1; i <= 16; i++)
-      {
-         result = encryptionIteration(left, right, i);
-         left = Common.getBits(result, 1, 33);
-         right = Common.getBits(result, 33, 65);
-      }
-      result = Common.switchBits(result, flipPositions);
-      result = Common.switchBits(result, inversePermutation);
-      return result;
+      return encryptCycle(false);
    }
 
    public long encryptionIteration(long left, long right, int iteration)
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       long result = right << 32;
       long shortkey = key.keyScheduler(iteration);  
@@ -83,7 +72,7 @@ public class DESEncryption
    }
 
    private long cypherFunction(long block, long shortKey) 
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       long result = 0;
       block = block << 32;
@@ -105,24 +94,13 @@ public class DESEncryption
       return result;
    }
 
-   public long decrypt() throws InvalidNumberException
+   public long decrypt() throws InvalidSelectionException
    {
-      long result = Common.switchBits(original, initialPermutation);
-      long left = Common.getBits(result, 1, 33);
-      long right = Common.getBits(result, 33, 65);
-      for (int i = 16; i >= 1; i--)
-      {
-         result = encryptionIteration(left, right, i);
-         left = Common.getBits(result, 1, 33);
-         right = Common.getBits(result, 33, 65);
-      }
-      result = Common.switchBits(result, flipPositions);
-      result = Common.switchBits(result, inversePermutation);
-      return result;
+      return encryptCycle(true);
    }
    
    public byte sFunction(byte sixBits, byte[][] sTable) 
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       byte firstBitPosition = 3;
       byte lastBitPosition = 8;
@@ -142,4 +120,30 @@ public class DESEncryption
       return key;
    }
 
+   private long encryptCycle(boolean backwards)
+      throws InvalidSelectionException
+   {
+      int START = 1;
+      long result = Common.switchBits(original, initialPermutation);
+      long left = Common.getBits(result, 1, 33);
+      long right = Common.getBits(result, 33, 65);
+      int iteration;
+      for (int i = START; i <= ENCRYPTION_ITERATIONS; i++)
+      {
+         if (backwards)
+         {
+            iteration = ENCRYPTION_ITERATIONS - i + 1;
+         }
+         else
+         {
+            iteration = i;
+         }
+         result = encryptionIteration(left, right, iteration);
+         left = Common.getBits(result, 1, 33);
+         right = Common.getBits(result, 33, 65);
+      }
+      result = Common.switchBits(result, flipPositions);
+      result = Common.switchBits(result, inversePermutation);
+      return result;
+   }
 }

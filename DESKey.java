@@ -80,14 +80,14 @@ public class DESKey
    }
 
    public long keyScheduler(int iteration) 
-      throws InvalidNumberException
+      throws InvalidSelectionException
    {
       int MIN_ITERATION = 1;
       int MAX_ITERATION = numShifts.length;
 
       if (iteration < MIN_ITERATION || iteration > MAX_ITERATION)
       {
-         throw new InvalidNumberException(iteration + " is not valid");
+         throw new InvalidSelectionException(iteration + " is not valid");
       }
       long c = Common.switchBits(key, permutedChoice1C, false);
       long d = Common.switchBits(key, permutedChoice1D);

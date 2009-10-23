@@ -13,7 +13,7 @@ public class TripleDESEncryption
       key3 = new DESKey();
    }
 
-   public long encrypt() throws InvalidNumberException
+   public long encrypt() throws InvalidSelectionException
    {
       DESEncryption des1 = new DESEncryption(original, key1);
       long current = des1.encrypt();
@@ -23,7 +23,7 @@ public class TripleDESEncryption
       return des3.encrypt();
    }
 
-   public long decrypt() throws InvalidNumberException
+   public long decrypt() throws InvalidSelectionException
    {
       DESEncryption des3 = new DESEncryption(original, key3);
       long current = des3.decrypt();

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Test
 {
-   public static void main(String[] args) throws InvalidNumberException
+   public static void main(String[] args) throws Exception
    {
       long num = 30821965994830L;
       num = num << 16;
