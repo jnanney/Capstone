@@ -34,28 +34,29 @@ public class Common
    }
 
    /**
-    * Gets the bits from the starting to the ending position.  Starting bit is
-    * included, end bit is not.  
+    * Gets the bits from the starting to the ending position inclusive.  
+    * Numbering starts at 1 and ends at 64.  Since Java is Big-Endian bit 1 is
+    * the left most (and most significant) bit.
     * @param number - the number to get the bits from
-    * @param start - the starting bit position (inclusive)
-    * @param end - the ending bit position (exclusive)
-    * @return a number containing the selected bits on the right
+    * @param start - the starting bit position 
+    * @param end - the ending bit position 
+    * @return a number containing the selected bits. 
     * */
-   public static long getBits(long number, int start, int end)
-      throws InvalidSelectionException
+   public static long getBits(long number, int start, int end) throws InvalidSelectionException
    {
       if (start > end || start < 1 || end > Long.SIZE + 1)
       {
          throw new InvalidSelectionException("Invalid bit positions");
       }
       long result = 0;
-      for(int i = start++; i < end; i++)
+      for(int i = start; i <= end; i++)
       {
          result = result << 1;
          result = result | getBit(number, i);
       }
       return result;
    }
+
 
 
    public static byte getBit(byte number, int position)
@@ -134,6 +135,7 @@ public class Common
       }
       return result;
    }
+
 
    public static long switchBits(long original, int newPositions[])
       throws InvalidSelectionException

@@ -3,6 +3,9 @@ public class DESEncryption
    private long original;
    private DESKey key;
    private static final int ENCRYPTION_ITERATIONS = 16;
+   private static final int FIRST_BIT = 1;
+   private static final int MIDDLE_BIT = 32;
+   private static final int LAST_BIT = 64;
    private final int[] flipPositions = {33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 
       43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 
       61, 62, 63, 64, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
@@ -82,7 +85,7 @@ public class DESEncryption
       temp = temp << 16;
       for(int i = 0; i < 8; i++)
       {
-         byte sixBits =  (byte) Common.getBits(temp, i * 6 + 1, (i + 1) * 6 + 1);
+         byte sixBits =  (byte) Common.getBits(temp, i * 6 + 1, (i + 1) * 6);
          byte[][] sTable = DESArrays.getSelectionTables(i + 1);
          byte fourBits = sFunction(sixBits, sTable);
          result = result << 4;
@@ -119,28 +122,36 @@ public class DESEncryption
    {
       return key;
    }
-
+   
+   /*
+    * Since encrypt() and decrypt() are both using the same algorithm 
+    * (only when decrypt uses it it starts at iteration 16 and goes down to 1)
+    * the algorithm is implemented here.  encrypt() and decrypt() both call 
+    * this method.
+    * @param backwards - if true the method will go from 16 down to 1.  Used by
+    *                    decrypt()
+    * @return - the encrypted or decrypted value
+    * */
    private long encryptCycle(boolean backwards)
       throws InvalidSelectionException
    {
       int START = 1;
       long result = Common.switchBits(original, initialPermutation);
-      long left = Common.getBits(result, 1, 33);
-      long right = Common.getBits(result, 33, 65);
+      long left = Common.getBits(result, FIRST_BIT, MIDDLE_BIT);
+      long right = Common.getBits(result, MIDDLE_BIT, LAST_BIT);
       int iteration;
       for (int i = START; i <= ENCRYPTION_ITERATIONS; i++)
       {
+         iteration = i;
          if (backwards)
          {
+            //+1 because we need to go from 16 down to 1.  But we start 
+            //counting at 1.  16 - 1 = 15 so it would skip an iteration
             iteration = ENCRYPTION_ITERATIONS - i + 1;
          }
-         else
-         {
-            iteration = i;
-         }
          result = encryptionIteration(left, right, iteration);
-         left = Common.getBits(result, 1, 33);
-         right = Common.getBits(result, 33, 65);
+         left = Common.getBits(result, FIRST_BIT, MIDDLE_BIT);
+         right = Common.getBits(result, MIDDLE_BIT, LAST_BIT);
       }
       result = Common.switchBits(result, flipPositions);
       result = Common.switchBits(result, inversePermutation);
