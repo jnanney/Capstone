@@ -70,6 +70,11 @@ public class DESKey
          {
             oneBits++; 
          }
+         if((i+1) % 8 == 0)
+         {
+            temp = (long) ((oneBits + 1) % 2) << i;
+            oneBits = 0;
+         }
          key = key | temp;
       }
    }
@@ -104,9 +109,6 @@ public class DESKey
       long mask = 0xFFFFFFF;
       long result = ((c << 28) | d) << 8;
       result = (Common.switchBits(result, permutedChoice2)) >>> 16;
-      /*System.out.println("Iteration " + iteration);
-      System.out.println("The result is " + result);
-      System.out.println("In binary " + Common.showBinary(result));*/
       return result;
    }
 
