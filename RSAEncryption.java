@@ -44,5 +44,9 @@ public class RSAEncryption
 	   return result;
    }
 
+   public RSAKey getKey()
+   {
+      return key;
+   }
 
 }
