@@ -94,7 +94,7 @@ public class DESKey
       {
          throw new InvalidSelectionException(iteration + " is not valid");
       }
-      long c = Common.switchBits(key, permutedChoice1C, false);
+      long c = Common.switchBits(key, permutedChoice1C);
       long d = Common.switchBits(key, permutedChoice1D);
       c = c >>> 36; //Shift 36 so that c and d will be on the right side
       d = d >>> 36;

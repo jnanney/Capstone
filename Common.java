@@ -122,25 +122,16 @@ public class Common
       return result;
    }
    
-   public static long switchBits(long original, int newPositions[], boolean flag) 
+   public static long switchBits(long original, int newPositions[]) 
       throws InvalidSelectionException
    {
       long result = 0;
       for(int i = 0; i < newPositions.length; i++)
       {
          long bit = getBit(original, newPositions[i]);
-         if(flag) //TODO: remove this and other function
-            System.out.println("Filling bit " + (i + 1) + " with " + newPositions[i] + " which is " + bit);
          result = result | (bit << Long.SIZE - i - 1);
       }
       return result;
-   }
-
-
-   public static long switchBits(long original, int newPositions[])
-      throws InvalidSelectionException
-   {
-      return switchBits(original, newPositions, false);
    }
 
    public static String showBinary(long num)
