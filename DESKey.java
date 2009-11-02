@@ -118,5 +118,10 @@ public class DESKey
       return (mask & (num << 1 | num >>> 27));
    }
 
+   public String toString()
+   {
+      return Long.toString(key);
+   }
+
 }
 

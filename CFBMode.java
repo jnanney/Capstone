@@ -5,9 +5,6 @@ public class CFBMode
 
    private TripleDESEncryption encryptor;
    private long text;
-   public CFBMode(long text)
-   {
-   }
 
    public CFBMode(long text, TripleDESEncryption encryptor)
    {
@@ -23,6 +20,15 @@ public class CFBMode
    public TripleDESEncryption getEncryptor()
    {
       return encryptor;
+   }
+
+   public long process()
+   {
+      /*long feedbackRegister = 0;
+      Random random = new Random();
+      long random = random.nextLong();
+      */
+      return 0;
    }
 
 

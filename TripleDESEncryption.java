@@ -37,4 +37,9 @@ public class TripleDESEncryption
    {
       this.original = newLong;
    }
+
+   public DESKey[] getKeys()
+   {
+      return new DESKey[] {key1, key2, key3};
+   }
 }

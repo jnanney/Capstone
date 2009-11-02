@@ -128,10 +128,43 @@ public class GUI
       panel.setLayout(new BorderLayout());
       JButton newKey = new JButton("Generate a new key");
       JButton existingKey = new JButton("Use an existing key");
-      JTextField keyLength = new JTextField("1024", 10);      
+      final JTextField keyLength = new JTextField("1024", 10);      
       panel.add(newKey, BorderLayout.LINE_END);
+      panel.add(existingKey, BorderLayout.LINE_START);
       panel.add(keyLength, BorderLayout.PAGE_START);
+      
 
+      existingKey.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt)
+         {
+            JFileChooser chooser = new JFileChooser();
+            chooser.showOpenDialog(pane);
+         }
+      });
+
+      newKey.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt) 
+         {
+            JFileChooser chooser = new JFileChooser();
+            int returnValue = chooser.showSaveDialog(pane);
+            if (returnValue == JFileChooser.APPROVE_OPTION) 
+            {
+               String length = keyLength.getText();
+               RSAKey key = new RSAKey(Integer.valueOf(length) * 2);
+               File keyFile = chooser.getSelectedFile();
+               try
+               {
+                  key.writeToFile(keyFile);
+               }
+               catch(Exception e)
+               {
+                  System.out.println(e.getMessage());
+               }
+            }
+         }
+      });
       return panel;
    }
 }

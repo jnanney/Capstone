@@ -113,15 +113,6 @@ public class Common
       return result;
    }
 
-   public static int[] splitLong(long num)
-   {
-      int result[] = new int[2];
-      int mask = 0xFFFFFFFF; //4 solid bytes
-      result[1] = (int) (num & mask); //left half
-      result[0] = (int) ((num >> 32) & mask); //right half
-      return result;
-   }
-   
    public static long switchBits(long original, int newPositions[]) 
       throws InvalidSelectionException
    {

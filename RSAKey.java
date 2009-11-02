@@ -1,5 +1,9 @@
 import java.util.Random;
 import java.math.BigInteger;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class RSAKey
 {
@@ -47,6 +51,25 @@ public class RSAKey
    public BigInteger getPrimeProduct()
    {
       return n;
+   }
+
+   public void writeToFile(File publicFile/*, File privateFile*/) throws Exception
+   {
+      byte version = 4;
+      Calendar cal = new GregorianCalendar();
+      long time = cal.get(Calendar.SECOND);
+      //mask so it doesn't do sign extension when converting from int to long
+      time = time & 0xFFFFFFFF;
+      byte[] byteTime = new byte[4];
+      for(int i = 0; i < byteTime.length; i++)
+      {
+         byteTime[i] = (byte) Common.getBits(time, (i * Byte.SIZE) + 1, ((i+1) * Byte.SIZE));
+      }
+      FileOutputStream publicOut = new FileOutputStream(publicFile);
+      //FileOutputStream privateOut = new FileOutputStream(privateFile);
+      publicOut.write(new byte[] {version});
+      publicOut.write(byteTime);
+      publicOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
    }
 
 }
