@@ -22,7 +22,6 @@ public class RSAKey
       prime1 = new BigInteger(numBits, primeCertainty, random);
       prime2 = new BigInteger(numBits, primeCertainty, random);
       n = prime1.multiply(prime2);
-      System.out.println("N's length " + n.bitLength());
       totient = (prime1.subtract(BigInteger.ONE)).multiply(prime2.subtract(BigInteger.ONE));
       do
       {
@@ -69,8 +68,6 @@ public class RSAKey
          byteTime[i] = (byte) Common.getBits(time, (i * Byte.SIZE) + 1, ((i+1) * Byte.SIZE));
       }
       FileOutputStream publicOut = new FileOutputStream(publicFile);
-      //FileOutputStream privateOut = new FileOutputStream(privateFile);
-      //TODO: get the length
       byte nArray[] = n.toByteArray();
       byte eArray[] = encryptionExponent.toByteArray();
       long length = 1 + 4 + nArray.length + eArray.length;

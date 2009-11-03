@@ -24,22 +24,19 @@ public class Common
 
    public static byte[] makeNewFormatLength(long length)
    {
-      long MAX_ONE_OCTET = 191;
-      long MAX_TWO_OCTETS = 8383;
-      long MAX_FIVE_OCTETS = 0xFFFFFFFF;
       byte[] result = new byte[0];
-      if(length <= MAX_ONE_OCTET)
+      if(length <= OpenPGP.MAX_ONE_OCTET)
       {
          result = new byte[1];
          result[0] = (byte) length;
       }
-      else if(length <= MAX_TWO_OCTETS)
+      else if(length <= OpenPGP.MAX_TWO_OCTETS)
       {
          result = new byte[2];
          result[0] = (byte) ((length >>> 8) + 192);
          result[1] = (byte) (0xFF & length);
       }
-      else if(length <= MAX_FIVE_OCTETS)
+      else if(length <= OpenPGP.MAX_FIVE_OCTETS)
       {
          result = new byte[5];
          result[0] = (byte) 0xFF;
@@ -52,7 +49,7 @@ public class Common
       return result;
    }
 
-   public static long getNewFormatLength(byte[] bytes)
+   public static long getNewFormatLength(int[] bytes)
    {
       long result = 0;
       if(bytes.length == 1)

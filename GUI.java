@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JLabel;
 
 
 public class GUI

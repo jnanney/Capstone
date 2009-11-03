@@ -1,12 +1,16 @@
+import java.util.*;
+import java.io.*;
 public class Junk
 {
    public static void main(String[] args) throws Exception
    {
-      TripleDESEncryption dude = new TripleDESEncryption(1234);
-      long what=dude.encrypt();
-      System.out.println(what);
-      dude.changeOriginal(what);
-      System.out.println(dude.decrypt());
+      FileEncryptor test = new FileEncryptor(new File("data"));
+      PacketReader reader = new PacketReader(new File("out"));
+      List<OpenPGPPacket> stuff = reader.readPackets();
+      for(OpenPGPPacket temp : stuff)
+      {
+         System.out.println(temp);
+      }
    }
 
 }
