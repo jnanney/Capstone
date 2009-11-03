@@ -21,6 +21,7 @@ public class Common
       }
       return result;
    }
+
    public static byte[] makeNewFormatLength(long length)
    {
       long MAX_ONE_OCTET = 191;

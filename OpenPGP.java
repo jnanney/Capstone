@@ -7,4 +7,5 @@ public class OpenPGP
    public static final byte TRIPLEDES_CONSTANT = 2;
    public static final byte PUBLIC_KEY_PACKET_TAG = 6 | NEW_TAG_MASK;
    public static final byte PRIVATE_KEY_PACKET_TAG = 5 | NEW_TAG_MASK;
+   public static final byte LITERAL_DATA_PACKET_TAG = 11 | NEW_TAG_MASK;
 }

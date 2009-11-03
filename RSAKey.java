@@ -16,12 +16,13 @@ public class RSAKey
 
    public RSAKey(int numBits)
    {
-      numBits *= 2;
+      numBits*=2;
       Random random = new Random();
       int primeCertainty = 100;
       prime1 = new BigInteger(numBits, primeCertainty, random);
       prime2 = new BigInteger(numBits, primeCertainty, random);
       n = prime1.multiply(prime2);
+      System.out.println("N's length " + n.bitLength());
       totient = (prime1.subtract(BigInteger.ONE)).multiply(prime2.subtract(BigInteger.ONE));
       do
       {
@@ -70,9 +71,17 @@ public class RSAKey
       FileOutputStream publicOut = new FileOutputStream(publicFile);
       //FileOutputStream privateOut = new FileOutputStream(privateFile);
       //TODO: get the length
-      publicOut.write(new byte[] {publicTag, length, version});
+      byte nArray[] = n.toByteArray();
+      byte eArray[] = encryptionExponent.toByteArray();
+      long length = 1 + 4 + nArray.length + eArray.length;
+      byte[] lengthBytes = Common.makeNewFormatLength(length);
+      publicOut.write(new byte[] {publicTag});
+      publicOut.write(lengthBytes);
+      publicOut.write(new byte[] {version});
       publicOut.write(byteTime);
       publicOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
+      publicOut.write(nArray);
+      publicOut.write(eArray);
    }
 
 }
