@@ -7,13 +7,26 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
-  
+   
+   public static byte[] makeMultiprecisionInteger(BigInteger num)
+   {
+      byte[] temp = num.toByteArray();
+      byte[] result = new byte[temp.length + 2];
+      int numBits = temp.length * Byte.SIZE;
+      result[0] = (byte) (numBits & 0xFF00);
+      result[1] = (byte) (numBits & 0xFF);
+      for(int i = 2; i < result.length; i++)
+      {
+         result[i] = temp[i - 2];
+      }
+      return result;
+   }
    public static byte[] makeNewFormatLength(long length)
    {
       long MAX_ONE_OCTET = 191;
       long MAX_TWO_OCTETS = 8383;
       long MAX_FIVE_OCTETS = 0xFFFFFFFF;
-      byte[] result;
+      byte[] result = new byte[0];
       if(length <= MAX_ONE_OCTET)
       {
          result = new byte[1];
@@ -22,17 +35,17 @@ public class Common
       else if(length <= MAX_TWO_OCTETS)
       {
          result = new byte[2];
-         result[0] = length >>> 8 + 192;
-         result[1] = 0xFF & length; 
+         result[0] = (byte) ((length >>> 8) + 192);
+         result[1] = (byte) (0xFF & length);
       }
       else if(length <= MAX_FIVE_OCTETS)
       {
          result = new byte[5];
-         result[0] = 0xFF;
+         result[0] = (byte) 0xFF;
          int mask = 0xFF;
          for(int i = 1; i <result.length; i++)
          {
-            result[i] = length & (mask << ((4-i) * 8));
+            result[i] = (byte) (length & (mask << ((4-i) * 8)));
          }
       }
       return result;
@@ -40,7 +53,7 @@ public class Common
 
    public static long getNewFormatLength(byte[] bytes)
    {
-      long result;
+      long result = 0;
       if(bytes.length == 1)
       {
          result = bytes[0];
