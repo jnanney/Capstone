@@ -16,6 +16,7 @@ public class RSAKey
 
    public RSAKey(int numBits)
    {
+      numBits *= 2;
       Random random = new Random();
       int primeCertainty = 100;
       prime1 = new BigInteger(numBits, primeCertainty, random);
@@ -55,6 +56,7 @@ public class RSAKey
 
    public void writeToFile(File publicFile/*, File privateFile*/) throws Exception
    {
+      byte publicTag = OpenPGP.PUBLIC_KEY_PACKET_TAG;
       byte version = 4;
       Calendar cal = new GregorianCalendar();
       long time = cal.get(Calendar.SECOND);
@@ -67,7 +69,8 @@ public class RSAKey
       }
       FileOutputStream publicOut = new FileOutputStream(publicFile);
       //FileOutputStream privateOut = new FileOutputStream(privateFile);
-      publicOut.write(new byte[] {version});
+      //TODO: get the length
+      publicOut.write(new byte[] {publicTag, length, version});
       publicOut.write(byteTime);
       publicOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
    }

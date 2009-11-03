@@ -7,6 +7,54 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
+  
+   public static byte[] makeNewFormatLength(long length)
+   {
+      long MAX_ONE_OCTET = 191;
+      long MAX_TWO_OCTETS = 8383;
+      long MAX_FIVE_OCTETS = 0xFFFFFFFF;
+      byte[] result;
+      if(length <= MAX_ONE_OCTET)
+      {
+         result = new byte[1];
+         result[0] = (byte) length;
+      }
+      else if(length <= MAX_TWO_OCTETS)
+      {
+         result = new byte[2];
+         result[0] = length >>> 8 + 192;
+         result[1] = 0xFF & length; 
+      }
+      else if(length <= MAX_FIVE_OCTETS)
+      {
+         result = new byte[5];
+         result[0] = 0xFF;
+         int mask = 0xFF;
+         for(int i = 1; i <result.length; i++)
+         {
+            result[i] = length & (mask << ((4-i) * 8));
+         }
+      }
+      return result;
+   }
+
+   public static long getNewFormatLength(byte[] bytes)
+   {
+      long result;
+      if(bytes.length == 1)
+      {
+         result = bytes[0];
+      }
+      else if(bytes.length == 2)
+      {
+         result = ((bytes[0] - 192) << 8) + bytes[1] + 192;
+      }
+      else if(bytes.length == 5)
+      {
+         result = (bytes[1] << 24) | (bytes[2] << 16) | (bytes[3] << 8) | bytes[4];
+      }
+      return result;
+   }
    
    public static long makeLongFromChars(char a, char b, char c, char d)
    {

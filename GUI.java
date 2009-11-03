@@ -152,7 +152,7 @@ public class GUI
             if (returnValue == JFileChooser.APPROVE_OPTION) 
             {
                String length = keyLength.getText();
-               RSAKey key = new RSAKey(Integer.valueOf(length) * 2);
+               RSAKey key = new RSAKey(Integer.valueOf(length));
                File keyFile = chooser.getSelectedFile();
                try
                {
