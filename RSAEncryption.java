@@ -36,7 +36,7 @@ public class RSAEncryption
 	   BigInteger n = key.getPrimeProduct();
 	   String result = "";
 	   int length = key.getPrimeProduct().toString().length();
-	   String splitText[] = Common.split(text, length - 1);
+	   String splitText[] = Common.split(text, length);
 	   for(String current : splitText)
 	   {
 		   BigInteger temp = new BigInteger(current);

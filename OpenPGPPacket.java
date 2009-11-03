@@ -13,7 +13,14 @@ public class OpenPGPPacket
          case OpenPGP.LITERAL_DATA_PACKET_TAG:
             packetInfo = new LiteralDataPacket(data);
             break;
-//         case OpenPGP.
+         case OpenPGP.PK_SESSION_KEY_TAG:
+            packetInfo = new EncryptedSessionKeyPacket(data);
+            break;
+         case OpenPGP.SYMMETRIC_DATA_TAG(data):
+            packetInfo = new SymmetricDataPacket(data);
+            break;
+         default:
+            System.err.println("Tag " + tag + " is not a supported tag");
       }
    }
 
@@ -22,13 +29,15 @@ public class OpenPGPPacket
       return tag;
    }
 
-   /*public PacketSpecificInterface getPacket()
+   public PacketSpecificInterface getPacket()
    {
-   }*/
+      return packetInfo;
+   }
 
    public String toString() 
    {
-      return "Tag : " + tag;
+      //XOR removes the 2 1-bits that are required to be at start of tag
+      return "Tag : " + (tag ^ OpenPGP.NEW_TAG_MASK);
    }
 }
 

@@ -15,9 +15,10 @@ public class RSAKey
    private BigInteger encryptionExponent;
    private BigInteger decryptionExponent;
 
-   public RSAKey(int numBits)
+   public RSAKey(int bitLength)
    {
-      numBits*=2;
+      //compensate for not being unsigned
+      int numBits = bitLength + 1;
       Random random = new Random();
       int primeCertainty = 100;
       prime1 = new BigInteger(numBits, primeCertainty, random);

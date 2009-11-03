@@ -4,7 +4,7 @@ public class LiteralDataPacket implements PacketSpecificInterface
    private byte format;
    private String fileName;
    private List<Byte> literalData;
-   private int date;
+   private List<Byte> date;
 
    public LiteralDataPacket(List<Byte> rawData)
    {
@@ -16,10 +16,18 @@ public class LiteralDataPacket implements PacketSpecificInterface
       {
          fileName += String.valueOf((char) current.byteValue());
       }
-      //TODO: get the data.
+      date = rawData.subList(2 + length, 2 + length + 4);
+      literalData = rawData.subList(2 + length + 4, rawData.size());
    }
 
-
+   public List<Byte> getDate()
+   {
+      return date;
+   }
+   public List<Byte> getLiteralData()
+   {
+      return literalData;
+   }
    public byte getFormat()
    {
       return format;
