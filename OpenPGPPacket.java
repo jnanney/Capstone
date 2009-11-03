@@ -1,12 +1,20 @@
+import java.io.*; //TODO: remove
 import java.util.List;
 public class OpenPGPPacket
 {
    private byte tag;
-   private List<Byte> data;
+   private PacketSpecificInterface packetInfo;
+   
    public OpenPGPPacket(byte tag, List<Byte> data)
    {
       this.tag = tag;
-      this.data = data;
+      switch(tag)
+      {
+         case OpenPGP.LITERAL_DATA_PACKET_TAG:
+            packetInfo = new LiteralDataPacket(data);
+            break;
+//         case OpenPGP.
+      }
    }
 
    public byte getTag()
@@ -14,11 +22,11 @@ public class OpenPGPPacket
       return tag;
    }
 
-   public List<Byte> getData()
+   /*public PacketSpecificInterface getPacket()
    {
-      return data;
-   }
-   public String toString()
+   }*/
+
+   public String toString() 
    {
       return "Tag : " + tag;
    }

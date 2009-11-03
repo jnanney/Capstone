@@ -43,12 +43,6 @@ public class FileEncryptor
          literalData.add(0, temp);
       }
       literalData.add(0, new Byte(OpenPGP.LITERAL_DATA_PACKET_TAG));
-
-      FileOutputStream test = new FileOutputStream("out");
-      for(byte current : literalData)
-      {
-         test.write(current);
-      }
    }
 
 }

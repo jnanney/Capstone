@@ -220,7 +220,7 @@ public class Common
       return result;
    }
    
-   public static String[] split(String string, int subsize)
+   /*public static String[] split(String string, int subsize)
    {
 	   int numElements = (int) Math.ceil((double) string.length() / subsize);
 	   String result[] = new String[numElements];
@@ -236,6 +236,34 @@ public class Common
 		   }
 	   }
 	   return result;
+   }
+
+   /*public static String[] split(String string, int subsize)
+   {
+      ArrayList<String> result = new ArrayList<String>();
+      for(int i = 0, current = 0; i < string.length(); i++)
+      {
+         if(
+      }
+
+   }*/
+
+   public static String[] split(String string, int subsize)
+   {
+      int numElements = (int) Math.ceil((double) string.length() / subsize);
+      String result[] = new String[numElements];
+      for(int i = 0; i * subsize < string.length(); i++)
+      {
+         if(i * subsize + subsize > string.length())
+         {
+            result[i] = string.substring(i * subsize);
+         }
+         else
+         {
+            result[i] = string.substring(i * subsize, i * subsize + subsize);
+         }
+      }
+      return result;
    }
 
    public static String addLeadingZeros(BigInteger num, int size)

@@ -23,8 +23,6 @@ public class PacketReader
       while(readIn.available() > 0)
       {
          tag = (byte) readIn.read(); 
-         //xor ensures that only tag # is saved and not the 2 bits at the start
-         tag = (byte) (OpenPGP.NEW_TAG_MASK ^ tag); 
          firstLengthOctet = readIn.read();
          if(firstLengthOctet <= OpenPGP.MAX_ONE_OCTET)
          {

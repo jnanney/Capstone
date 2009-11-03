@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
+import java.util.List;
+import java.io.IOException;
 public class RSAKey
 {
    private BigInteger prime1;
@@ -79,6 +80,14 @@ public class RSAKey
       publicOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
       publicOut.write(nArray);
       publicOut.write(eArray);
+   }
+
+   public void readFromFile(File file) throws MalformedPacketException, 
+      IOException
+   {
+      PacketReader reader = new PacketReader(file);
+      List<OpenPGPPacket> packets = reader.readPackets();
+
    }
 
 }
