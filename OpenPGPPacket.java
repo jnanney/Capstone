@@ -16,9 +16,9 @@ public class OpenPGPPacket
          case OpenPGP.PK_SESSION_KEY_TAG:
             packetInfo = new EncryptedSessionKeyPacket(data);
             break;
-         /*case OpenPGP.SYMMETRIC_DATA_TAG(data):
+         case OpenPGP.SYMMETRIC_DATA_TAG:
             packetInfo = new SymmetricDataPacket(data);
-            break;*/
+            break;
          default:
             System.err.println("Tag " + tag + " is not a supported tag");
       }

@@ -15,7 +15,7 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
       {
          keyID[j] = data[i];
       }
-      if(data[i++] != RSA_CONSTANT)
+      if(data[i++] != OpenPGP.RSA_CONSTANT)
       {
          System.err.println("RSA is the only public key algorithm that is supported");
       }
