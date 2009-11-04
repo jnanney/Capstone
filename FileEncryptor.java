@@ -7,7 +7,7 @@ public class FileEncryptor
    private File input;
    private File output;
    private ArrayList<Byte> literalData;
-   private RSAKey publicKey;
+   private RSAPublicKey publicKey;
 
    /*public FileEncryptor(File input, File output, RSAKey key)
    {

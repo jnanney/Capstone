@@ -4,15 +4,15 @@ import java.math.BigInteger;
 public class RSAEncryption 
 {
    private String text;
-   private RSAKey key;
+   private RSAKeyInterface key;
 
    public RSAEncryption(String message, int keylength)
    {
       text = message;
-      key = new RSAKey(keylength);
+      key = new RSAPrivateKey(keylength);
    }
 
-   public RSAEncryption(String message, RSAKey key)
+   public RSAEncryption(String message, RSAKeyInterface key)
    {
       this.key = key;
    }
@@ -33,24 +33,25 @@ public class RSAEncryption
    
    public String decrypt()
    {
-	   BigInteger n = key.getPrimeProduct();
+      if(!(key instanceof RSAPrivateKey))
+      {
+         System.err.println("Messages may only be decrypted with private keys");
+         System.exit(1);
+      }
+      RSAPrivateKey privateKey = (RSAPrivateKey) key;
+	   BigInteger n = privateKey.getPrimeProduct();
 	   String result = "";
-	   int length = key.getPrimeProduct().toString().length();
+	   int length = privateKey.getPrimeProduct().toString().length();
 	   String splitText[] = Common.split(text, length);
 	   for(String current : splitText)
 	   {
 		   BigInteger temp = new BigInteger(current);
-		   temp = temp.modPow(key.getDecryptionExponent(), n);
+		   temp = temp.modPow(privateKey.getDecryptionExponent(), n);
 		   result += temp.toString();
 	   }
 	   result = Common.addLeadingZeros(new BigInteger(result), Common.CHAR_SIZE);
 	   result = Common.makeCharString(result);
 	   return result;
-   }
-
-   public RSAKey getKey()
-   {
-      return key;
    }
 
    public void switchText(String newText)

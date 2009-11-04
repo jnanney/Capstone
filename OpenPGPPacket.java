@@ -19,6 +19,10 @@ public class OpenPGPPacket
          case OpenPGP.SYMMETRIC_DATA_TAG:
             packetInfo = new SymmetricDataPacket(data);
             break;
+         case OpenPGP.PUBLIC_KEY_PACKET_TAG:
+            packetInfo = new RSAPublicKey(data);
+         case OpenPGP.PRIVATE_KEY_PACKET_TAG:
+            packetInfo = new RSAPrivateKey(data);
          default:
             System.err.println("Tag " + tag + " is not a supported tag");
       }

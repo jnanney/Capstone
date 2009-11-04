@@ -13,4 +13,6 @@ public class OpenPGP
    public static final long MAX_ONE_OCTET = 191;
    public static final long MAX_TWO_OCTETS = 8383;
    public static final long MAX_FIVE_OCTETS = 0xFFFFFFFF;
+   public static final byte PUBLIC_KEY_VERSION = 4;
+   public static final byte TIME_BYTES = 4;
 }

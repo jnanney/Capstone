@@ -73,8 +73,46 @@ public class GUI
    private JPanel createDecryptionPanel(final Container pane, 
       final List<File> fileList)
    {
-      JPanel second = new JPanel();
-      return second;
+      JButton addFileButton = new JButton("Add File");  
+      JButton decryptButton = new JButton("Decrypt Files");
+      final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
+      JScrollPane scrollingFileText = new JScrollPane(fileText);
+      JPanel panel = new JPanel(); 
+      panel.setLayout(new BorderLayout());
+
+      panel.add(scrollingFileText, BorderLayout.PAGE_START);
+      panel.add(addFileButton, BorderLayout.LINE_START);
+      panel.add(decryptButton, BorderLayout.LINE_END);
+      addFileButton.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt)
+         {
+            JFileChooser chooser = new JFileChooser();
+            int returnValue = chooser.showOpenDialog(pane);
+            if (returnValue == JFileChooser.APPROVE_OPTION)
+            {
+               File selectedFile = chooser.getSelectedFile();
+               fileList.add(selectedFile);
+               int num = fileList.size();
+               fileText.append(num + ") " + selectedFile.getName() + "\n");
+
+            }
+         }
+      });
+
+      decryptButton.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt)
+         {
+            for(File current : fileList)
+            {
+               JOptionPane newFilenamePrompt = new JOptionPane();
+               String newFilename = newFilenamePrompt.showInputDialog(pane, 
+                  "Type a new filename for " + current.getName());
+            }
+         }
+      });
+      return panel;
    }
 
    private JPanel createEncryptionPanel(final Container pane, final List<File> 
@@ -153,7 +191,7 @@ public class GUI
             if (returnValue == JFileChooser.APPROVE_OPTION) 
             {
                String length = keyLength.getText();
-               RSAKey key = new RSAKey(Integer.valueOf(length));
+               RSAPrivateKey key = new RSAPrivateKey(Integer.valueOf(length));
                File keyFile = chooser.getSelectedFile();
                try
                {

@@ -1,4 +1,4 @@
-/*import java.util.Random;
+import java.util.Random;
 import java.math.BigInteger;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.io.IOException;
-public class RSAKey implements PacketSpecificInterface
+public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
 {
    private BigInteger prime1;
    private BigInteger prime2;
@@ -16,7 +16,7 @@ public class RSAKey implements PacketSpecificInterface
    private BigInteger decryptionExponent;
    private byte[] time;
 
-   public RSAKey(int bitLength)
+   public RSAPrivateKey(int bitLength)
    {
       //compensate for not being unsigned
       int numBits = bitLength + 1;
@@ -34,10 +34,10 @@ public class RSAKey implements PacketSpecificInterface
       decryptionExponent = encryptionExponent.modInverse(totient);
    }
 
-   public RSAKey(byte[] data)
+   public RSAPrivateKey(byte[] data)
    {
       int i = 0; 
-      if(data[i++] != PUBLIC_KEY_VERSION)
+      if(data[i++] != OpenPGP.PUBLIC_KEY_VERSION)
       {
          System.err.println("Given public key version is not supported");
       }
@@ -55,7 +55,7 @@ public class RSAKey implements PacketSpecificInterface
       {
          mpi[j] = data[i];
       }
-      //n = 
+   //   n = 
    }
 
    public BigInteger[] getPrimes()
@@ -81,7 +81,7 @@ public class RSAKey implements PacketSpecificInterface
       return n;
    }
 
-   public void writeToFile(File publicFile/*, File privateFile throws Exception
+   public void writeToFile(File publicFile/*, File privateFile*/) throws Exception
    {
       byte publicTag = OpenPGP.PUBLIC_KEY_PACKET_TAG;
       byte version = 4;
@@ -107,4 +107,4 @@ public class RSAKey implements PacketSpecificInterface
       publicOut.write(nArray);
       publicOut.write(eArray);
    }
-}*/
+}
