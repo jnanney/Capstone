@@ -53,14 +53,9 @@ public class PacketReader
          }
 
          long bytesRead = 0;
-         ArrayList<Byte> data = new ArrayList<Byte>();
-         while(bytesRead < length)
-         {
-            data.add((byte) readIn.read());
-            bytesRead++;
-         }
+         byte[] data = new byte[(int) length];
+         readIn.read(data);
          packets.add(new OpenPGPPacket(tag, data));
-
       }
       readIn.close();
       return packets;

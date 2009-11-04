@@ -1,30 +1,48 @@
 import java.util.List;
+import java.io.*;
 public class LiteralDataPacket implements PacketSpecificInterface
 {
    private byte format;
    private String fileName;
-   private List<Byte> literalData;
-   private List<Byte> date;
+   private byte[] literalData;
+   private byte[] date;
+   private int DATE_SIZE = 4;
 
-   public LiteralDataPacket(List<Byte> rawData)
+   public LiteralDataPacket(byte[] rawData)
    {
-      format = rawData.get(0);
-      int length = rawData.get(1);
-      List<Byte> fileNameBytes = rawData.subList(2, 2 + length);
+      int i = 0;
+      format = rawData[i++];
+      int length = rawData[i++];
       fileName = "";
-      for (Byte current : fileNameBytes)
+      for (; i < 2 + length; i++)
       {
-         fileName += String.valueOf((char) current.byteValue());
+         fileName += (char) rawData[i];
       }
-      date = rawData.subList(2 + length, 2 + length + 4);
-      literalData = rawData.subList(2 + length + 4, rawData.size());
+      date = new byte[DATE_SIZE];
+      for(int j = 0; j < date.length; j++, i++)
+      {
+         date[j] = rawData[i];
+      }
+      literalData = new byte[rawData.length - i];
+      for(int j = 0; i < rawData.length; i++, j++)
+      {
+         literalData[j] = rawData[i];
+      }
+      try{
+      FileOutputStream xxx = new FileOutputStream("everydaynormal");
+      xxx.write(literalData);
+      }
+      catch(Exception e)
+      {
+         System.out.println(e.getMessage());
+      }
    }
 
-   public List<Byte> getDate()
+   public byte[] getDate()
    {
       return date;
    }
-   public List<Byte> getLiteralData()
+   public byte[] getLiteralData()
    {
       return literalData;
    }

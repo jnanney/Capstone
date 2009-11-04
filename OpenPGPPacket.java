@@ -5,7 +5,7 @@ public class OpenPGPPacket
    private byte tag;
    private PacketSpecificInterface packetInfo;
    
-   public OpenPGPPacket(byte tag, List<Byte> data)
+   public OpenPGPPacket(byte tag, byte[] data) 
    {
       this.tag = tag;
       switch(tag)
@@ -13,12 +13,12 @@ public class OpenPGPPacket
          case OpenPGP.LITERAL_DATA_PACKET_TAG:
             packetInfo = new LiteralDataPacket(data);
             break;
-         case OpenPGP.PK_SESSION_KEY_TAG:
+         /*case OpenPGP.PK_SESSION_KEY_TAG:
             packetInfo = new EncryptedSessionKeyPacket(data);
             break;
          case OpenPGP.SYMMETRIC_DATA_TAG(data):
             packetInfo = new SymmetricDataPacket(data);
-            break;
+            break;*/
          default:
             System.err.println("Tag " + tag + " is not a supported tag");
       }
