@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
 {
    private BigInteger prime1;
@@ -81,7 +82,8 @@ public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
       return n;
    }
 
-   public void writeToFile(File publicFile/*, File privateFile*/) throws Exception
+   public void writeToFile(File publicFile, File privateFile) throws 
+      InvalidSelectionException, IOException, FileNotFoundException
    {
       byte publicTag = OpenPGP.PUBLIC_KEY_PACKET_TAG;
       byte version = 4;
@@ -95,8 +97,9 @@ public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
          byteTime[i] = (byte) Common.getBits(time, (i * Byte.SIZE) + 1, ((i+1) * Byte.SIZE));
       }
       FileOutputStream publicOut = new FileOutputStream(publicFile);
-      byte nArray[] = n.toByteArray();
-      byte eArray[] = encryptionExponent.toByteArray();
+      FileOutputStream privateOut = new FileOutputStream(privateFile);
+      byte nArray[] = Common.makeMultiprecisionInteger(n);
+      byte eArray[] = Common.makeMultiprecisionInteger(encryptionExponent);
       long length = 1 + 4 + nArray.length + eArray.length;
       byte[] lengthBytes = Common.makeNewFormatLength(length);
       publicOut.write(new byte[] {publicTag});
@@ -106,5 +109,34 @@ public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
       publicOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
       publicOut.write(nArray);
       publicOut.write(eArray);
+      publicOut.close();
+
+      byte[] dArray = Common.makeMultiprecisionInteger(decryptionExponent);
+      byte[] pArray = Common.makeMultiprecisionInteger(prime1);
+      byte[] qArray = Common.makeMultiprecisionInteger(prime2);
+      byte[] checksum = new byte[]{0, 0}; //TODO: make this an actual checksum
+      length += 1 + checksum.length + dArray.length + pArray.length + 
+         qArray.length;
+         //+ uArray.length; XXX: can't figure out why this is necessary
+      byte string2Key = 0;
+      lengthBytes = Common.makeNewFormatLength(length);
+      privateOut.write(new byte[] {OpenPGP.PRIVATE_KEY_PACKET_TAG});
+      privateOut.write(lengthBytes);
+      privateOut.write(new byte[] {version});
+      privateOut.write(byteTime);
+      privateOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
+      privateOut.write(nArray);
+      privateOut.write(eArray);
+      privateOut.write(string2Key);
+      privateOut.write(dArray);
+      privateOut.write(pArray);
+      privateOut.write(qArray);
+      privateOut.write(checksum);
+      privateOut.close();
+   }
+
+   public String toString()
+   {
+      return "Primes are " + prime1 + " and " + prime2;
    }
 }

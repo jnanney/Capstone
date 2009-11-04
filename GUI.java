@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -33,7 +34,8 @@ public class GUI
    
    private static final int WINDOW_HEIGHT = 250;
    private static final int WINDOW_WIDTH = 500;
-
+   private RSAKeyInterface key;
+   
    /*
     * Creates and displays a new GUI object
     **/
@@ -178,7 +180,32 @@ public class GUI
          public void actionPerformed(ActionEvent evt)
          {
             JFileChooser chooser = new JFileChooser();
-            chooser.showOpenDialog(pane);
+            int returnValue = chooser.showOpenDialog(pane);
+            if(returnValue == JFileChooser.APPROVE_OPTION)
+            {
+               PacketReader reader = new PacketReader(
+                  chooser.getSelectedFile());
+               List<OpenPGPPacket> packets = null;
+               try
+               {
+                  packets = reader.readPackets();
+               }
+               catch(MalformedPacketException mpe)
+               {
+                  System.out.println(mpe.getMessage());
+                  System.exit(1);
+               }
+               catch(IOException ioe)
+               {
+                  System.out.println(ioe.getMessage());
+                  System.exit(1);
+               }
+               if(!(packets.get(0).getPacket() instanceof RSAKeyInterface))
+               {
+                  key = (RSAKeyInterface) packets.get(0).getPacket();
+                  System.out.println("key is " + key);
+               }
+            }
          }
       });
 
@@ -191,11 +218,12 @@ public class GUI
             if (returnValue == JFileChooser.APPROVE_OPTION) 
             {
                String length = keyLength.getText();
-               RSAPrivateKey key = new RSAPrivateKey(Integer.valueOf(length));
-               File keyFile = chooser.getSelectedFile();
+               key = new RSAPrivateKey(Integer.valueOf(length));
+               File privateFile = chooser.getSelectedFile();
+               File publicFile = new File(privateFile.toString() + ".pub");
                try
                {
-                  key.writeToFile(keyFile);
+                  ((RSAPrivateKey) key).writeToFile(privateFile, publicFile);
                }
                catch(Exception e)
                {

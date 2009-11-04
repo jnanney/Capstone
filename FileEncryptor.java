@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 public class FileEncryptor
 {
    private File input;
@@ -15,7 +17,7 @@ public class FileEncryptor
       this.output = output;
       this.publicKey=key;
    }*/
-   public FileEncryptor(File input) throws Exception
+   public FileEncryptor(File input) throws FileNotFoundException, IOException
    {
       this.input = input;
       makeLiteralPacket();
@@ -25,7 +27,7 @@ public class FileEncryptor
    {
    }*/
 
-   private void makeLiteralPacket() throws Exception
+   private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
       literalData = new ArrayList<Byte>();
       byte binary = 0x62;
