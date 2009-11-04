@@ -1,5 +1,4 @@
 import java.util.List;
-import java.io.*;
 public class LiteralDataPacket implements PacketSpecificInterface
 {
    private byte format;
@@ -27,14 +26,6 @@ public class LiteralDataPacket implements PacketSpecificInterface
       for(int j = 0; i < rawData.length; i++, j++)
       {
          literalData[j] = rawData[i];
-      }
-      try{
-      FileOutputStream xxx = new FileOutputStream("everydaynormal");
-      xxx.write(literalData);
-      }
-      catch(Exception e)
-      {
-         System.out.println(e.getMessage());
       }
    }
 
