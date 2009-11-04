@@ -14,6 +14,7 @@ public class RSAPublicKey implements PacketSpecificInterface, RSAKeyInterface
 
    public RSAPublicKey(byte[] data)
    {
+      time = new byte[4];
       int i = 0; 
       if(data[i++] != OpenPGP.PUBLIC_KEY_VERSION)
       {

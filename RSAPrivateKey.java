@@ -19,6 +19,7 @@ public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
 
    public RSAPrivateKey(int bitLength)
    {
+      time = new byte[4];
       //compensate for not being unsigned
       int numBits = bitLength + 1;
       Random random = new Random();
