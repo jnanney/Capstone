@@ -13,12 +13,12 @@ public class LiteralDataPacket implements PacketSpecificInterface
       format = rawData[i++];
       int length = rawData[i++];
       fileName = "";
-      for (; i < 2 + length; i++)
+      for (; i < 2 + length && i < rawData.length; i++)
       {
          fileName += (char) rawData[i];
       }
       date = new byte[DATE_SIZE];
-      for(int j = 0; j < date.length; j++, i++)
+      for(int j = 0; j < date.length && i < rawData.length; j++, i++)
       {
          date[j] = rawData[i];
       }

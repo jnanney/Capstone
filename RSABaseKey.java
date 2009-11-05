@@ -6,13 +6,18 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.io.IOException;
-public class RSAPublicKey implements PacketSpecificInterface, RSAKeyInterface
+
+public class RSABaseKey implements PacketSpecificInterface
 {
    private BigInteger n;
    private BigInteger encryptionExponent;
    private byte[] time;
+   
+   public RSABaseKey()
+   {
+   }
 
-   public RSAPublicKey(byte[] data)
+   public RSABaseKey(byte[] data)
    {
       time = new byte[4];
       int i = 0; 
@@ -29,7 +34,7 @@ public class RSAPublicKey implements PacketSpecificInterface, RSAKeyInterface
          System.err.println("Only RSA is currently supported");
       }
       int mpiLength = (data[i++] << 8) | data[i++];
-      byte[] mpi = new byte[mpiLength];
+      byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
       {
          mpi[j] = data[i];
@@ -37,15 +42,30 @@ public class RSAPublicKey implements PacketSpecificInterface, RSAKeyInterface
       n = new BigInteger(mpi);
 
       mpiLength = (data[i++] << 8) | data[i++];
-      mpi = new byte[mpiLength];
+      mpiLength = mpiLength & 0xFFFF;
+      mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
       {
          mpi[j] = data[i];
       }
       encryptionExponent = new BigInteger(mpi);
+      System.out.println("In parent " + encryptionExponent);
    }
 
+   public void setEncryptionExponent(BigInteger encryptionExponent)
+   {
+      this.encryptionExponent = encryptionExponent;
+   }
 
+   public void setTime(byte[] time)
+   {
+      this.time = time;
+   }
+
+   public void setN(BigInteger n)
+   {
+      this.n = n;
+   }
    public BigInteger getEncryptionExponent()
    {
       return encryptionExponent;

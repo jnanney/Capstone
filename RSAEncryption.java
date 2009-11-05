@@ -4,7 +4,7 @@ import java.math.BigInteger;
 public class RSAEncryption 
 {
    private String text;
-   private RSAKeyInterface key;
+   private RSABaseKey key;
 
    public RSAEncryption(String message, int keylength)
    {
@@ -12,7 +12,7 @@ public class RSAEncryption
       key = new RSAPrivateKey(keylength);
    }
 
-   public RSAEncryption(String message, RSAKeyInterface key)
+   public RSAEncryption(String message, RSABaseKey key)
    {
       this.key = key;
    }

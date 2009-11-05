@@ -7,57 +7,43 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
+
+public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
 {
    private BigInteger prime1;
    private BigInteger prime2;
    private BigInteger totient;
-   private BigInteger n;
-   private BigInteger encryptionExponent;
    private BigInteger decryptionExponent;
-   private byte[] time;
 
    public RSAPrivateKey(int bitLength)
    {
-      time = new byte[4];
+      //TODO: set the time
+      byte[] keyTime = new byte[4];
       //compensate for not being unsigned
       int numBits = bitLength + 1;
       Random random = new Random();
       int primeCertainty = 100;
       prime1 = new BigInteger(numBits, primeCertainty, random);
       prime2 = new BigInteger(numBits, primeCertainty, random);
-      n = prime1.multiply(prime2);
+      BigInteger primeProduct = prime1.multiply(prime2);
       totient = (prime1.subtract(BigInteger.ONE)).multiply(prime2.subtract(BigInteger.ONE));
+      BigInteger e;
       do
       {
-         encryptionExponent = new BigInteger(32, primeCertainty, random);
+         e = new BigInteger(32, primeCertainty, random);
          
-      } while (!(encryptionExponent.gcd(totient)).equals(BigInteger.ONE));
-      decryptionExponent = encryptionExponent.modInverse(totient);
+      } while (!(e.gcd(totient)).equals(BigInteger.ONE));
+      super.setEncryptionExponent(e);
+      super.setN(primeProduct);
+      super.setTime(keyTime);
+
+      decryptionExponent = e.modInverse(totient);
+      System.out.println("Encryption exponent in private " + e);
    }
 
    public RSAPrivateKey(byte[] data)
    {
-      int i = 0; 
-      if(data[i++] != OpenPGP.PUBLIC_KEY_VERSION)
-      {
-         System.err.println("Given public key version is not supported");
-      }
-      for(int j = 0; j < OpenPGP.TIME_BYTES; j++, i++)
-      {
-         time[j] = data[i];
-      }
-      if(data[i++] != OpenPGP.RSA_CONSTANT)
-      {
-         System.err.println("Only RSA is currently supported");
-      }
-      int mpiLength = (data[i++] << 8) | data[i++];
-      byte[] mpi = new byte[mpiLength];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
-   //   n = 
+      super(data);
    }
 
    public BigInteger[] getPrimes()
@@ -68,19 +54,9 @@ public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
       return primes;
    }
 
-   public BigInteger getEncryptionExponent()
-   {
-      return encryptionExponent;
-   }
-
    public BigInteger getDecryptionExponent()
    {
       return decryptionExponent;
-   }
-
-   public BigInteger getPrimeProduct()
-   {
-      return n;
    }
 
    public void writeToFile(File publicFile, File privateFile) throws 
@@ -99,8 +75,10 @@ public class RSAPrivateKey implements PacketSpecificInterface, RSAKeyInterface
       }
       FileOutputStream publicOut = new FileOutputStream(publicFile);
       FileOutputStream privateOut = new FileOutputStream(privateFile);
-      byte nArray[] = Common.makeMultiprecisionInteger(n);
-      byte eArray[] = Common.makeMultiprecisionInteger(encryptionExponent);
+      byte nArray[] = Common.makeMultiprecisionInteger(
+         super.getPrimeProduct());
+      byte eArray[] = Common.makeMultiprecisionInteger(
+         super.getEncryptionExponent());
       long length = 1 + 4 + nArray.length + eArray.length;
       byte[] lengthBytes = Common.makeNewFormatLength(length);
       publicOut.write(new byte[] {publicTag});

@@ -1,4 +1,3 @@
-import java.io.*; //TODO: remove
 import java.util.List;
 public class OpenPGPPacket
 {
@@ -20,9 +19,11 @@ public class OpenPGPPacket
             packetInfo = new SymmetricDataPacket(data);
             break;
          case OpenPGP.PUBLIC_KEY_PACKET_TAG:
-            packetInfo = new RSAPublicKey(data);
+            packetInfo = new RSABaseKey(data);
+            break;
          case OpenPGP.PRIVATE_KEY_PACKET_TAG:
             packetInfo = new RSAPrivateKey(data);
+            break;
          default:
             System.err.println("Tag " + tag + " is not a supported tag");
       }

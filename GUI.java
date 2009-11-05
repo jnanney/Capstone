@@ -34,7 +34,7 @@ public class GUI
    
    private static final int WINDOW_HEIGHT = 250;
    private static final int WINDOW_WIDTH = 500;
-   private RSAKeyInterface key;
+   private RSABaseKey key;
    
    /*
     * Creates and displays a new GUI object
@@ -165,7 +165,7 @@ public class GUI
 
    private JPanel createRSAOptionPanel(final Container pane)
    {
-      JPanel panel = new JPanel();
+      final JPanel panel = new JPanel();
       panel.setLayout(new BorderLayout());
       JButton newKey = new JButton("Generate a new key");
       JButton existingKey = new JButton("Use an existing key");
@@ -189,6 +189,7 @@ public class GUI
                try
                {
                   packets = reader.readPackets();
+                  key = (RSABaseKey) (packets.get(0).getPacket());
                }
                catch(MalformedPacketException mpe)
                {
@@ -200,10 +201,11 @@ public class GUI
                   System.out.println(ioe.getMessage());
                   System.exit(1);
                }
-               if(!(packets.get(0).getPacket() instanceof RSAKeyInterface))
+               catch(ClassCastException cce)
                {
-                  key = (RSAKeyInterface) packets.get(0).getPacket();
-                  System.out.println("key is " + key);
+                  JOptionPane error = new JOptionPane("Invalid valid key file", 
+                     JOptionPane.ERROR_MESSAGE);
+                  error.showMessageDialog(panel, "Invalid key file");
                }
             }
          }
@@ -223,7 +225,7 @@ public class GUI
                File publicFile = new File(privateFile.toString() + ".pub");
                try
                {
-                  ((RSAPrivateKey) key).writeToFile(privateFile, publicFile);
+                  ((RSAPrivateKey) key).writeToFile(publicFile, privateFile);
                }
                catch(Exception e)
                {
