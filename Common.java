@@ -51,9 +51,9 @@ public class Common
       return result;
    }
 
-   public static long getNewFormatLength(int[] bytes)
+   public static int getNewFormatLength(int[] bytes)
    {
-      long result = 0;
+      int result = 0;
       if(bytes.length == 1)
       {
          result = bytes[0];

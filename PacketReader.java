@@ -19,7 +19,7 @@ public class PacketReader
       FileInputStream readIn = new FileInputStream(input);
       byte tag = 0;
       int firstLengthOctet = 0;
-      long length = 0;
+      int length = 0;
       while(readIn.available() > 0)
       {
          tag = (byte) readIn.read(); 
@@ -51,11 +51,12 @@ public class PacketReader
             throw new MalformedPacketException("First octet is " + 
                firstLengthOctet);
          }
-         System.out.println("Length is " + length);
-         long bytesRead = 0;
-         byte[] data = new byte[(int) length];
-         readIn.read(data);
+         byte[] data = new byte[length];
+         int amount = readIn.read(data);
          packets.add(new OpenPGPPacket(tag, data));
+         System.out.println("Tag is " + tag + " Data length is " + data.length);
+         System.out.println("and we read in " + amount);
+         System.out.println("Amount available is " + readIn.available());
       }
       readIn.close();
       return packets;

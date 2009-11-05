@@ -19,7 +19,6 @@ public class RSABaseKey implements PacketSpecificInterface
 
    public RSABaseKey(byte[] data)
    {
-      System.out.println(data.length);
       time = new byte[4];
       int i = 0; 
       if(data[i++] != OpenPGP.PUBLIC_KEY_VERSION)
