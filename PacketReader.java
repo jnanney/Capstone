@@ -54,9 +54,6 @@ public class PacketReader
          byte[] data = new byte[length];
          int amount = readIn.read(data);
          packets.add(new OpenPGPPacket(tag, data));
-         System.out.println("Tag is " + tag + " Data length is " + data.length);
-         System.out.println("and we read in " + amount);
-         System.out.println("Amount available is " + readIn.available());
       }
       readIn.close();
       return packets;

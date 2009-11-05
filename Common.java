@@ -13,7 +13,6 @@ public class Common
       byte[] temp = num.toByteArray();
       byte[] result = new byte[temp.length + 2];
       int numBits = temp.length * Byte.SIZE;
-      System.out.println("What we got in MPI was " + num.bitLength());
       result[0] = (byte) (numBits>> 8);
       result[1] = (byte) (numBits & 0xFF);
       for(int i = 2; i < result.length; i++)
