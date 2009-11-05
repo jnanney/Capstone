@@ -183,8 +183,8 @@ public class GUI
             int returnValue = chooser.showOpenDialog(pane);
             if(returnValue == JFileChooser.APPROVE_OPTION)
             {
-               PacketReader reader = new PacketReader(
-                  chooser.getSelectedFile());
+               File selectedFile = chooser.getSelectedFile();
+               PacketReader reader = new PacketReader(selectedFile);
                List<OpenPGPPacket> packets = null;
                try
                {

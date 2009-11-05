@@ -51,7 +51,7 @@ public class PacketReader
             throw new MalformedPacketException("First octet is " + 
                firstLengthOctet);
          }
-
+         System.out.println("Length is " + length);
          long bytesRead = 0;
          byte[] data = new byte[(int) length];
          readIn.read(data);

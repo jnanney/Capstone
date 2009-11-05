@@ -80,6 +80,7 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       byte eArray[] = Common.makeMultiprecisionInteger(
          super.getEncryptionExponent());
       long length = 1 + 4 + nArray.length + eArray.length;
+      System.out.println("The length we're trying to write to the file is " + length);
       byte[] lengthBytes = Common.makeNewFormatLength(length);
       publicOut.write(new byte[] {publicTag});
       publicOut.write(lengthBytes);

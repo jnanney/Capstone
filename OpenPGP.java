@@ -17,38 +17,4 @@ public class OpenPGP
    public static final byte PUBLIC_KEY_VERSION = 4;
    public static final byte TIME_BYTES = 4;
 
-   public static void readPublicRSA(byte[] data, BigInteger encryptionExponent, 
-      BigInteger n, byte[] time)
-   {
-      time = new byte[4];
-      int i = 0; 
-      if(data[i++] != OpenPGP.PUBLIC_KEY_VERSION)
-      {
-         System.err.println("Given public key version is not supported");
-      }
-      for(int j = 0; j < OpenPGP.TIME_BYTES; j++, i++)
-      {
-         time[j] = data[i];
-      }
-      if(data[i++] != OpenPGP.RSA_CONSTANT)
-      {
-         System.err.println("Only RSA is currently supported");
-      }
-      int mpiLength = (data[i++] << 8) | data[i++];
-      byte[] mpi = new byte[mpiLength / Byte.SIZE];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
-      n = new BigInteger(mpi);
-
-      mpiLength = (data[i++] << 8) | data[i++];
-      mpiLength = mpiLength & 0xFFFF;
-      mpi = new byte[mpiLength / Byte.SIZE];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
-      encryptionExponent = new BigInteger(mpi);
-   }
 }

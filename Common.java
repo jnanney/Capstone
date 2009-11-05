@@ -33,8 +33,10 @@ public class Common
       else if(length <= OpenPGP.MAX_TWO_OCTETS)
       {
          result = new byte[2];
-         result[0] = (byte) ((length >>> 8) + 192);
-         result[1] = (byte) (0xFF & length);
+         long first = (length >>> 8) + 191;
+         long second = (length & 0xFF) - 192;
+         result[0] = (byte) (first & 0xFF);
+         result[1] = (byte) (second & 0xFF);
       }
       else if(length <= OpenPGP.MAX_FIVE_OCTETS)
       {
@@ -55,14 +57,17 @@ public class Common
       if(bytes.length == 1)
       {
          result = bytes[0];
+         result = result & 0xFF;
       }
       else if(bytes.length == 2)
       {
          result = ((bytes[0] - 192) << 8) + bytes[1] + 192;
+         result = result & 0xFFFF;
       }
       else if(bytes.length == 5)
       {
          result = (bytes[1] << 24) | (bytes[2] << 16) | (bytes[3] << 8) | bytes[4];
+         result = 0xFFFFFFFF;
       }
       return result;
    }

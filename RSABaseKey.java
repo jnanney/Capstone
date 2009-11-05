@@ -19,6 +19,7 @@ public class RSABaseKey implements PacketSpecificInterface
 
    public RSABaseKey(byte[] data)
    {
+      System.out.println(data.length);
       time = new byte[4];
       int i = 0; 
       if(data[i++] != OpenPGP.PUBLIC_KEY_VERSION)
@@ -34,6 +35,7 @@ public class RSABaseKey implements PacketSpecificInterface
          System.err.println("Only RSA is currently supported");
       }
       int mpiLength = (data[i++] << 8) | data[i++];
+      mpiLength = mpiLength & 0xFFFF;
       byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
       {
@@ -49,7 +51,6 @@ public class RSABaseKey implements PacketSpecificInterface
          mpi[j] = data[i];
       }
       encryptionExponent = new BigInteger(mpi);
-      System.out.println("In parent " + encryptionExponent);
    }
 
    public void setEncryptionExponent(BigInteger encryptionExponent)
