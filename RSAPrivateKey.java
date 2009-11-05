@@ -26,6 +26,8 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       prime1 = new BigInteger(numBits, primeCertainty, random);
       prime2 = new BigInteger(numBits, primeCertainty, random);
       BigInteger primeProduct = prime1.multiply(prime2);
+      System.out.println("N is " + primeProduct);
+      System.out.println("Bitlength of n is " + primeProduct.bitLength());
       totient = (prime1.subtract(BigInteger.ONE)).multiply(prime2.subtract(BigInteger.ONE));
       BigInteger e;
       do
@@ -34,7 +36,7 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
          
       } while (!(e.gcd(totient)).equals(BigInteger.ONE));
       super.setEncryptionExponent(e);
-      super.setN(primeProduct);
+      super.setPrimeProduct(primeProduct);
       super.setTime(keyTime);
 
       decryptionExponent = e.modInverse(totient);
@@ -77,13 +79,17 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       FileOutputStream privateOut = new FileOutputStream(privateFile);
       byte nArray[] = Common.makeMultiprecisionInteger(
          super.getPrimeProduct());
+      System.out.println("mpi for n [" + nArray[0] + ", " + nArray[1]);
       byte eArray[] = Common.makeMultiprecisionInteger(
          super.getEncryptionExponent());
-      long length = 1 + 4 + nArray.length + eArray.length;
+      System.out.println("mpi for e [" + eArray[0] + ", " + eArray[1]);
+      long length = 1 + 4 + 1 + nArray.length + eArray.length;
       System.out.println("The length we're trying to write to the file is " + length);
       byte[] lengthBytes = Common.makeNewFormatLength(length);
+      System.out.println(java.util.Arrays.toString(lengthBytes));
       publicOut.write(new byte[] {publicTag});
       publicOut.write(lengthBytes);
+      //Start writing the key specific stuff 
       publicOut.write(new byte[] {version});
       publicOut.write(byteTime);
       publicOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
