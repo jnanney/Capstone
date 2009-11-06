@@ -1,3 +1,4 @@
+import java.io.FileOutputStream;
 public class EncryptedSessionKeyPacket implements PacketSpecificInterface
 {
    private static final byte VERSION = 3;
@@ -35,5 +36,15 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
    public byte[] getEncryptedKey()
    {
       return encryptedKey;
+   }
+
+   public void write(FileOutputStream output)
+   {
+   }
+
+   public int getBodyLength()
+   {
+      //TODO: replace this with something that works
+      return 0;
    }
 }

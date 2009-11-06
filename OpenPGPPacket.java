@@ -1,10 +1,17 @@
 import java.util.List;
 import java.io.FileOutputStream;
+import java.io.IOException;
 public class OpenPGPPacket
 {
    private byte tag;
    private PacketSpecificInterface packetInfo;
    
+   public OpenPGPPacket(byte tag, PacketSpecificInterface packetInfo)
+   {
+      this.tag = tag;
+      this.packetInfo = packetInfo;
+   }
+
    public OpenPGPPacket(byte tag, byte[] data) 
    {
       this.tag = tag;
@@ -46,9 +53,14 @@ public class OpenPGPPacket
       return "Tag : " + (tag ^ OpenPGP.NEW_TAG_MASK);
    }
 
-   public void write(FileOutputStream output)
+   public void write(FileOutputStream output) throws IOException
    {
-      //output.write(new byte[]{
+      int length = packetInfo.getBodyLength();
+      byte[] lengthArray = OpenPGP.makeNewFormatLength(length);
+      output.write(new byte[]{tag});
+      output.write(lengthArray);
+      packetInfo.write(output);
+      output.close();
    }
 }
 

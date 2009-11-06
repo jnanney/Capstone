@@ -14,6 +14,7 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
    private BigInteger prime2;
    private BigInteger totient;
    private BigInteger decryptionExponent;
+   private byte[] checksum;
 
    public RSAPrivateKey(int bitLength)
    {
@@ -37,6 +38,8 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       super.setPrimeProduct(primeProduct);
       super.setTime(keyTime);
       decryptionExponent = e.modInverse(totient);
+      System.out.println("Generated d is "+ decryptionExponent);
+      checksum = new byte[]{0, 0};
    }
 
    public RSAPrivateKey(byte[] data)
@@ -54,7 +57,10 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       mpi = OpenPGP.getMultiprecisionInteger(data, i);
       i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
       prime2 = new BigInteger(mpi);
-      i += 2; //TODO: this skips past the checksum. Do something with it
+      checksum = new byte[2];
+      checksum[0] = data[i++];
+      checksum[1] = data[i++];
+      System.out.println("Read in was " + decryptionExponent);
    }
    
    public BigInteger[] getPrimes()
@@ -68,62 +74,6 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
    public BigInteger getDecryptionExponent()
    {
       return decryptionExponent;
-   }
-
-   public void writeToFile(File publicFile, File privateFile) throws 
-      InvalidSelectionException, IOException, FileNotFoundException
-   {
-      byte publicTag = OpenPGP.PUBLIC_KEY_PACKET_TAG;
-      byte version = 4;
-      Calendar cal = new GregorianCalendar();
-      long time = cal.get(Calendar.SECOND);
-      //mask so it doesn't do sign extension when converting from int to long
-      time = time & 0xFFFFFFFF;
-      byte[] byteTime = new byte[4];
-      for(int i = 0; i < byteTime.length; i++)
-      {
-         byteTime[i] = (byte) Common.getBits(time, (i * Byte.SIZE) + 1, ((i+1) * Byte.SIZE));
-      }
-      FileOutputStream publicOut = new FileOutputStream(publicFile);
-      FileOutputStream privateOut = new FileOutputStream(privateFile);
-      byte nArray[] = OpenPGP.makeMultiprecisionInteger(
-         super.getPrimeProduct());
-      byte eArray[] = OpenPGP.makeMultiprecisionInteger(
-         super.getEncryptionExponent());
-      long length = 1 + 4 + 1 + nArray.length + eArray.length;
-      byte[] lengthBytes = OpenPGP.makeNewFormatLength(length);
-      publicOut.write(new byte[] {publicTag});
-      publicOut.write(lengthBytes);
-      //Start writing the key specific stuff 
-      publicOut.write(new byte[] {version});
-      publicOut.write(byteTime);
-      publicOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
-      publicOut.write(nArray);
-      publicOut.write(eArray);
-      publicOut.close();
-
-      byte[] dArray = OpenPGP.makeMultiprecisionInteger(decryptionExponent);
-      byte[] pArray = OpenPGP.makeMultiprecisionInteger(prime1);
-      byte[] qArray = OpenPGP.makeMultiprecisionInteger(prime2);
-      byte[] checksum = new byte[]{0, 0}; //TODO: make this an actual checksum
-      byte string2Key = 0;
-      length += 1 + checksum.length + dArray.length + pArray.length +
-         qArray.length;
-         //+ uArray.length; XXX: can't figure out why this is necessary
-      lengthBytes = OpenPGP.makeNewFormatLength(length);
-      privateOut.write(new byte[] {OpenPGP.PRIVATE_KEY_PACKET_TAG});
-      privateOut.write(lengthBytes);
-      privateOut.write(new byte[] {version});
-      privateOut.write(byteTime);
-      privateOut.write(new byte[] {OpenPGP.RSA_CONSTANT});
-      privateOut.write(nArray);
-      privateOut.write(eArray);
-      privateOut.write(string2Key);
-      privateOut.write(dArray);
-      privateOut.write(pArray);
-      privateOut.write(qArray);
-      privateOut.write(checksum);
-      privateOut.close();
    }
 
    public String toString()
@@ -145,4 +95,32 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
              (prime2.equals(primes[0]) || prime2.equals(primes[1])));
    }
 
+   public void write(FileOutputStream output) throws IOException
+   {
+      super.write(output);
+      byte[] dArray = OpenPGP.makeMultiprecisionInteger(decryptionExponent);
+      byte[] pArray = OpenPGP.makeMultiprecisionInteger(prime1);
+      byte[] qArray = OpenPGP.makeMultiprecisionInteger(prime2);
+      checksum = new byte[]{0, 0}; //TODO: make this an actual checksum
+      byte string2Key = 0;
+      output.write(string2Key);
+      output.write(dArray);
+      output.write(pArray);
+      output.write(qArray);
+      //XXX supposed to write out a value u, but I don't know what it's used for
+      output.write(checksum);
+   }
+
+   public int getBodyLength()
+   {
+      //1 Byte.SIZE for the string2key specifier.  Add 2 for each byte array
+      return super.getBodyLength() + decryptionExponent.toByteArray().length +
+             + prime1.toByteArray().length + prime2.toByteArray().length + 
+             Byte.SIZE + checksum.length + 2 + 2 + 2;
+   }
+
+   public RSABaseKey getPublicKey()
+   {
+      return (RSABaseKey) super.clone();
+   }
 }

@@ -1,3 +1,4 @@
+import java.io.FileOutputStream;
 import java.util.List;
 public class LiteralDataPacket implements PacketSpecificInterface
 {
@@ -49,10 +50,13 @@ public class LiteralDataPacket implements PacketSpecificInterface
       return fileName;
    }
 
-   public int getPacketLength()
+   public int getBodyLength()
    {
       //1 for format and one for fileName length
       return 1 + date.length + literalData.length + fileName.length() + 1;
    }
 
+   public void write(FileOutputStream output)
+   {
+   }
 }

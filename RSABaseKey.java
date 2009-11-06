@@ -17,6 +17,13 @@ public class RSABaseKey implements PacketSpecificInterface
    {
    }
 
+   public RSABaseKey(BigInteger n, BigInteger encryptionExponent)
+   {
+      this.n = n;
+      this.encryptionExponent = encryptionExponent;
+      time = new byte[]{0,0,0,0}; //TODO: set the time
+   }
+
    public RSABaseKey(byte[] data)
    {
       readData(data);
@@ -83,4 +90,37 @@ public class RSABaseKey implements PacketSpecificInterface
          n.equals(key.getPrimeProduct()));
    }
 
+   public void write(FileOutputStream output) throws IOException
+   {
+      byte version = 4;
+      Calendar cal = new GregorianCalendar();
+      int time = cal.get(Calendar.SECOND);
+      byte[] byteTime = new byte[4];
+      int mask = 0xFF000000;
+      for(int i = 0; i < byteTime.length; i++)
+      {
+         byteTime[i] = (byte) (time & (mask >>> 1));
+      }
+      byte nArray[] = OpenPGP.makeMultiprecisionInteger(n);
+      byte eArray[] = OpenPGP.makeMultiprecisionInteger(encryptionExponent);
+      output.write(new byte[] {version});
+      output.write(byteTime);
+      output.write(new byte[] {OpenPGP.RSA_CONSTANT});
+      output.write(nArray);
+      output.write(eArray);
+   }
+
+   public int getBodyLength()
+   {
+      //1 byte for a version number and 1 for constant identifying the 
+      //algorithm as RSA. Add two for each of the arrays since they will be 
+      //MPIs
+      return time.length + n.toByteArray().length + 
+             encryptionExponent.toByteArray().length + 1 + 1 + 2 + 2;
+   }
+
+   public Object clone()
+   {
+      return new RSABaseKey(n, encryptionExponent);
+   }
 }

@@ -19,6 +19,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -221,19 +223,37 @@ public class GUI
             {
                String length = keyLength.getText();
                key = new RSAPrivateKey(Integer.valueOf(length));
-               File privateFile = chooser.getSelectedFile();
-               File publicFile = new File(privateFile.toString() + ".pub");
                try
                {
-                  ((RSAPrivateKey) key).writeToFile(publicFile, privateFile);
+                  RSAPrivateKey privateKey = (RSAPrivateKey) key;
+                  RSABaseKey publicKey = privateKey.getPublicKey();
+                  OpenPGPPacket publicPacket = new OpenPGPPacket(
+                     OpenPGP.PUBLIC_KEY_PACKET_TAG, publicKey);
+                  OpenPGPPacket privatePacket = new OpenPGPPacket(
+                  OpenPGP.PRIVATE_KEY_PACKET_TAG, privateKey);
+                  File privateFile = chooser.getSelectedFile();
+                  File publicFile = new File(privateFile.toString() + ".pub");
+                  FileOutputStream publicOut = new FileOutputStream(publicFile);
+                  FileOutputStream privateOut = new FileOutputStream(privateFile);
+                  publicPacket.write(publicOut);
+                  privatePacket.write(privateOut);
                }
-               catch(Exception e)
+               catch(FileNotFoundException nfe)
+               {
+                  System.out.println(nfe.getMessage());
+               }
+               catch(IOException ioe)
+               {
+                  System.out.println(ioe.getMessage());
+               }
+/*               catch(Exception e)
                {
                   System.out.println(e.getMessage());
-               }
+               }*/
             }
          }
       });
       return panel;
    }
 }
+
