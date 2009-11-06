@@ -26,12 +26,12 @@ public class PacketReader
          firstLengthOctet = readIn.read();
          if(firstLengthOctet <= OpenPGP.MAX_ONE_OCTET)
          {
-            length = Common.getNewFormatLength(new int[] {firstLengthOctet});
+            length = OpenPGP.getNewFormatLength(new int[] {firstLengthOctet});
          }
          else if(firstLengthOctet > OpenPGP.MAX_ONE_OCTET && firstLengthOctet <= 223)
          {
             int secondLengthOctet = readIn.read();
-            length = Common.getNewFormatLength(new int[] {firstLengthOctet, 
+            length = OpenPGP.getNewFormatLength(new int[] {firstLengthOctet, 
                secondLengthOctet});
          }
          else if(firstLengthOctet == 255)
@@ -44,7 +44,7 @@ public class PacketReader
             {
                octets[i] = temp[i] & 0xFF;
             }
-            length = Common.getNewFormatLength(octets);
+            length = OpenPGP.getNewFormatLength(octets);
          }
          else
          {

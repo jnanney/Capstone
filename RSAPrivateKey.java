@@ -86,12 +86,12 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       }
       FileOutputStream publicOut = new FileOutputStream(publicFile);
       FileOutputStream privateOut = new FileOutputStream(privateFile);
-      byte nArray[] = Common.makeMultiprecisionInteger(
+      byte nArray[] = OpenPGP.makeMultiprecisionInteger(
          super.getPrimeProduct());
-      byte eArray[] = Common.makeMultiprecisionInteger(
+      byte eArray[] = OpenPGP.makeMultiprecisionInteger(
          super.getEncryptionExponent());
       long length = 1 + 4 + 1 + nArray.length + eArray.length;
-      byte[] lengthBytes = Common.makeNewFormatLength(length);
+      byte[] lengthBytes = OpenPGP.makeNewFormatLength(length);
       publicOut.write(new byte[] {publicTag});
       publicOut.write(lengthBytes);
       //Start writing the key specific stuff 
@@ -102,15 +102,15 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       publicOut.write(eArray);
       publicOut.close();
 
-      byte[] dArray = Common.makeMultiprecisionInteger(decryptionExponent);
-      byte[] pArray = Common.makeMultiprecisionInteger(prime1);
-      byte[] qArray = Common.makeMultiprecisionInteger(prime2);
+      byte[] dArray = OpenPGP.makeMultiprecisionInteger(decryptionExponent);
+      byte[] pArray = OpenPGP.makeMultiprecisionInteger(prime1);
+      byte[] qArray = OpenPGP.makeMultiprecisionInteger(prime2);
       byte[] checksum = new byte[]{0, 0}; //TODO: make this an actual checksum
       byte string2Key = 0;
       length += 1 + checksum.length + dArray.length + pArray.length +
          qArray.length;
          //+ uArray.length; XXX: can't figure out why this is necessary
-      lengthBytes = Common.makeNewFormatLength(length);
+      lengthBytes = OpenPGP.makeNewFormatLength(length);
       privateOut.write(new byte[] {OpenPGP.PRIVATE_KEY_PACKET_TAG});
       privateOut.write(lengthBytes);
       privateOut.write(new byte[] {version});

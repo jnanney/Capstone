@@ -33,10 +33,12 @@ public class LiteralDataPacket implements PacketSpecificInterface
    {
       return date;
    }
+
    public byte[] getLiteralData()
    {
       return literalData;
    }
+
    public byte getFormat()
    {
       return format;
@@ -46,4 +48,11 @@ public class LiteralDataPacket implements PacketSpecificInterface
    {
       return fileName;
    }
+
+   public int getPacketLength()
+   {
+      //1 for format and one for fileName length
+      return 1 + date.length + literalData.length + fileName.length() + 1;
+   }
+
 }

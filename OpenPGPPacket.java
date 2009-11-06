@@ -1,4 +1,5 @@
 import java.util.List;
+import java.io.FileOutputStream;
 public class OpenPGPPacket
 {
    private byte tag;
@@ -43,6 +44,11 @@ public class OpenPGPPacket
    {
       //XOR removes the 2 1-bits that are required to be at start of tag
       return "Tag : " + (tag ^ OpenPGP.NEW_TAG_MASK);
+   }
+
+   public void write(FileOutputStream output)
+   {
+      //output.write(new byte[]{
    }
 }
 

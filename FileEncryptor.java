@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 public class FileEncryptor
 {
    private File input;
@@ -11,21 +12,21 @@ public class FileEncryptor
    private ArrayList<Byte> literalData;
    private RSABaseKey publicKey;
 
-   /*public FileEncryptor(File input, File output, RSAKey key)
+   public FileEncryptor(File input, File output, RSAPrivateKey key)
    {
       this.input = input;
       this.output = output;
       this.publicKey=key;
-   }*/
+   }
    public FileEncryptor(File input) throws FileNotFoundException, IOException
    {
       this.input = input;
       makeLiteralPacket();
    }
 
-   /*public void encryptFile()
+   public void encryptFile()
    {
-   }*/
+   }
 
    private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
@@ -38,7 +39,7 @@ public class FileEncryptor
          literalData.add(Byte.valueOf((byte) inputStream.read()));
          length++;
       }
-      byte[] bodyLength = Common.makeNewFormatLength(length);
+      byte[] bodyLength = OpenPGP.makeNewFormatLength(length);
       literalData.add(new Byte((byte) 0));
       literalData.add(new Byte((byte) 0));
       literalData.add(new Byte((byte) 0));
@@ -50,15 +51,5 @@ public class FileEncryptor
          literalData.add(0, temp);
       }
       literalData.add(0, new Byte(OpenPGP.LITERAL_DATA_PACKET_TAG));
-
-      //TODO: remove
-      FileOutputStream out = new FileOutputStream("out");
-      byte[] temp = new byte[literalData.size()];
-      for(int i = 0; i < temp.length; i++)
-      {
-         temp[i] = literalData.get(i);
-      }
-      out.write(temp);
    }
-
 }
