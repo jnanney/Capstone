@@ -38,21 +38,12 @@ public class RSABaseKey implements PacketSpecificInterface
       {
          System.err.println("Only RSA is currently supported");
       }
-      int mpiLength = (data[i++] << 8) | data[i++];
-      mpiLength = mpiLength & 0xFFFF;
-      byte[] mpi = new byte[mpiLength / Byte.SIZE];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
+      byte[] mpi = OpenPGP.getMultiprecisionInteger(data, i);
+      i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
       n = new BigInteger(mpi);
-      mpiLength = (data[i++] << 8) | data[i++];
-      mpiLength = mpiLength & 0xFFFF;
-      mpi = new byte[mpiLength / Byte.SIZE];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
+
+      mpi = OpenPGP.getMultiprecisionInteger(data, i);
+      i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
       encryptionExponent = new BigInteger(mpi);
       return i;
    }

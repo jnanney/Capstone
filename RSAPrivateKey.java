@@ -43,31 +43,16 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
    {
       int i = super.readData(data);
       byte string2Key = data[i++]; //TODO: do something with this maybe
-      int mpiLength = (data[i++] << Byte.SIZE) | data[i++];
-      mpiLength = 0xFFFF & mpiLength;
-      byte[] mpi = new byte[mpiLength / Byte.SIZE];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
+      byte[] mpi = OpenPGP.getMultiprecisionInteger(data, i);
+      i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
       decryptionExponent = new BigInteger(mpi);
-
-      mpiLength = (data[i++] << Byte.SIZE) | data[i++];
-      mpiLength = 0xFFFF & mpiLength;
-      mpi = new byte[mpiLength / Byte.SIZE];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
+      
+      mpi = OpenPGP.getMultiprecisionInteger(data, i);
+      i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
       prime1 = new BigInteger(mpi);
 
-      mpiLength = (data[i++] << Byte.SIZE) | data[i++];
-      mpiLength = 0xFFFF & mpiLength;
-      mpi = new byte[mpiLength / Byte.SIZE];
-      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
-      {
-         mpi[j] = data[i];
-      }
+      mpi = OpenPGP.getMultiprecisionInteger(data, i);
+      i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
       prime2 = new BigInteger(mpi);
       i += 2; //TODO: this skips past the checksum. Do something with it
    }

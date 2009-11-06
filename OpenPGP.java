@@ -16,5 +16,18 @@ public class OpenPGP
    public static final long MAX_FIVE_OCTETS = 0xFFFFFFFF;
    public static final byte PUBLIC_KEY_VERSION = 4;
    public static final byte TIME_BYTES = 4;
+   public static final byte MPI_LENGTH_BYTES = 2; 
 
+   public static byte[] getMultiprecisionInteger(byte[] data, int start)
+   {
+      int i = start;
+      int mpiLength = (data[i++] << Byte.SIZE) | data[i++];
+      mpiLength = 0xFFFF & mpiLength;
+      byte[] mpi = new byte[mpiLength / Byte.SIZE];
+      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
+      {
+         mpi[j] = data[i];
+      }
+      return mpi;
+   }
 }
