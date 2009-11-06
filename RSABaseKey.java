@@ -19,6 +19,11 @@ public class RSABaseKey implements PacketSpecificInterface
 
    public RSABaseKey(byte[] data)
    {
+      readData(data);
+   }
+
+   public int readData(byte[] data)
+   {
       time = new byte[4];
       int i = 0; 
       if(data[i++] != OpenPGP.PUBLIC_KEY_VERSION)
@@ -35,7 +40,6 @@ public class RSABaseKey implements PacketSpecificInterface
       }
       int mpiLength = (data[i++] << 8) | data[i++];
       mpiLength = mpiLength & 0xFFFF;
-      System.out.println("mpi length for n " + mpiLength);
       byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
       {
@@ -52,6 +56,7 @@ public class RSABaseKey implements PacketSpecificInterface
       }
       encryptionExponent = new BigInteger(mpi);
       System.out.println("Encryption exponent " + encryptionExponent);
+      return i;
    }
 
    public void setEncryptionExponent(BigInteger encryptionExponent)
@@ -76,6 +81,17 @@ public class RSABaseKey implements PacketSpecificInterface
    public BigInteger getPrimeProduct()
    {
       return n;
+   }
+
+   public boolean equals(Object object)
+   {
+      if(!(object instanceof RSABaseKey))
+      {
+         return false;
+      }
+      RSABaseKey key = (RSABaseKey) object;
+      return (encryptionExponent.equals(key.getEncryptionExponent()) &&
+         n.equals(key.getPrimeProduct()));
    }
 
 }

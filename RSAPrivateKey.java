@@ -42,9 +42,38 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
 
    public RSAPrivateKey(byte[] data)
    {
-      super(data);
-   }
+      int i = super.readData(data);
+      byte string2Key = data[i++]; //TODO: do something with this maybe
+      int mpiLength = (data[i++] << Byte.SIZE) | data[i++];
+      mpiLength = 0xFFFF & mpiLength;
+      byte[] mpi = new byte[mpiLength / Byte.SIZE];
+      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
+      {
+         mpi[j] = data[i];
+      }
+      decryptionExponent = new BigInteger(mpi);
 
+      mpiLength = (data[i++] << Byte.SIZE) | data[i++];
+      mpiLength = 0xFFFF & mpiLength;
+      mpi = new byte[mpiLength / Byte.SIZE];
+      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
+      {
+         mpi[j] = data[i];
+      }
+      prime1 = new BigInteger(mpi);
+
+      mpiLength = (data[i++] << Byte.SIZE) | data[i++];
+      mpiLength = 0xFFFF & mpiLength;
+      mpi = new byte[mpiLength / Byte.SIZE];
+      for(int j = 0; j < mpi.length && i < data.length; i++, j++)
+      {
+         mpi[j] = data[i];
+      }
+      prime2 = new BigInteger(mpi);
+
+      i += 2; //TODO: this skips past the checksum. Do something with it
+   }
+   
    public BigInteger[] getPrimes()
    {
       BigInteger[] primes = new BigInteger[2];
@@ -94,10 +123,10 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       byte[] pArray = Common.makeMultiprecisionInteger(prime1);
       byte[] qArray = Common.makeMultiprecisionInteger(prime2);
       byte[] checksum = new byte[]{0, 0}; //TODO: make this an actual checksum
-      length += 1 + checksum.length + dArray.length + pArray.length + 
+      byte string2Key = 0;
+      length += 1 + checksum.length + dArray.length + pArray.length +
          qArray.length;
          //+ uArray.length; XXX: can't figure out why this is necessary
-      byte string2Key = 0;
       lengthBytes = Common.makeNewFormatLength(length);
       privateOut.write(new byte[] {OpenPGP.PRIVATE_KEY_PACKET_TAG});
       privateOut.write(lengthBytes);
@@ -118,4 +147,19 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
    {
       return "Primes are " + prime1 + " and " + prime2;
    }
+
+   public boolean equals(Object object)
+   {
+      if(!(object instanceof RSAPrivateKey))
+      {
+         return false;
+      }
+      RSAPrivateKey key = (RSAPrivateKey) object;
+      BigInteger[] primes = key.getPrimes();
+      return (super.equals(key) && 
+             decryptionExponent.equals(key.getDecryptionExponent()) &&
+             (prime1.equals(primes[0]) || prime1.equals(primes[1])) &&
+             (prime2.equals(primes[0]) || prime2.equals(primes[1])));
+   }
+
 }
