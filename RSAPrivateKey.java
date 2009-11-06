@@ -38,7 +38,6 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       super.setPrimeProduct(primeProduct);
       super.setTime(keyTime);
       decryptionExponent = e.modInverse(totient);
-      System.out.println("Generated d is "+ decryptionExponent);
       checksum = new byte[]{0, 0};
    }
 

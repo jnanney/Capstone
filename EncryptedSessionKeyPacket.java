@@ -1,10 +1,24 @@
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
 public class EncryptedSessionKeyPacket implements PacketSpecificInterface
 {
    private static final byte VERSION = 3;
-   private byte[] encryptedKey;
+   private BigInteger encryptedKey;
    private byte[] keyID;
    private static final int KEY_ID_SIZE = 8;
+   
+   public EncryptedSessionKeyPacket(RSAPrivateKey rsaKey, String sessionKey)
+   {
+      RSAEncryption rsa = new RSAEncryption(sessionKey, rsaKey);
+      encryptedKey = rsa.encrypt();
+      keyID = new byte[KEY_ID_SIZE]; //TODO: do something with KeyID
+      for(int i = 0; i < keyID.length; i++)
+      {
+         keyID[i] = 0;
+      }
+   }
+   
    public EncryptedSessionKeyPacket(byte[] data)
    {
       int i = 0;
@@ -21,11 +35,12 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
          System.err.println("RSA is the only public key algorithm that is supported");
       }
       int length = (data[i++] << 8) | data[i++];
-      encryptedKey = new byte[length / Byte.SIZE];
-      for(int j = 0; j < encryptedKey.length && i < data.length; i++, j++)
+      byte[] key = new byte[length / Byte.SIZE];
+      for(int j = 0; j < key.length && i < data.length; i++, j++)
       {
-         encryptedKey[j] = data[i];
+         key[j] = data[i];
       }
+      encryptedKey = new BigInteger(key);
    }
 
    public byte[] getKeyID()
@@ -33,18 +48,21 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
       return keyID;
    }
 
-   public byte[] getEncryptedKey()
+   public BigInteger getEncryptedKey()
    {
       return encryptedKey;
    }
 
-   public void write(FileOutputStream output)
+   public void write(FileOutputStream output) throws IOException
    {
+      output.write(new byte[]{VERSION});
+      output.write(keyID);
+      output.write(OpenPGP.makeMultiprecisionInteger(encryptedKey));
    }
 
    public int getBodyLength()
    {
-      //TODO: replace this with something that works
-      return 0;
+      //2 is for MPI
+      return Byte.SIZE + keyID.length + encryptedKey.toByteArray().length + 2;
    }
 }

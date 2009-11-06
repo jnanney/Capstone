@@ -1,13 +1,18 @@
-import java.math.BigInteger;
+/*import java.math.BigInteger;
 public class Test
 {
    public static void main(String[] args)
    {
-      byte[] num = new byte[]{0, 8, 64};
-      BigInteger temp = null;
-      byte[] newNum= OpenPGP.getMultiprecisionInteger(num, 0);
-      temp = new BigInteger(newNum);
-      System.out.println("number was " + temp);
+      TripleDESEncryption des = new TripleDESEncryption(1234);
+      DESKey[] keys = des.getKeys();
+      String text = "" + keys[0] + keys[1] + keys[2];
+      System.out.println("Text is " + text);
+      RSAEncryption rsa = new RSAEncryption(text, 1024);
+      String encrypt = rsa.encrypt();
+      System.out.println("Encrypted " + encrypt);
+      rsa.switchText(encrypt);
+      String decrypt = rsa.decrypt();
+      System.out.println("Decrypted " + decrypt);
    }
 
-}
+}*/

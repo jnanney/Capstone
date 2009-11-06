@@ -17,7 +17,7 @@ public class RSAEncryption
       this.key = key;
    }
    
-   public String encrypt()
+   public BigInteger encrypt()
    {
 	   BigInteger n = key.getPrimeProduct();
 	   String numString = Common.makeNumberString(text);
@@ -28,7 +28,7 @@ public class RSAEncryption
 		   BigInteger num = new BigInteger(current);
 		   cyphertext +=  num.modPow(key.getEncryptionExponent(), n);
 	   }
-	   return cyphertext;
+	   return new BigInteger(cyphertext);
    }
    
    public String decrypt()
