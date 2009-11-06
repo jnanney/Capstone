@@ -46,7 +46,6 @@ public class RSABaseKey implements PacketSpecificInterface
          mpi[j] = data[i];
       }
       n = new BigInteger(mpi);
-      System.out.println("When reading it in it is " + n);
       mpiLength = (data[i++] << 8) | data[i++];
       mpiLength = mpiLength & 0xFFFF;
       mpi = new byte[mpiLength / Byte.SIZE];
@@ -55,7 +54,6 @@ public class RSABaseKey implements PacketSpecificInterface
          mpi[j] = data[i];
       }
       encryptionExponent = new BigInteger(mpi);
-      System.out.println("Encryption exponent " + encryptionExponent);
       return i;
    }
 

@@ -36,7 +36,6 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       super.setEncryptionExponent(e);
       super.setPrimeProduct(primeProduct);
       super.setTime(keyTime);
-
       decryptionExponent = e.modInverse(totient);
    }
 
@@ -70,7 +69,6 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
          mpi[j] = data[i];
       }
       prime2 = new BigInteger(mpi);
-
       i += 2; //TODO: this skips past the checksum. Do something with it
    }
    
