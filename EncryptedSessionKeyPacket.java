@@ -18,6 +18,7 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
    public EncryptedSessionKeyPacket(byte[] data)
    {
       int i = 0;
+      keyID = new byte[KEY_ID_SIZE];
       if(data[i++] != VERSION)
       {
          System.err.println("Version " + data[0] + " is not supported");
