@@ -60,7 +60,6 @@ public class OpenPGPPacket
       output.write(new byte[]{tag});
       output.write(lengthArray);
       packetInfo.write(output);
-      output.close();
    }
 }
 

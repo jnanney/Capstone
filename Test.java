@@ -13,6 +13,7 @@ public class Test
       FileEncryptor encryptor = new FileEncryptor(new File("test.txt"), key);
       encryptor.encryptFile();
       encryptor.write(new File("output"));
+      //FileOutputStream out = new FileOutputStream(new File("output"));
+      //out.write(new byte[]{64,65,66,67});
    }
-
 }
