@@ -115,7 +115,7 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       //1 Byte.SIZE for the string2key specifier.  Add 2 for each byte array
       return super.getBodyLength() + decryptionExponent.toByteArray().length +
              + prime1.toByteArray().length + prime2.toByteArray().length + 
-             Byte.SIZE + checksum.length + 2 + 2 + 2;
+             1 + checksum.length + 2 + 2 + 2;
    }
 
    public RSABaseKey getPublicKey()

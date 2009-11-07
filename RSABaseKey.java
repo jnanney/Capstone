@@ -2,8 +2,6 @@ import java.util.Random;
 import java.math.BigInteger;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.io.IOException;
 
@@ -12,16 +10,18 @@ public class RSABaseKey implements PacketSpecificInterface
    private BigInteger n;
    private BigInteger encryptionExponent;
    private byte[] time;
+   private byte[] keyID;
    
    public RSABaseKey()
    {
+      time = Common.getByteTime();
    }
 
    public RSABaseKey(BigInteger n, BigInteger encryptionExponent)
    {
       this.n = n;
       this.encryptionExponent = encryptionExponent;
-      time = new byte[]{0,0,0,0}; //TODO: set the time
+      time = Common.getByteTime();
    }
 
    public RSABaseKey(byte[] data)
@@ -65,6 +65,11 @@ public class RSABaseKey implements PacketSpecificInterface
       this.time = time;
    }
 
+   public void setKeyID(byte[] keyID)
+   {
+      this.keyID = keyID;
+   }
+
    public void setPrimeProduct(BigInteger n)
    {
       this.n = n;
@@ -93,18 +98,10 @@ public class RSABaseKey implements PacketSpecificInterface
    public void write(FileOutputStream output) throws IOException
    {
       byte version = 4;
-      Calendar cal = new GregorianCalendar();
-      int time = cal.get(Calendar.SECOND);
-      byte[] byteTime = new byte[4];
-      int mask = 0xFF000000;
-      for(int i = 0; i < byteTime.length; i++)
-      {
-         byteTime[i] = (byte) (time & (mask >>> 1));
-      }
       byte nArray[] = OpenPGP.makeMultiprecisionInteger(n);
       byte eArray[] = OpenPGP.makeMultiprecisionInteger(encryptionExponent);
       output.write(new byte[] {version});
-      output.write(byteTime);
+      output.write(time);
       output.write(new byte[] {OpenPGP.RSA_CONSTANT});
       output.write(nArray);
       output.write(eArray);
@@ -117,6 +114,11 @@ public class RSABaseKey implements PacketSpecificInterface
       //MPIs
       return time.length + n.toByteArray().length + 
              encryptionExponent.toByteArray().length + 1 + 1 + 2 + 2;
+   }
+
+   public byte[] getKeyID()
+   {
+      return keyID;
    }
 
    public Object clone()

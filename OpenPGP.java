@@ -17,6 +17,22 @@ public class OpenPGP
    public static final byte PUBLIC_KEY_VERSION = 4;
    public static final byte TIME_BYTES = 4;
    public static final byte MPI_LENGTH_BYTES = 2; 
+   public static final byte TRIPLEDES_BLOCK_BYTES = 8;
+   
+   public static OpenPGPPacket encryptPacket(RSABaseKey rsaKey, byte[] data) 
+      throws InvalidSelectionException
+   {
+      long message = Common.makeBytesLong(data);
+      TripleDESEncryption des = new TripleDESEncryption(message);
+      DESKey[] desKeys = des.getKeys();
+      String keys = "" + desKeys[0] + desKeys[1] + desKeys[2];
+      long encrypted = des.encrypt();
+      byte[] encryptedBytes = Common.makeLongBytes(encrypted);
+      RSAEncryption rsa = new RSAEncryption(keys, rsaKey);
+      SymmetricDataPacket symData = new SymmetricDataPacket(encryptedBytes);
+      OpenPGPPacket packet = new OpenPGPPacket(SYMMETRIC_DATA_TAG, symData);
+      return packet;
+   }
 
    public static byte[] getMultiprecisionInteger(byte[] data, int start)
    {
@@ -36,7 +52,7 @@ public class OpenPGP
       byte[] temp = num.toByteArray();
       byte[] result = new byte[temp.length + 2];
       int numBits = temp.length * Byte.SIZE;
-      result[0] = (byte) (numBits>> 8);
+      result[0] = (byte) (numBits >> 8);
       result[1] = (byte) (numBits & 0xFF);
       for(int i = 2; i < result.length; i++)
       {
@@ -45,7 +61,21 @@ public class OpenPGP
       return result;
    }
 
+   public static byte[] makeMultiprecisionInteger(byte[] num)
+   {
+      byte[] result = new byte[num.length + OpenPGP.MPI_LENGTH_BYTES];
+      int numBits = result.length * Byte.SIZE;
+      result[0] = (byte) (numBits >> 8);
+      result[1] = (byte) (numBits & 0xFF);
+      for(int i = OpenPGP.MPI_LENGTH_BYTES; i < result.length; i++)
+      {
+         result[i] = num[i - OpenPGP.MPI_LENGTH_BYTES];
+      }
+      return result;
+   }
+    
    public static byte[] makeNewFormatLength(long length)
+
    {
       byte[] result = new byte[0];
       if(length <= OpenPGP.MAX_ONE_OCTET)

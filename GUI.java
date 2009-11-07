@@ -61,9 +61,10 @@ public class GUI
 
    private void createGUI(final Container pane)
    {
-      final ArrayList<File> fileList = new ArrayList<File>();
-      JPanel firstPanel = createEncryptionPanel(pane, fileList);
-      JPanel secondPanel = createDecryptionPanel(pane, fileList);
+      final ArrayList<File> encryptList = new ArrayList<File>();
+      final ArrayList<File> decryptList = new ArrayList<File>();
+      JPanel firstPanel = createEncryptionPanel(pane, encryptList);
+      JPanel secondPanel = createDecryptionPanel(pane, decryptList);
       JPanel thirdPanel = createRSAOptionPanel(pane);
 
       JTabbedPane tabbedPane = new JTabbedPane();

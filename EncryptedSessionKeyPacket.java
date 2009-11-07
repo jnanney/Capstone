@@ -8,15 +8,11 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
    private byte[] keyID;
    private static final int KEY_ID_SIZE = 8;
    
-   public EncryptedSessionKeyPacket(RSAPrivateKey rsaKey, String sessionKey)
+   public EncryptedSessionKeyPacket(RSABaseKey rsaKey, String sessionKey)
    {
       RSAEncryption rsa = new RSAEncryption(sessionKey, rsaKey);
       encryptedKey = rsa.encrypt();
-      keyID = new byte[KEY_ID_SIZE]; //TODO: do something with KeyID
-      for(int i = 0; i < keyID.length; i++)
-      {
-         keyID[i] = 0;
-      }
+      keyID = rsaKey.getKeyID();
    }
    
    public EncryptedSessionKeyPacket(byte[] data)
@@ -63,6 +59,6 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
    public int getBodyLength()
    {
       //2 is for MPI
-      return Byte.SIZE + keyID.length + encryptedKey.toByteArray().length + 2;
+      return 1 + keyID.length + encryptedKey.toByteArray().length + 2;
    }
 }

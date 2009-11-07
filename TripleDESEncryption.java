@@ -13,6 +13,15 @@ public class TripleDESEncryption
       key3 = new DESKey();
    }
 
+   public TripleDESEncryption(long original, DESKey key1, DESKey key2, 
+           DESKey key3)
+   {
+      this.original = original;
+      this.key1 = key1;
+      this.key2 = key2;
+      this.key3 = key3;
+   }
+
    public long encrypt() throws InvalidSelectionException
    {
       DESEncryption des1 = new DESEncryption(original, key1);

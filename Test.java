@@ -1,18 +1,18 @@
-/*import java.math.BigInteger;
+import java.math.BigInteger;
+import java.io.*;
 public class Test
 {
-   public static void main(String[] args)
+   public static void main(String[] args) throws Exception
    {
-      TripleDESEncryption des = new TripleDESEncryption(1234);
-      DESKey[] keys = des.getKeys();
-      String text = "" + keys[0] + keys[1] + keys[2];
-      System.out.println("Text is " + text);
-      RSAEncryption rsa = new RSAEncryption(text, 1024);
-      String encrypt = rsa.encrypt();
-      System.out.println("Encrypted " + encrypt);
-      rsa.switchText(encrypt);
-      String decrypt = rsa.decrypt();
-      System.out.println("Decrypted " + decrypt);
+      RSAPrivateKey key = new RSAPrivateKey(1024);
+      RSABaseKey publicKey = key.getPublicKey();
+      OpenPGPPacket publicPacket = new OpenPGPPacket(OpenPGP.PUBLIC_KEY_PACKET_TAG, publicKey);
+      OpenPGPPacket privatePacket = new OpenPGPPacket(OpenPGP.PRIVATE_KEY_PACKET_TAG, key);
+      publicPacket.write(new FileOutputStream("key.pub"));
+      privatePacket.write(new FileOutputStream("key"));
+      FileEncryptor encryptor = new FileEncryptor(new File("test.txt"), key);
+      encryptor.encryptFile();
+      encryptor.write(new File("output"));
    }
 
-}*/
+}

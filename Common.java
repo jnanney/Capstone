@@ -1,4 +1,6 @@
 import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Formatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +10,48 @@ public class Common
    public static final int CHAR_SIZE = 5;
    private Common() {}
    
-   
-   public static long makeLongFromChars(char a, char b, char c, char d)
+   public static byte[] makeByteListPrimitive(List<Byte> bytes)
+   {
+      byte[] result = new byte[bytes.size()];
+      for(int i = 0; i < result.length; i++)
+      {
+         result[i] = bytes.get(i);
+      }
+      return result;
+   }
+   public static byte[] makeLongBytes(long number)
+   {
+      int bytesInLong = Long.SIZE / Byte.SIZE;
+      byte[] result = new byte[bytesInLong];
+      long mask = 0xFF00000000000000L;
+      for(int i = 0; i < bytesInLong; i++)
+      {
+         result[i] = (byte) ((number & (mask >>> i)) >>> bytesInLong);
+      }
+      return result;
+   }
+
+   public static byte[] getByteTime()
+   {
+      Calendar cal = new GregorianCalendar();
+      int time = cal.get(Calendar.SECOND);
+      byte[] byteTime = new byte[4];
+      int mask = 0xFF000000;
+      for(int i = 0; i < byteTime.length; i++)
+      {
+         byteTime[i] = (byte) (time & (mask >>> 1));
+      }
+      return byteTime;
+   }
+
+   public static long makeBytesLong(byte[] input)
    {
       long result = 0;
-      result = result | a;
-      result = result << Character.SIZE;
-      result = result | b;
-      result = result << Character.SIZE;
-      result = result | c;
-      result = result << Character.SIZE;
-      result = result | d;
+      int bytesInLong = Long.SIZE / Byte.SIZE;
+      for(int i = 0; i < bytesInLong && i < input.length; i++)
+      {
+         result = result | (input[i] << (bytesInLong - i - 1));
+      }
       return result;
    }
 
