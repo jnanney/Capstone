@@ -21,7 +21,10 @@ public class FileDecryptor
       List<OpenPGPPacket> encrypted = reader.readPackets();
       for(OpenPGPPacket current : encrypted)
       {
-         System.out.println("current " + current);
+         if(current.getPacket() instanceof EncryptedSessionKeyPacket)
+         {
+            
+         }
       }
    }
 

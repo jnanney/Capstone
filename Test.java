@@ -14,7 +14,7 @@ public class Test
       PacketReader reader = new PacketReader(new File("hello"));
       OpenPGPPacket and = reader.getPackets().get(0);
       */ 
-      RSAPrivateKey key = new RSAPrivateKey(1024);
+      /*RSAPrivateKey key = new RSAPrivateKey(1024);
       RSABaseKey publicKey = key.getPublicKey();
       OpenPGPPacket publicPacket = new OpenPGPPacket(OpenPGP.PUBLIC_KEY_PACKET_TAG, publicKey);
       OpenPGPPacket privatePacket = new OpenPGPPacket(OpenPGP.PRIVATE_KEY_PACKET_TAG, key);
@@ -25,6 +25,7 @@ public class Test
       encryptor.write(new File("output"));
 
       FileDecryptor dec = new FileDecryptor(new File("output"), null);
-      dec.decrypt();
+      dec.decrypt();*/
+
    }
 }
