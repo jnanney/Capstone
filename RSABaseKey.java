@@ -14,6 +14,8 @@ public class RSABaseKey implements PacketSpecificInterface
    
    public RSABaseKey()
    {
+      //TODO: create actual key ids
+      keyID = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
       time = Common.getByteTime();
    }
 
@@ -22,6 +24,7 @@ public class RSABaseKey implements PacketSpecificInterface
       this.n = n;
       this.encryptionExponent = encryptionExponent;
       time = Common.getByteTime();
+      keyID = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
    }
 
    public RSABaseKey(byte[] data)

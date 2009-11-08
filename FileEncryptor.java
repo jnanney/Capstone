@@ -24,21 +24,15 @@ public class FileEncryptor
    public void encryptFile() throws InvalidSelectionException
    {
       encrypted = new ArrayList<OpenPGPPacket>();
-      OpenPGPPacket rsaKeyPacket = new OpenPGPPacket(
-                                   OpenPGP.PK_SESSION_KEY_TAG, publicKey);
       for(int i = 0; i < literalData.size(); i += OpenPGP.TRIPLEDES_BLOCK_BYTES) 
       {
+
          int subListEnd = i + 8 > literalData.size() ? literalData.size() : 8 + i;
          List<Byte> block = literalData.subList(i, subListEnd);
          byte[] primitiveBlock = Common.makeByteListPrimitive(block); 
-         long toEncrypt = Common.makeBytesLong(primitiveBlock);
-         TripleDESEncryption des = new TripleDESEncryption(toEncrypt);
-         long cipherData = des.encrypt();
-         SymmetricDataPacket encryptedPacket = new SymmetricDataPacket(cipherData);
-         OpenPGPPacket packet = new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, 
-                                encryptedPacket);
-         encrypted.add(rsaKeyPacket);
-         encrypted.add(packet);
+         OpenPGPPacket[] packets = encryptPacket(publicKey, primitiveBlock);
+         encrypted.add(packets[0]);
+         encrypted.add(packets[1]);
       }
    }
 
@@ -86,5 +80,21 @@ public class FileEncryptor
          literalData.add(0, temp);
       }
       literalData.add(0, new Byte(OpenPGP.LITERAL_DATA_PACKET_TAG));
+   }
+
+   public OpenPGPPacket[] encryptPacket(RSABaseKey rsaKey, byte[] data) 
+      throws InvalidSelectionException
+   {
+      long message = Common.makeBytesLong(data);
+      TripleDESEncryption des = new TripleDESEncryption(message);
+      DESKey[] desKeys = des.getKeys();
+      String keys = "" + desKeys[0] + desKeys[1] + desKeys[2];
+      long encrypted = des.encrypt();
+      byte[] encryptedBytes = Common.makeLongBytes(encrypted);
+      EncryptedSessionKeyPacket encryptedKeys = new EncryptedSessionKeyPacket(rsaKey, keys);
+      SymmetricDataPacket symData = new SymmetricDataPacket(encryptedBytes);
+      OpenPGPPacket sessionKey = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, encryptedKeys);
+      OpenPGPPacket encryptedData = new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData);
+      return new OpenPGPPacket[] { sessionKey, encryptedData};
    }
 }

@@ -14,6 +14,7 @@ public class RSAEncryption
 
    public RSAEncryption(String message, RSABaseKey key)
    {
+      this.text = message;
       this.key = key;
    }
    

@@ -21,7 +21,7 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
       keyID = new byte[KEY_ID_SIZE];
       if(data[i++] != VERSION)
       {
-         System.err.println("Version " + data[0] + " is not supported");
+         System.err.println("Version " + data[i - 1] + " is not supported");
       }
       for(int j = 0; j < KEY_ID_SIZE; i++, j++)
       {
@@ -29,14 +29,9 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
       }
       if(data[i++] != OpenPGP.RSA_CONSTANT)
       {
-         System.err.println("RSA is the only public key algorithm that is supported");
+         System.err.println("Invalid Public key constant " + data[i - 1]);
       }
-      int length = (data[i++] << 8) | data[i++];
-      byte[] key = new byte[length / Byte.SIZE];
-      for(int j = 0; j < key.length && i < data.length; i++, j++)
-      {
-         key[j] = data[i];
-      }
+      byte[] key = OpenPGP.getMultiprecisionInteger(data, i);
       encryptedKey = new BigInteger(key);
    }
 
@@ -54,12 +49,13 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
    {
       output.write(new byte[]{VERSION});
       output.write(keyID);
+      output.write(new byte[]{OpenPGP.RSA_CONSTANT});
       output.write(OpenPGP.makeMultiprecisionInteger(encryptedKey));
    }
 
    public int getBodyLength()
    {
       //2 is for MPI
-      return 1 + keyID.length + encryptedKey.toByteArray().length + 2;
+      return 1 + keyID.length + encryptedKey.toByteArray().length + 2 + 1;
    }
 }
