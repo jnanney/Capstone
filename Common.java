@@ -19,22 +19,6 @@ public class Common
       }
       return result;
    }
-   public static byte[] makeLongsBytes(long[] nums)
-   {
-      int bytesInLong = Long.SIZE / Byte.SIZE;
-      int size = nums.length * bytesInLong;
-      byte[] result = new byte[size];
-      for(int i = 0; i < nums.length; i++)
-      {
-         long mask = 0xFF00000000000000L;
-         for(int j = 0; j < bytesInLong; j++)
-         {
-            int current = (i * bytesInLong) + j;
-            result[current] = (byte) ((nums[i] & (mask >>> j)) >>> bytesInLong);
-         }
-      }
-      return result;
-   }
 
    public static byte[] makeLongBytes(long number)
    {

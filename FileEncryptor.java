@@ -89,14 +89,19 @@ public class FileEncryptor
       TripleDESEncryption des = new TripleDESEncryption(message);
       long encrypted = des.encrypt();
       byte[] encryptedBytes = Common.makeLongBytes(encrypted);
+      SymmetricDataPacket symData = new SymmetricDataPacket(encryptedBytes);
+      OpenPGPPacket encryptedData = new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData);
 
       DESKey[] desKeys = des.getKeys();
-      byte[] keys = Common.makeLongsBytes(new long[]{desKeys[0].getKey(), 
-                              desKeys[1].getKey(), desKeys[2].getKey()});
-      EncryptedSessionKeyPacket encryptedKeys = new EncryptedSessionKeyPacket(rsaKey, keys);
-      SymmetricDataPacket symData = new SymmetricDataPacket(encryptedBytes);
-      OpenPGPPacket sessionKey = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, encryptedKeys);
-      OpenPGPPacket encryptedData = new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData);
-      return new OpenPGPPacket[] { sessionKey, encryptedData};
+      byte[] key1 = Common.makeLongBytes(desKeys[0].getKey());
+      byte[] key2 = Common.makeLongBytes(desKeys[1].getKey());
+      byte[] key3 = Common.makeLongBytes(desKeys[2].getKey());
+      EncryptedSessionKeyPacket ek1 = new EncryptedSessionKeyPacket(rsaKey, key1);
+      EncryptedSessionKeyPacket ek2 = new EncryptedSessionKeyPacket(rsaKey, key2);
+      EncryptedSessionKeyPacket ek3 = new EncryptedSessionKeyPacket(rsaKey, key3);
+      OpenPGPPacket keyPacket1 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek1);
+      OpenPGPPacket keyPacket2 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek2);
+      OpenPGPPacket keyPacket3 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek3);
+      return new OpenPGPPacket[] { keyPacket1, keyPacket2, keyPacket3, encryptedData};
    }
 }

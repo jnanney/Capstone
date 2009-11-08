@@ -3,11 +3,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.math.BigInteger;
 
 public class FileDecryptor
 {
    private RSAPrivateKey key;
    private File input;
+   private ArrayList<Byte> data;
 
    public FileDecryptor(File input, RSAPrivateKey key)
    {
@@ -19,12 +21,12 @@ public class FileDecryptor
    {
       PacketReader reader = new PacketReader(input);
       List<OpenPGPPacket> encrypted = reader.readPackets();
-      for(OpenPGPPacket current : encrypted)
+      for(int i = 0; i < encrypted.size(); i+=2)
       {
-         if(current.getPacket() instanceof EncryptedSessionKeyPacket)
-         {
-            
-         }
+         EncryptedSessionKeyPacket sKey = (EncryptedSessionKeyPacket) encrypted.get(i).getPacket();
+         SymmetricDataPacket data = (SymmetricDataPacket) encrypted.get(i+1).getPacket();
+         byte[] byteData = data.getEncryptedPacket();
+
       }
    }
 
