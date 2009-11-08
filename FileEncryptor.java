@@ -87,10 +87,12 @@ public class FileEncryptor
    {
       long message = Common.makeBytesLong(data);
       TripleDESEncryption des = new TripleDESEncryption(message);
-      DESKey[] desKeys = des.getKeys();
-      String keys = "" + desKeys[0] + desKeys[1] + desKeys[2];
       long encrypted = des.encrypt();
       byte[] encryptedBytes = Common.makeLongBytes(encrypted);
+
+      DESKey[] desKeys = des.getKeys();
+      byte[] keys = Common.makeLongsBytes(new long[]{desKeys[0].getKey(), 
+                              desKeys[1].getKey(), desKeys[2].getKey()});
       EncryptedSessionKeyPacket encryptedKeys = new EncryptedSessionKeyPacket(rsaKey, keys);
       SymmetricDataPacket symData = new SymmetricDataPacket(encryptedBytes);
       OpenPGPPacket sessionKey = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, encryptedKeys);

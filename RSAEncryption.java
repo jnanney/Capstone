@@ -25,7 +25,7 @@ public class RSAEncryption
 	   BigInteger n = key.getPrimeProduct();
       if(original.compareTo(n) > 0)
       {
-         System.out.println("message too large.  Implement splitting");
+         System.out.println("Message too large.  Implement splitting");
       }
 
       BigInteger cyphertext = original.modPow(key.getEncryptionExponent(), n);
@@ -39,6 +39,7 @@ public class RSAEncryption
          System.err.println("Messages may only be decrypted with private keys");
          System.exit(1);
       }
+
       RSAPrivateKey privateKey = (RSAPrivateKey) key;
 	   BigInteger n = key.getPrimeProduct();
       BigInteger result = original.modPow(privateKey.getDecryptionExponent(), n);
