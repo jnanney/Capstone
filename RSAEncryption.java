@@ -10,13 +10,13 @@ public class RSAEncryption
 
    public RSAEncryption(byte[] data, RSABaseKey key)
    {
-      BigInteger original = new BigInteger(SIGN, data);
+      original = new BigInteger(SIGN, data);
       this.key = key;
    }
 
    public RSAEncryption(byte[] data, int keylength)
    {
-      BigInteger original = new BigInteger(SIGN, data);
+      original = new BigInteger(SIGN, data);
       this.key = new RSAPrivateKey(keylength);
    }
 
@@ -29,7 +29,7 @@ public class RSAEncryption
       }
 
       BigInteger cyphertext = original.modPow(key.getEncryptionExponent(), n);
-	   return new cyphertext;
+	   return cyphertext;
    }
    
    public BigInteger decrypt()
@@ -41,7 +41,7 @@ public class RSAEncryption
       }
       RSAPrivateKey privateKey = (RSAPrivateKey) key;
 	   BigInteger n = key.getPrimeProduct();
-      BigInteger result = temp.modPow(privateKey.getDecryptionExponent(), n);
+      BigInteger result = original.modPow(privateKey.getDecryptionExponent(), n);
 	   return result;
    }
 
