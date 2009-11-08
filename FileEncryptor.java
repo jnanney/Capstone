@@ -30,9 +30,7 @@ public class FileEncryptor
          int subListEnd = i + 8 > literalData.size() ? literalData.size() : 8 + i;
          List<Byte> block = literalData.subList(i, subListEnd);
          byte[] primitiveBlock = Common.makeByteListPrimitive(block); 
-         OpenPGPPacket[] packets = encryptPacket(publicKey, primitiveBlock);
-         encrypted.add(packets[0]);
-         encrypted.add(packets[1]);
+         encrypted.addAll(encryptPacket(publicKey, primitiveBlock));
       }
    }
 
@@ -82,9 +80,10 @@ public class FileEncryptor
       literalData.add(0, new Byte(OpenPGP.LITERAL_DATA_PACKET_TAG));
    }
 
-   public OpenPGPPacket[] encryptPacket(RSABaseKey rsaKey, byte[] data) 
+   public List<OpenPGPPacket> encryptPacket(RSABaseKey rsaKey, byte[] data) 
       throws InvalidSelectionException
    {
+      ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
       long message = Common.makeBytesLong(data);
       TripleDESEncryption des = new TripleDESEncryption(message);
       long encrypted = des.encrypt();
@@ -102,6 +101,10 @@ public class FileEncryptor
       OpenPGPPacket keyPacket1 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek1);
       OpenPGPPacket keyPacket2 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek2);
       OpenPGPPacket keyPacket3 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek3);
-      return new OpenPGPPacket[] { keyPacket1, keyPacket2, keyPacket3, encryptedData};
+      result.add(keyPacket1);
+      result.add(keyPacket2);
+      result.add(keyPacket3);
+      result.add(encryptedData);
+      return result; 
    }
 }
