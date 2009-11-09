@@ -13,6 +13,15 @@ public class TripleDESEncryption
       key3 = new DESKey();
    }
 
+   public TripleDESEncryption(long original, long longKey1, long longKey2, 
+      long longKey3)
+   {
+      this.original = original;
+      this.key1 = new DESKey(longKey1);
+      this.key2 = new DESKey(longKey2);
+      this.key3 = new DESKey(longKey3);
+   }
+
    public TripleDESEncryption(long original, DESKey key1, DESKey key2, 
            DESKey key3)
    {

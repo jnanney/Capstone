@@ -14,6 +14,12 @@ public class RSAEncryption
       this.key = key;
    }
 
+   public RSAEncryption(BigInteger original, RSABaseKey key)
+   {
+      this.original = original;
+      this.key = key;
+   }
+
    public RSAEncryption(byte[] data, int keylength)
    {
       original = new BigInteger(SIGN, data);

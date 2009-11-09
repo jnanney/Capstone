@@ -11,7 +11,6 @@ public class Test
       encryptor.write(new File("here"));
 
       FileDecryptor decryptor = new FileDecryptor(new File("here"), key);
-      decryptor.decrypt();
       decryptor.write(new File("and"));
    }
 }
