@@ -92,9 +92,11 @@ public class FileEncryptor
       OpenPGPPacket encryptedData = new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData);
 
       DESKey[] desKeys = des.getKeys();
+      System.out.println("In encryptPacket " + desKeys[0].getKey());
       byte[] key1 = Common.makeLongBytes(desKeys[0].getKey());
       byte[] key2 = Common.makeLongBytes(desKeys[1].getKey());
       byte[] key3 = Common.makeLongBytes(desKeys[2].getKey());
+      System.out.println("Right after encrypting " + new java.math.BigInteger(key1));
       EncryptedSessionKeyPacket ek1 = new EncryptedSessionKeyPacket(rsaKey, key1);
       EncryptedSessionKeyPacket ek2 = new EncryptedSessionKeyPacket(rsaKey, key2);
       EncryptedSessionKeyPacket ek3 = new EncryptedSessionKeyPacket(rsaKey, key3);

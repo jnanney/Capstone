@@ -24,10 +24,11 @@ public class Common
    {
       int bytesInLong = Long.SIZE / Byte.SIZE;
       byte[] result = new byte[bytesInLong];
-      long mask = 0xFF00000000000000L;
+      long shiftSpaces = Long.SIZE - Byte.SIZE;
       for(int i = 0; i < bytesInLong; i++)
       {
-         result[i] = (byte) ((number & (mask >>> i)) >>> bytesInLong);
+         result[i] = (byte) (number >>> shiftSpaces);
+         shiftSpaces -= bytesInLong;
       }
       return result;
    }
@@ -40,7 +41,7 @@ public class Common
       int mask = 0xFF000000;
       for(int i = 0; i < byteTime.length; i++)
       {
-         byteTime[i] = (byte) (time & (mask >>> 1));
+         byteTime[i] = (byte) (time & (mask >>> 8));
       }
       return byteTime;
    }

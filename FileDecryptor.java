@@ -35,6 +35,7 @@ public class FileDecryptor
           
          RSAEncryption rsa = new RSAEncryption(encKey1, key);
          BigInteger key1 = rsa.decrypt();
+         System.out.println("Key 1 is " + key1);
          rsa.switchOriginal(encKey2);
          BigInteger key2 = rsa.decrypt();
          rsa.switchOriginal(encKey3);
