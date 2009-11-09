@@ -16,6 +16,7 @@ public class FileEncryptor
 
    public FileEncryptor(File input, RSABaseKey key) throws FileNotFoundException, IOException
    {
+      literalData = new ArrayList<Byte>();
       this.input = input;
       this.publicKey=key;
       makeLiteralPacket();
@@ -44,6 +45,14 @@ public class FileEncryptor
    }
 
 
+   /*private void makeLiteralPacket() throws FileNotFoundException, IOException
+   {
+      FileInputStream inputStream = new FileInputStream(input);
+      while(inputStream.available() > 0)
+      {
+         literalData.add(new Byte((byte)inputStream.read()));
+      }
+   }*/
    private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
       /*FileInputStream readIn = new FileInputStream(input);
@@ -57,7 +66,6 @@ public class FileEncryptor
          literalData[i] = fileName[j];
       }
       readIn.read(literalData, i, literalData.length);*/
-      literalData = new ArrayList<Byte>();
       byte binary = 0x62;
       FileInputStream inputStream = new FileInputStream(input);
       long length = 1;
