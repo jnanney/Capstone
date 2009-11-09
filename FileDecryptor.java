@@ -35,18 +35,20 @@ public class FileDecryptor
           
          RSAEncryption rsa = new RSAEncryption(encKey1, key);
          BigInteger key1 = rsa.decrypt();
-         System.out.println("Key 1 is " + key1);
          rsa.switchOriginal(encKey2);
          BigInteger key2 = rsa.decrypt();
          rsa.switchOriginal(encKey3);
          BigInteger key3 = rsa.decrypt();
          
-         long key1Long = Common.makeBytesLong(key1.toByteArray());
-         long key2Long = Common.makeBytesLong(key2.toByteArray());
-         long key3Long = Common.makeBytesLong(key3.toByteArray());
+         long key1Long = key1.longValue();
+         long key2Long = key2.longValue();
+         long key3Long = key3.longValue();
+         System.out.println("Key 1 long is " + key1Long);
          SymmetricDataPacket symData = (SymmetricDataPacket) encrypted.get(i+3).getPacket();
          byte[] encryptedData = symData.getEncryptedData();
+         System.out.println("Encrypted data is " + java.util.Arrays.toString(encryptedData));
          long toDecrypt = Common.makeBytesLong(encryptedData);
+         System.out.println("Encrypted data as long " + toDecrypt);
          TripleDESEncryption des = new TripleDESEncryption(toDecrypt, key1Long, key2Long, key3Long);
          long result = des.decrypt();
          byte[] toWrite = Common.makeLongBytes(result);

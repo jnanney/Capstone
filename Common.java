@@ -33,6 +33,13 @@ public class Common
       return result;
    }
 
+   public static long makeBytesLong(byte[] input)
+   {
+      BigInteger temp = new BigInteger(input);
+      return temp.longValue();
+
+   }
+
    public static byte[] getByteTime()
    {
       Calendar cal = new GregorianCalendar();
@@ -44,17 +51,6 @@ public class Common
          byteTime[i] = (byte) (time & (mask >>> 8));
       }
       return byteTime;
-   }
-
-   public static long makeBytesLong(byte[] input)
-   {
-      long result = 0;
-      int bytesInLong = Long.SIZE / Byte.SIZE;
-      for(int i = 0; i < bytesInLong && i < input.length; i++)
-      {
-         result = result | (input[i] << (bytesInLong - i - 1));
-      }
-      return result;
    }
 
    public static String makeStringFromLong(long input)
