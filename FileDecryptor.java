@@ -43,12 +43,9 @@ public class FileDecryptor
          long key1Long = key1.longValue();
          long key2Long = key2.longValue();
          long key3Long = key3.longValue();
-         System.out.println("Key 1 long is " + key1Long);
          SymmetricDataPacket symData = (SymmetricDataPacket) encrypted.get(i+3).getPacket();
          byte[] encryptedData = symData.getEncryptedData();
-         System.out.println("Encrypted data is " + java.util.Arrays.toString(encryptedData));
          long toDecrypt = Common.makeBytesLong(encryptedData);
-         System.out.println("Encrypted data as long " + toDecrypt);
          TripleDESEncryption des = new TripleDESEncryption(toDecrypt, key1Long, key2Long, key3Long);
          long result = des.decrypt();
          byte[] toWrite = Common.makeLongBytes(result);

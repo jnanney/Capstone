@@ -66,7 +66,7 @@ public class FileEncryptor
          literalData[i] = fileName[j];
       }
       readIn.read(literalData, i, literalData.length);*/
-      byte binary = 0x62;
+/*      byte binary = 0x62;
       FileInputStream inputStream = new FileInputStream(input);
       long length = 1;
       while(inputStream.available() > 0)
@@ -85,7 +85,12 @@ public class FileEncryptor
       {
          literalData.add(0, temp);
       }
-      literalData.add(0, new Byte(OpenPGP.LITERAL_DATA_PACKET_TAG));
+      literalData.add(0, new Byte(OpenPGP.LITERAL_DATA_PACKET_TAG));*/
+      FileInputStream inputStream = new FileInputStream(input);
+      while(inputStream.available() > 0)
+      {
+         literalData.add(Byte.valueOf((byte) inputStream.read()));
+      }
    }
 
    public List<OpenPGPPacket> encryptPacket(RSABaseKey rsaKey, byte[] data) 
@@ -103,7 +108,6 @@ public class FileEncryptor
       byte[] key1 = Common.makeLongBytes(desKeys[0].getKey());
       byte[] key2 = Common.makeLongBytes(desKeys[1].getKey());
       byte[] key3 = Common.makeLongBytes(desKeys[2].getKey());
-      System.out.println("Right after encrypting " + new java.math.BigInteger(key1));
       EncryptedSessionKeyPacket ek1 = new EncryptedSessionKeyPacket(rsaKey, key1);
       EncryptedSessionKeyPacket ek2 = new EncryptedSessionKeyPacket(rsaKey, key2);
       EncryptedSessionKeyPacket ek3 = new EncryptedSessionKeyPacket(rsaKey, key3);
