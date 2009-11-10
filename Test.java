@@ -12,5 +12,6 @@ public class Test
 
       FileDecryptor decryptor = new FileDecryptor(new File("here"), key);
       decryptor.write(new File("and"));
+      //worthless change
    }
 }
