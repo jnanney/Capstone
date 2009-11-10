@@ -105,6 +105,9 @@ public class FileEncryptor
       OpenPGPPacket encryptedData = new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData);
 
       DESKey[] desKeys = des.getKeys();
+      System.out.println("Before encryption key1 " + desKeys[0]);
+      System.out.println("Before encryption key2 " + desKeys[1]);
+      System.out.println("Before encryption key3 " + desKeys[2]);
       byte[] key1 = Common.makeLongBytes(desKeys[0].getKey());
       byte[] key2 = Common.makeLongBytes(desKeys[1].getKey());
       byte[] key3 = Common.makeLongBytes(desKeys[2].getKey());

@@ -32,7 +32,8 @@ public class FileDecryptor
          BigInteger encKey1 = keyPack1.getEncryptedKey();
          BigInteger encKey2 = keyPack2.getEncryptedKey();
          BigInteger encKey3 = keyPack3.getEncryptedKey();
-          
+         
+
          RSAEncryption rsa = new RSAEncryption(encKey1, key);
          BigInteger key1 = rsa.decrypt();
          rsa.switchOriginal(encKey2);
@@ -43,6 +44,9 @@ public class FileDecryptor
          long key1Long = key1.longValue();
          long key2Long = key2.longValue();
          long key3Long = key3.longValue();
+         System.out.println("Key 1 decrypted " + key1Long);
+         System.out.println("Key 2 decrypted " + key2Long);
+         System.out.println("Key 3 decrypted " + key3Long);
          SymmetricDataPacket symData = (SymmetricDataPacket) encrypted.get(i+3).getPacket();
          byte[] encryptedData = symData.getEncryptedData();
          long toDecrypt = Common.makeBytesLong(encryptedData);
