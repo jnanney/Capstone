@@ -110,11 +110,30 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
+            RSAPrivateKey privateKey = (RSAPrivateKey) key;
             for(File current : fileList)
             {
                JOptionPane newFilenamePrompt = new JOptionPane();
                String newFilename = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
+               try
+               {
+                  FileDecryptor decryptor = new FileDecryptor(current, privateKey);
+                  decryptor.write(new File(current.getParentFile() + "/" + 
+                     newFilename));
+               }
+               catch(MalformedPacketException mpe)
+               {
+                  System.err.println(mpe.getMessage());
+               }
+               catch(IOException ioe)
+               {
+                  System.err.println(ioe.getMessage());
+               }
+               catch(InvalidSelectionException ise)
+               {
+                  System.err.println(ise.getMessage());
+               }
             }
          }
       });
@@ -162,8 +181,8 @@ public class GUI
                try
                {
                   FileEncryptor encryptor = new FileEncryptor(current, key);
-                  System.out.println(current.getAbsolutePath() + newName);
-                  encryptor.write(new File(current.getAbsolutePath() + newName));
+                  encryptor.write(new File(current.getParentFile() + "/" + 
+                     newName));
                }
                catch(FileNotFoundException fnfe)
                {

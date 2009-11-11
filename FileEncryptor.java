@@ -23,7 +23,7 @@ public class FileEncryptor
       makeLiteralPacket();
    }
 
-   public void encryptFile() 
+   private void encryptFile() 
    {
       encrypted = new ArrayList<OpenPGPPacket>();
       for(int i = 0; i < literalData.size(); i += OpenPGP.TRIPLEDES_BLOCK_BYTES) 
@@ -46,6 +46,7 @@ public class FileEncryptor
 
    public void write(File output) throws IOException, FileNotFoundException
    {
+      encryptFile();
       FileOutputStream out = new FileOutputStream(output);
       for(OpenPGPPacket current : encrypted)
       {

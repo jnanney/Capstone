@@ -7,7 +7,7 @@ public class Test
    {
       RSAPrivateKey key = new RSAPrivateKey(1024);
       FileEncryptor encryptor = new FileEncryptor(new File("hello"), key);
-      encryptor.encryptFile();
+      //encryptor.encryptFile();
       encryptor.write(new File(args[0]));
 
       FileDecryptor decryptor = new FileDecryptor(new File(args[0]), key);

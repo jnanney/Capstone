@@ -1,8 +1,9 @@
+import java.util.Random;
 public class Temp
 {
    public static void main(String[] args) throws Exception
    {
-      byte[] data = new byte[]{64,65,66,67};
+      /*byte[] data = new byte[]{64,65,66,67};
       System.out.println("Original is " + java.util.Arrays.toString(data));
       long message = Common.makeBytesLong(data);
       System.out.println("the long is " + message);
@@ -16,6 +17,6 @@ public class Temp
       long decrypted = des.decrypt();
       System.out.println("Decrypted is " + decrypted);
       byte[] result = Common.makeLongBytes(decrypted);
-      System.out.println("As bytes it's " + java.util.Arrays.toString(result));
+      System.out.println("As bytes it's " + java.util.Arrays.toString(result));*/
    }
 }
