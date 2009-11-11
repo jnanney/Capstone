@@ -44,6 +44,9 @@ public class FileDecryptor
          long key1Long = key1.longValue();
          long key2Long = key2.longValue();
          long key3Long = key3.longValue();
+         System.out.println("Key 1 decrypted Big " + key1);
+         System.out.println("Key 2 decrypted Big " + key2);
+         System.out.println("Key 3 decrypted Big " + key3);
          System.out.println("Key 1 decrypted " + key1Long);
          System.out.println("Key 2 decrypted " + key2Long);
          System.out.println("Key 3 decrypted " + key3Long);
@@ -56,5 +59,4 @@ public class FileDecryptor
          out.write(toWrite);
       }
    }
-
 }

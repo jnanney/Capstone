@@ -14,7 +14,8 @@ public class FileEncryptor
    //private byte[] literalData;
    private RSABaseKey publicKey;
 
-   public FileEncryptor(File input, RSABaseKey key) throws FileNotFoundException, IOException
+   public FileEncryptor(File input, RSABaseKey key) 
+      throws FileNotFoundException, IOException
    {
       literalData = new ArrayList<Byte>();
       this.input = input;
@@ -22,7 +23,7 @@ public class FileEncryptor
       makeLiteralPacket();
    }
 
-   public void encryptFile() throws InvalidSelectionException
+   public void encryptFile() 
    {
       encrypted = new ArrayList<OpenPGPPacket>();
       for(int i = 0; i < literalData.size(); i += OpenPGP.TRIPLEDES_BLOCK_BYTES) 
@@ -31,7 +32,15 @@ public class FileEncryptor
          int subListEnd = i + 8 > literalData.size() ? literalData.size() : 8 + i;
          List<Byte> block = literalData.subList(i, subListEnd);
          byte[] primitiveBlock = Common.makeByteListPrimitive(block); 
-         encrypted.addAll(encryptPacket(publicKey, primitiveBlock));
+         try
+         {
+            encrypted.addAll(encryptPacket(publicKey, primitiveBlock));
+         }
+         catch(InvalidSelectionException ise)
+         {
+            System.err.println(ise.getMessage());
+            //This shouldn't happen
+         }
       }
    }
 
@@ -45,15 +54,15 @@ public class FileEncryptor
    }
 
 
-   /*private void makeLiteralPacket() throws FileNotFoundException, IOException
+   private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
       FileInputStream inputStream = new FileInputStream(input);
       while(inputStream.available() > 0)
       {
          literalData.add(new Byte((byte)inputStream.read()));
       }
-   }*/
-   private void makeLiteralPacket() throws FileNotFoundException, IOException
+   }
+   /*private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
       /*FileInputStream readIn = new FileInputStream(input);
       byte[] fileName = input.getName().getBytes("UTF-8");
@@ -86,12 +95,12 @@ public class FileEncryptor
          literalData.add(0, temp);
       }
       literalData.add(0, new Byte(OpenPGP.LITERAL_DATA_PACKET_TAG));*/
-      FileInputStream inputStream = new FileInputStream(input);
+    /*  FileInputStream inputStream = new FileInputStream(input);
       while(inputStream.available() > 0)
       {
          literalData.add(Byte.valueOf((byte) inputStream.read()));
       }
-   }
+   }*/
 
    public List<OpenPGPPacket> encryptPacket(RSABaseKey rsaKey, byte[] data) 
       throws InvalidSelectionException

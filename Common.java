@@ -35,7 +35,8 @@ public class Common
 
    public static long makeBytesLong(byte[] input)
    {
-      BigInteger temp = new BigInteger(input);
+      BigInteger temp = new BigInteger(1, input); 
+      //BigInteger temp = new BigInteger(input); XXX: this might have something to do with bug
       return temp.longValue();
 
    }

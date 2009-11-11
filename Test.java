@@ -12,5 +12,16 @@ public class Test
 
       FileDecryptor decryptor = new FileDecryptor(new File(args[0]), key);
       decryptor.write(new File(args[1]));
+
+      /*Runtime rt = Runtime.getRuntime();
+
+      Process p = rt.exec("diff hello.tmp " + args[1]);
+      p.waitFor();
+      if(p.exitValue() != 0)
+      {
+         key.write(new FileOutputStream("last"));
+         System.exit(p.exitValue());
+      }
+      System.exit(0);*/
    }
 }

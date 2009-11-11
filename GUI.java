@@ -41,7 +41,7 @@ public class GUI
    /*
     * Creates and displays a new GUI object
     **/
-   public GUI()
+   public GUI() throws Exception //TODO: replace
    {
       JFrame frame = new JFrame("File Encryption With OpenPGP");
       frame.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -52,14 +52,15 @@ public class GUI
       frame.setVisible(true);
    }
 
-   public static void main(String[] args)
+   public static void main(String[] args) throws Exception //TODO: replace
    {
 
       GUI gui = new GUI();
    }
    
 
-   private void createGUI(final Container pane)
+   private void createGUI(final Container pane) throws IOException, 
+      FileNotFoundException
    {
       final ArrayList<File> encryptList = new ArrayList<File>();
       final ArrayList<File> decryptList = new ArrayList<File>();
@@ -121,7 +122,7 @@ public class GUI
    }
 
    private JPanel createEncryptionPanel(final Container pane, final List<File> 
-      fileList)
+      fileList) throws IOException, FileNotFoundException
    {
       JButton addFileButton = new JButton("Add File");  
       JButton encryptButton = new JButton("Encrypt Files");
@@ -145,7 +146,6 @@ public class GUI
                fileList.add(selectedFile);
                int num = fileList.size();
                fileText.append(num + ") " + selectedFile.getName() + "\n");
-
             }
          }
       });
@@ -157,9 +157,22 @@ public class GUI
             for(File current : fileList)
             {
                JOptionPane newFilenamePrompt = new JOptionPane();
-               String newFilename = newFilenamePrompt.showInputDialog(pane, 
+               String newName = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
-               //TODO: put these files in a list and encrypt them.
+               try
+               {
+                  FileEncryptor encryptor = new FileEncryptor(current, key);
+                  System.out.println(current.getAbsolutePath() + newName);
+                  encryptor.write(new File(current.getAbsolutePath() + newName));
+               }
+               catch(FileNotFoundException fnfe)
+               {
+                  System.err.println(fnfe.getMessage());
+               }
+               catch(IOException ioe)
+               {
+                  System.err.println(ioe.getMessage());
+               }
             }
          }
       });
@@ -247,10 +260,6 @@ public class GUI
                {
                   System.out.println(ioe.getMessage());
                }
-/*               catch(Exception e)
-               {
-                  System.out.println(e.getMessage());
-               }*/
             }
          }
       });
