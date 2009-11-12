@@ -77,7 +77,7 @@ public class Common
     * */
    public static long getBits(long number, int start, int end) throws InvalidSelectionException
    {
-      if (start > end || start < 1 || end > Long.SIZE + 1)
+      if (start > end || start < 1 || end > Long.SIZE)
       {
          throw new InvalidSelectionException("Invalid bit positions");
       }

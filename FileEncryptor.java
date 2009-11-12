@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,10 +10,11 @@ import java.io.IOException;
 public class FileEncryptor
 {
    private File input;
-   private ArrayList<Byte> literalData;
+   //private ArrayList<Byte> literalData;
    private ArrayList<OpenPGPPacket> encrypted;
-   //private byte[] literalData;
+   private byte[] literalData;
    private RSABaseKey publicKey;
+   private long feedbackRegister;
 
    public FileEncryptor(File input, RSABaseKey key) 
       throws FileNotFoundException, IOException
@@ -21,28 +23,9 @@ public class FileEncryptor
       this.input = input;
       this.publicKey=key;
       makeLiteralPacket();
+      feedbackRegister = 0;
    }
 
-   private void encryptFile() 
-   {
-      encrypted = new ArrayList<OpenPGPPacket>();
-      for(int i = 0; i < literalData.size(); i += OpenPGP.TRIPLEDES_BLOCK_BYTES) 
-      {
-
-         int subListEnd = i + 8 > literalData.size() ? literalData.size() : 8 + i;
-         List<Byte> block = literalData.subList(i, subListEnd);
-         byte[] primitiveBlock = Common.makeByteListPrimitive(block); 
-         try
-         {
-            encrypted.addAll(encryptPacket(publicKey, primitiveBlock));
-         }
-         catch(InvalidSelectionException ise)
-         {
-            System.err.println(ise.getMessage());
-            //This shouldn't happen
-         }
-      }
-   }
 
    public void write(File output) throws IOException, FileNotFoundException
    {
@@ -57,12 +40,25 @@ public class FileEncryptor
 
    private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
-      FileInputStream inputStream = new FileInputStream(input);
-      while(inputStream.available() > 0)
+      literalData = new byte[readIn.available() + 
+         OpenPGP.TRIPLEDES_BLOCK_BYTES + 2];
+      byte[] randomData = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      Random random = new Random();
+      random.nextBytes(randomData);
+      for(int i = 0; i < randomData.length; i++)
       {
-         literalData.add(new Byte((byte)inputStream.read()));
+         literalData[i] = randomData[i];
       }
+      //bytes 9 and 10 should be the same as bytes 7 and 8 so we can do a quick
+      //check 
+      literalData[OpenPGP.TRIPLEDES_BLOCK_BYTES + 1] = 
+            literalData[OpenPGP.TRIPLEDES_BLOCK_BYTES - 1];
+      literalData[OpenPGP.TRIPLEDES_BLOCK_BYTES + 2] = 
+            literalData[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+
+
    }
+
    /*private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
       /*FileInputStream readIn = new FileInputStream(input);
@@ -103,34 +99,27 @@ public class FileEncryptor
       }
    }*/
 
-   public List<OpenPGPPacket> encryptPacket(RSABaseKey rsaKey, byte[] data) 
+   private void encryptFile() 
+   {
+      encrypted = new ArrayList<OpenPGPPacket>();
+      int i = 0;
+      while(i < literalData.length; i++)
+      {
+
+      }
+   }
+
+   private List<OpenPGPPacket> encryptPacket(RSABaseKey rsaKey, byte[] data) 
       throws InvalidSelectionException
    {
       ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
-      long message = Common.makeBytesLong(data);
-      TripleDESEncryption des = new TripleDESEncryption(message);
-      long encrypted = des.encrypt();
-      byte[] encryptedBytes = Common.makeLongBytes(encrypted);
-      SymmetricDataPacket symData = new SymmetricDataPacket(encryptedBytes);
-      OpenPGPPacket encryptedData = new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData);
-
-      DESKey[] desKeys = des.getKeys();
-      System.out.println("Before encryption key1 " + desKeys[0]);
-      System.out.println("Before encryption key2 " + desKeys[1]);
-      System.out.println("Before encryption key3 " + desKeys[2]);
-      byte[] key1 = Common.makeLongBytes(desKeys[0].getKey());
-      byte[] key2 = Common.makeLongBytes(desKeys[1].getKey());
-      byte[] key3 = Common.makeLongBytes(desKeys[2].getKey());
-      EncryptedSessionKeyPacket ek1 = new EncryptedSessionKeyPacket(rsaKey, key1);
-      EncryptedSessionKeyPacket ek2 = new EncryptedSessionKeyPacket(rsaKey, key2);
-      EncryptedSessionKeyPacket ek3 = new EncryptedSessionKeyPacket(rsaKey, key3);
-      OpenPGPPacket keyPacket1 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek1);
-      OpenPGPPacket keyPacket2 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek2);
-      OpenPGPPacket keyPacket3 = new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, ek3);
-      result.add(keyPacket1);
-      result.add(keyPacket2);
-      result.add(keyPacket3);
-      result.add(encryptedData);
-      return result; 
+      TripleDESEncryption des = new TripleDESEncryption(feedbackRegister);
+      //the feedback register encrypted
+      long frEncrypted = des.encrypt();
+      for(int i = 0; i < data.length; i++)
+      {
+      }
+      
    }
+
 }
