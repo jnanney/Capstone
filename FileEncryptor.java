@@ -19,7 +19,7 @@ public class FileEncryptor
    public FileEncryptor(File input, RSABaseKey key) 
       throws FileNotFoundException, IOException
    {
-      literalData = new ArrayList<Byte>();
+      //literalData = new ArrayList<Byte>();
       this.input = input;
       this.publicKey=key;
       makeLiteralPacket();
@@ -40,6 +40,7 @@ public class FileEncryptor
 
    private void makeLiteralPacket() throws FileNotFoundException, IOException
    {
+      FileInputStream readIn = new FileInputStream(input);
       literalData = new byte[readIn.available() + 
          OpenPGP.TRIPLEDES_BLOCK_BYTES + 2];
       byte[] randomData = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
@@ -103,7 +104,7 @@ public class FileEncryptor
    {
       encrypted = new ArrayList<OpenPGPPacket>();
       int i = 0;
-      while(i < literalData.length; i++)
+      while(i < literalData.length)
       {
 
       }
@@ -119,7 +120,7 @@ public class FileEncryptor
       for(int i = 0; i < data.length; i++)
       {
       }
-      
+      return null;      
    }
 
 }
