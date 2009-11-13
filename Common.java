@@ -10,16 +10,6 @@ public class Common
    public static final int CHAR_SIZE = 5;
    private Common() {}
    
-   /**
-    * A method that determines the unsigned value for a byte.  Does this by 
-    * converting to an int and masking to prevent sign extension.
-    * @param num - the byte to get the value from
-    * @return the bytes unsigned value
-    * */
-   public static int byteValue(byte num)
-   {
-      return (num & 0xFF);
-   }
 
    public static byte[] makeByteListPrimitive(List<Byte> bytes)
    {

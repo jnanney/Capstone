@@ -24,11 +24,4 @@ public class UnitTests
       Assert.assertTrue(decrypted == original);
    }
 
-   @Test public void byteValueTest()
-   {
-      int original = 255;
-      byte byteCopy = (byte) original;
-      Assert.assertTrue(Common.byteValue(byteCopy) == original);
-   }
-
 }
