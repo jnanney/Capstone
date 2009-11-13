@@ -55,6 +55,11 @@ public class LiteralDataPacket implements PacketSpecificInterface
       return format;
    }
 
+   public byte[] getFileName()
+   {
+      return fileName;
+   }
+
    public int getBodyLength()
    {
       //1 for format and one for fileName length

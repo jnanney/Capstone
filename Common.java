@@ -11,7 +11,12 @@ public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
-   
+  
+   /**
+    * Puts all the data from a given input stream into a byte[] array
+    * @param in - the input stream to read from
+    * @return the byte array containing all of the data from the input stream
+    * */
    public static byte[] readAllData(InputStream in) throws IOException
    {
       ArrayList<Byte> list = new ArrayList<Byte>();
@@ -65,12 +70,16 @@ public class Common
    public static byte[] getByteTime()
    {
       Calendar cal = new GregorianCalendar();
-      int time = cal.get(Calendar.SECOND);
+      int time = (int) (cal.getTimeInMillis() / 1000); 
+      System.out.println("Time in Common is " + time);
       byte[] byteTime = new byte[4];
       int mask = 0xFF000000;
+      int shiftAmount = 24;
       for(int i = 0; i < byteTime.length; i++)
       {
-         byteTime[i] = (byte) (time & (mask >>> 8));
+         byteTime[i] = (byte) ((time & mask) >>> shiftAmount);
+         mask = mask >> 8;
+         shiftAmount -= 8;
       }
       return byteTime;
    }

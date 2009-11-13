@@ -3,16 +3,25 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
+import java.io.*;
+import java.util.*;
 public class Temp
 {
    public static void main(String[] args) throws Exception
    {
-      byte[] array = new byte[]{1,2,3,4,5,6,7,8,9};
-      DeflaterInputStream deflate = new DeflaterInputStream(new ByteArrayInputStream(array));
-      byte[] result = Common.readAllData(deflate);
-      System.out.println(java.util.Arrays.toString(result));
-      InflaterInputStream inflate = new InflaterInputStream(new ByteArrayInputStream(result));
-      byte[] decompressed = Common.readAllData(inflate);
-      System.out.println(java.util.Arrays.toString(decompressed));
+      byte[] num = Common.getByteTime();
+      System.out.println("Time is " + Arrays.toString(num));
+      FileEncryptor enc = new FileEncryptor(new File("hello"), new RSAPrivateKey(1024));
+      PacketReader reader = new PacketReader(new File("guvna"));
+      List<OpenPGPPacket> packets = reader.readPackets();
+      for(OpenPGPPacket current : packets)
+      {
+         System.out.println(current);
+      }
+      LiteralDataPacket pack = (LiteralDataPacket) packets.get(0).getPacket();
+      System.out.println("Format is " + pack.getFormat());
+      System.out.println("Date is " + Arrays.toString(pack.getDate()));
+      System.out.println("As long it is " + Common.makeBytesLong(pack.getDate()));
+      System.out.println("Name is " + Arrays.toString(pack.getFileName()));
    }
 }

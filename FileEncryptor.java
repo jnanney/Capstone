@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.util.zip.DeflaterOutputStream;
 
 public class FileEncryptor
 {
@@ -14,6 +16,7 @@ public class FileEncryptor
    private ArrayList<OpenPGPPacket> encrypted;
    private RSABaseKey publicKey;
    private long feedbackRegister;
+   private byte[] toEncrypt;
 
    public FileEncryptor(File input, RSABaseKey key) 
       throws FileNotFoundException, IOException
@@ -22,12 +25,12 @@ public class FileEncryptor
       this.input = input;
       this.publicKey=key;
       feedbackRegister = 0;
+      makeLiteralPacket(new FileInputStream(input));
    }
-
-   private void process()
+   
+   private void compress(InputStream in)
    {
-      /*FileInputStream readIn = new FileInputStream(input);
-      makeLiteralPacket(readIn);*/
+
    }
 
    public void write(File output) throws IOException, FileNotFoundException
@@ -40,10 +43,18 @@ public class FileEncryptor
       }
    }
    
-   private void makeLiteralPacket(InputStream in)
+   private void makeLiteralPacket(InputStream in) throws IOException
    {
       byte FORMAT = 0x62;
-      //LiteralDataPacket(FORMAT, input.getName(), );
+      byte[] data = Common.readAllData(in); 
+      LiteralDataPacket literal = new LiteralDataPacket(FORMAT, 
+                                  input.getName(), data);
+      OpenPGPPacket literalDataPacket = new OpenPGPPacket(
+                                    OpenPGP.LITERAL_DATA_PACKET_TAG, literal);
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      literalDataPacket.write(out);
+      literalDataPacket.write(new FileOutputStream("guvna"));
+      toEncrypt = out.toByteArray();
    }
 
    private void encryptFile(InputStream in) 
