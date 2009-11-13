@@ -1,5 +1,5 @@
 import java.util.List;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 public class OpenPGPPacket
 {
@@ -53,7 +53,7 @@ public class OpenPGPPacket
       return "Tag : " + (tag ^ OpenPGP.NEW_TAG_MASK);
    }
 
-   public void write(FileOutputStream output) throws IOException
+   public void write(OutputStream output) throws IOException
    {
       int length = packetInfo.getBodyLength();
       byte[] lengthArray = OpenPGP.makeNewFormatLength(length);

@@ -4,12 +4,32 @@ import java.util.GregorianCalendar;
 import java.util.Formatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.InputStream;
+import java.io.IOException;
 
 public class Common
 {
    public static final int CHAR_SIZE = 5;
    private Common() {}
    
+   public static byte[] readAllData(InputStream in) throws IOException
+   {
+      ArrayList<Byte> list = new ArrayList<Byte>();
+      while(in.available() > 0)
+      {
+         int toAdd = in.read();
+         if(toAdd != -1)
+         {
+            list.add(new Byte((byte) toAdd));
+         }
+      }
+      byte[] result = new byte[list.size()];
+      for(int i = 0; i < result.length; i++)
+      {
+         result[i] = list.get(i).byteValue();
+      }
+      return result;
+   }
 
    public static byte[] makeByteListPrimitive(List<Byte> bytes)
    {

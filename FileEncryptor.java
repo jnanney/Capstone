@@ -24,6 +24,11 @@ public class FileEncryptor
       feedbackRegister = 0;
    }
 
+   private void process()
+   {
+      /*FileInputStream readIn = new FileInputStream(input);
+      makeLiteralPacket(readIn);*/
+   }
 
    public void write(File output) throws IOException, FileNotFoundException
    {
@@ -37,7 +42,8 @@ public class FileEncryptor
    
    private void makeLiteralPacket(InputStream in)
    {
-
+      byte FORMAT = 0x62;
+      //LiteralDataPacket(FORMAT, input.getName(), );
    }
 
    private void encryptFile(InputStream in) 
@@ -56,5 +62,4 @@ public class FileEncryptor
       }
       return null;      
    }
-
 }
