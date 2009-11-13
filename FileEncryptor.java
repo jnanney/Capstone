@@ -8,6 +8,7 @@ import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.util.zip.DeflaterOutputStream;
 
 public class FileEncryptor
@@ -28,9 +29,12 @@ public class FileEncryptor
       makeLiteralPacket(new FileInputStream(input));
    }
    
-   private void compress(InputStream in)
+   private void compress(InputStream in) throws IOException
    {
-
+      ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
+      DeflaterOutputStream deflater = new DeflaterOutputStream(arrayOut);
+      deflater.write(toEncrypt);
+      toEncrypt = arrayOut.toByteArray();
    }
 
    public void write(File output) throws IOException, FileNotFoundException
@@ -53,7 +57,6 @@ public class FileEncryptor
                                     OpenPGP.LITERAL_DATA_PACKET_TAG, literal);
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       literalDataPacket.write(out);
-      literalDataPacket.write(new FileOutputStream("guvna"));
       toEncrypt = out.toByteArray();
    }
 
