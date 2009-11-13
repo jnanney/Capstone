@@ -11,6 +11,7 @@ public class OpenPGP
    public static final byte LITERAL_DATA_PACKET_TAG = 11 | NEW_TAG_MASK;
    public static final byte PK_SESSION_KEY_TAG = 1 | NEW_TAG_MASK;
    public static final byte SYMMETRIC_DATA_TAG = 9 | NEW_TAG_MASK;
+   public static final byte COMPRESSED_DATA_TAG = 8 | NEW_TAG_MASK;
    public static final long MAX_ONE_OCTET = 191;
    public static final long MAX_TWO_OCTETS = 8383;
    public static final long MAX_FIVE_OCTETS = 0xFFFFFFFF;
