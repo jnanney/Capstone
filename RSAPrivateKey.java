@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.math.BigInteger;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -94,7 +93,7 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
              (prime2.equals(primes[0]) || prime2.equals(primes[1])));
    }
 
-   public void write(FileOutputStream output) throws IOException
+   public void write(OutputStream output) throws IOException
    {
       super.write(output);
       byte[] dArray = OpenPGP.makeMultiprecisionInteger(decryptionExponent);

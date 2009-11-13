@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.math.BigInteger;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.io.IOException;
 
@@ -98,7 +97,7 @@ public class RSABaseKey implements PacketSpecificInterface
          n.equals(key.getPrimeProduct()));
    }
 
-   public void write(FileOutputStream output) throws IOException
+   public void write(OutputStream output) throws IOException
    {
       byte version = 4;
       byte nArray[] = OpenPGP.makeMultiprecisionInteger(n);

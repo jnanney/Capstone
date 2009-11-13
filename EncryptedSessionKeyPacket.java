@@ -1,4 +1,4 @@
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 public class EncryptedSessionKeyPacket implements PacketSpecificInterface
@@ -46,7 +46,7 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
       return encryptedKey;
    }
 
-   public void write(FileOutputStream output) throws IOException
+   public void write(OutputStream output) throws IOException
    {
       output.write(new byte[]{VERSION});
       output.write(keyID);

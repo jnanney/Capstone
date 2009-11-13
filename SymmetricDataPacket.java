@@ -1,4 +1,4 @@
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 
 public class SymmetricDataPacket implements PacketSpecificInterface
@@ -19,7 +19,7 @@ public class SymmetricDataPacket implements PacketSpecificInterface
       return encryptedData;
    }
 
-   public void write(FileOutputStream output) throws IOException
+   public void write(OutputStream output) throws IOException
    {
       output.write(OpenPGP.makeMultiprecisionInteger(encryptedData));
    }

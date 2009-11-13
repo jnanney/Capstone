@@ -1,4 +1,4 @@
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 public class LiteralDataPacket implements PacketSpecificInterface
 {
@@ -7,6 +7,14 @@ public class LiteralDataPacket implements PacketSpecificInterface
    private byte[] literalData;
    private byte[] date;
    private int DATE_SIZE = 4;
+   
+   public LiteralDataPacket(byte format, String fileName, byte[] literalData)
+   {
+      this.fileName = fileName;
+      this.format = format;
+      this.literalData = literalData;
+      this.date = date;
+   }
 
    public LiteralDataPacket(byte[] rawData)
    {
@@ -56,7 +64,7 @@ public class LiteralDataPacket implements PacketSpecificInterface
       return 1 + date.length + literalData.length + fileName.length() + 1;
    }
 
-   public void write(FileOutputStream output)
+   public void write(OutputStream output)
    {
    }
 }
