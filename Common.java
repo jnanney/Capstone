@@ -33,7 +33,6 @@ public class Common
 
    public static long makeBytesLong(byte[] input)
    {
-      System.out.println("Array is " + java.util.Arrays.toString(input));
       return makeBytesLong(input, 0, Long.SIZE / Byte.SIZE);
    }
 

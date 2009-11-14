@@ -192,6 +192,10 @@ public class GUI
                {
                   System.err.println(ioe.getMessage());
                }
+               catch(InvalidSelectionException ise)
+               {
+                  System.err.println(ise.getMessage());
+               }
             }
          }
       });

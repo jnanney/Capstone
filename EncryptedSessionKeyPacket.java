@@ -1,4 +1,5 @@
 import java.io.OutputStream;
+
 import java.io.IOException;
 import java.math.BigInteger;
 public class EncryptedSessionKeyPacket implements PacketSpecificInterface
@@ -15,6 +16,7 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
       encryptedKey = rsa.encrypt();
       keyID = rsaKey.getKeyID();
    }
+
    public EncryptedSessionKeyPacket(RSABaseKey rsaKey, byte[] unencryptedKey)
    {
       RSAEncryption rsa = new RSAEncryption(unencryptedKey, rsaKey);

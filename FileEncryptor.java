@@ -21,12 +21,13 @@ public class FileEncryptor
    private byte[] toEncrypt;
 
    public FileEncryptor(File input, RSABaseKey key) 
-      throws FileNotFoundException, IOException
+      throws FileNotFoundException, IOException, InvalidSelectionException
    {
       //literalData = new ArrayList<Byte>();
       this.input = input;
       this.publicKey=key;
       makeLiteralPacket(new FileInputStream(input));
+      encryptFile();
    }
    
    private void compress(InputStream in) throws IOException
@@ -37,10 +38,8 @@ public class FileEncryptor
       toEncrypt = arrayOut.toByteArray();
    }
 
-   public void write(File output) throws IOException, FileNotFoundException,
-      InvalidSelectionException
+   public void write(File output) throws IOException, FileNotFoundException
    {
-      encryptFile();
       FileOutputStream out = new FileOutputStream(output);
       for(OpenPGPPacket current : encrypted)
       {
