@@ -10,8 +10,8 @@ public class Test
       //encryptor.encryptFile();
       encryptor.write(new File(args[0]));
 
-      FileDecryptor decryptor = new FileDecryptor(new File(args[0]), key);
-      decryptor.write(new File(args[1]));
+      /*FileDecryptor decryptor = new FileDecryptor(new File(args[0]), key);
+      decryptor.write(new File(args[1]));*/
 
       /*Runtime rt = Runtime.getRuntime();
 

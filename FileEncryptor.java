@@ -37,9 +37,10 @@ public class FileEncryptor
       toEncrypt = arrayOut.toByteArray();
    }
 
-   public void write(File output) throws IOException, FileNotFoundException
+   public void write(File output) throws IOException, FileNotFoundException,
+      InvalidSelectionException
    {
-//      encryptFile();
+      encryptFile();
       FileOutputStream out = new FileOutputStream(output);
       for(OpenPGPPacket current : encrypted)
       {
@@ -60,10 +61,9 @@ public class FileEncryptor
       toEncrypt = out.toByteArray();
    }
 
-   private List<OpenPGPPacket> encryptFile(OutputStream out) 
-      throws InvalidSelectionException
+   private void encryptFile() throws InvalidSelectionException
    {
-      ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
+      encrypted = new ArrayList<OpenPGPPacket>();
       byte[] fr = Common.makeLongBytes(0);
       long frLong = Common.makeBytesLong(fr);
       TripleDESEncryption des = new TripleDESEncryption(frLong);
@@ -78,7 +78,7 @@ public class FileEncryptor
          cipher[i] = (byte) (frEncrypted[i] ^ randomData[i]);
          fr[i] = cipher[i];
       }
-      result.addAll(createPackets(des, cipher));
+      encrypted.addAll(createPackets(des, cipher));
 
       des = new TripleDESEncryption(Common.makeBytesLong(fr));
       frEncrypted = Common.makeLongBytes(des.encrypt());
@@ -87,7 +87,7 @@ public class FileEncryptor
       byte[] tempCipher = new byte[2];
       tempCipher[0] = (byte) (frEncrypted[0] ^ randomData[6]);
       tempCipher[1] = (byte) (frEncrypted[1] ^ randomData[7]);
-      result.addAll(createPackets(des, tempCipher));
+      encrypted.addAll(createPackets(des, tempCipher));
 
       for(int i = 2; i < cipher.length; i++)
       {
@@ -111,11 +111,10 @@ public class FileEncryptor
             cipher[k] = (byte) (frEncrypted[k] ^ toEncrypt[j]);
             fr[k] = cipher[k];
          }
-         result.addAll(createPackets(des, cipher));
+         encrypted.addAll(createPackets(des, cipher));
          des = new TripleDESEncryption(Common.makeBytesLong(cipher));
          frEncrypted = Common.makeLongBytes(des.encrypt());
       }
-      return result;
    }
 
 

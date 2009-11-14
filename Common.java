@@ -26,16 +26,14 @@ public class Common
       {
          result = result << Byte.SIZE;
          long byteValue = (long) (0xFF & data[i]);
-         System.out.println("i is " + i);
-         System.out.println("Current byte value is " + byteValue);
          result = result | byteValue;
-         System.out.println("Result is " + result);
       }
       return result;
    }
 
    public static long makeBytesLong(byte[] input)
    {
+      System.out.println("Array is " + java.util.Arrays.toString(input));
       return makeBytesLong(input, 0, Long.SIZE / Byte.SIZE);
    }
 
@@ -90,7 +88,6 @@ public class Common
    {
       Calendar cal = new GregorianCalendar();
       int time = (int) (cal.getTimeInMillis() / 1000); 
-      System.out.println("Time in Common is " + time);
       byte[] byteTime = new byte[4];
       int mask = 0xFF000000;
       int shiftAmount = 24;
