@@ -98,4 +98,19 @@ public class TripleDESEncryption
    {
       return new DESKey[] {key1, key2, key3};
    }
+
+   public long getKey1()
+   {
+      return key1.getKey();
+   }
+
+   public long getKey2()
+   {
+      return key2.getKey();
+   }
+
+   public long getKey3()
+   {
+      return key3.getKey();
+   }
 }
