@@ -1,4 +1,3 @@
-import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Formatter;
@@ -288,15 +287,5 @@ public class Common
          }
       }
       return result;
-   }
-
-   public static String addLeadingZeros(BigInteger num, int size)
-   {
-	   String result = num.toString();
-	   while (result.length() % size != 0)
-	   {
-		   result = "0" + result;
-	   }
-	   return result;
    }
 }
