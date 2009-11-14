@@ -9,8 +9,9 @@ public class Temp
 {
    public static void main(String[] args) throws Exception
    {
-      long num = 1285;
-      byte[] result = Common.makeLongBytes(num);
-      System.out.println(Arrays.toString(result));
+      byte num = -1;
+      byte num2 = 4;
+      byte result = (byte) (num ^ num2);
+      System.out.println("Result was " + result);
    }
 }

@@ -8,10 +8,10 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
    private byte[] keyID;
    private static final int KEY_ID_SIZE = 8;
    
-   public EncryptedSessionKeyPacket(RSABaseKey rsakey, long unencryptedKey)
+   public EncryptedSessionKeyPacket(RSABaseKey rsaKey, long unencryptedKey)
    {
       byte[] key = Common.makeLongBytes(unencryptedKey);
-      RSAEncryption rsa = new RSAEncryption(rsakey, key);
+      RSAEncryption rsa = new RSAEncryption(key, rsaKey);
       encryptedKey = rsa.encrypt();
       keyID = rsaKey.getKeyID();
    }

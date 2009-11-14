@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.List;
 import java.io.FileNotFoundException;
@@ -63,8 +64,64 @@ public class FileEncryptor
       throws InvalidSelectionException
    {
       ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
-      long feedbackRegister = 0;
-      byte[] randomData = new byte[8];
+      byte[] fr = Common.makeLongBytes(0);
+      long frLong = Common.makeBytesLong(fr);
+      TripleDESEncryption des = new TripleDESEncryption(frLong);
+      byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
+      byte[] randomData = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      Random rand = new Random();
+      rand.nextBytes(randomData);
+
+      byte[] cipher = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      for(int i = 0; i < OpenPGP.TRIPLEDES_BLOCK_BYTES; i++)
+      {
+         cipher[i] = (byte) (frEncrypted[i] ^ randomData[i]);
+         fr[i] = cipher[i];
+      }
+      result.addAll(createPackets(des, cipher));
+
+      des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      frEncrypted = Common.makeLongBytes(des.encrypt());
+      //We XOR the left two octets of frEncrypted with the last two octets of
+      //random data.
+      byte[] tempCipher = new byte[2];
+      tempCipher[0] = (byte) (frEncrypted[0] ^ randomData[6]);
+      tempCipher[1] = (byte) (frEncrypted[1] ^ randomData[7]);
+      result.addAll(createPackets(des, tempCipher));
+
+      for(int i = 2; i < cipher.length; i++)
+      {
+         fr[i - 2] = cipher[i];
+      }
+      fr[6] = tempCipher[0];
+      fr[7] = tempCipher[1];
+      des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      frEncrypted = Common.makeLongBytes(des.encrypt());
+      
+      //We've encrypted 10 bytes of random data so now do the actual data
+      cipher = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      for(int i = 0; i < toEncrypt.length; i += OpenPGP.TRIPLEDES_BLOCK_BYTES)
+      {
+         if(i + OpenPGP.TRIPLEDES_BLOCK_BYTES >= toEncrypt.length)
+         {
+            cipher = new byte[toEncrypt.length - i];
+         }
+         for(int j = i, k = 0; j < i + cipher.length; j++, k++)
+         {
+            cipher[k] = (byte) (frEncrypted[k] ^ toEncrypt[j]);
+            fr[k] = cipher[k];
+         }
+         result.addAll(createPackets(des, cipher));
+         des = new TripleDESEncryption(Common.makeBytesLong(cipher));
+         frEncrypted = Common.makeLongBytes(des.encrypt());
+      }
+      return result;
+   }
+
+
+      /*long fr = 0;
+      byte[] resync = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      byte[] randomData = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
       Random rand = new Random();
       rand.nextBytes(randomData);
       TripleDESEncryption des = new TripleDESEncryption(feedbackRegister);
@@ -72,6 +129,10 @@ public class FileEncryptor
       long randomLong = Common.makeBytesLong(randomData);
       long cipherText = randomLong ^ frEncrypted;
       byte[] cipher = Common.makeLongBytes(cipherText);
+      for(int i = 2; i < OpenPGP.TRIPLEDES_BLOCK_BYTES; i++)
+      {
+         resync[i - 2] = cipher[i];
+      }
       result.addAll(createPackets(des, cipher));
       feedbackRegister = cipherText;
       des = new TripleDESEncryption(feedbackRegister);
@@ -86,17 +147,19 @@ public class FileEncryptor
       nextCipher[1] = temp[1] ^ randomData[7];
       result.addAll(createPackets(des, nextCipher));
 
-
-      feedbackRegister = makeBytesLong(cipherSoFar);
-      des = new TripleDESEncryption(feedbackRegister);
-      frEncrypted = des.encrypt();
+      resync[6] = nextCipher[0];
+      resync[7] = nextCipher[1];
+      feedbackRegister = makeBytesLong(resync);
       int i = 0;
       while(i < toEncrypt.length)
       {
+         des = new TripleDESEncryption(feedbackRegister);
+         frEncrypted = des.encrypt();
+
       }
 
 
-   }
+   }*/
 
    private List<OpenPGPPacket> createPackets(TripleDESEncryption des, byte[] cipher)
    {
