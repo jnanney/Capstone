@@ -12,6 +12,34 @@ public class Common
    public static final int CHAR_SIZE = 5;
    private Common() {}
   
+  
+   /**
+    * This method turns a specific subset of a byte array into a long
+    * @param data - the array to get the bytes from
+    * @param start - the first byte. Inclusive
+    * @param end - the last byte. Exclusive
+    * @return the long value of the selected bytes
+    * */
+   public static long makeBytesLong(byte[] data, int start, int end)
+   {
+      long result = 0;
+      for(int i = start; i < end; i++)
+      {
+         result = result << Byte.SIZE;
+         long byteValue = (long) (0xFF & data[i]);
+         System.out.println("i is " + i);
+         System.out.println("Current byte value is " + byteValue);
+         result = result | byteValue;
+         System.out.println("Result is " + result);
+      }
+      return result;
+   }
+
+   public static long makeBytesLong(byte[] input)
+   {
+      makeBytesLong(input, 0, Long.SIZE / Byte.SIZE);
+   }
+
    /**
     * Puts all the data from a given input stream into a byte[] array
     * @param in - the input stream to read from
@@ -57,14 +85,6 @@ public class Common
          shiftSpaces -= bytesInLong;
       }
       return result;
-   }
-
-   public static long makeBytesLong(byte[] input)
-   {
-      BigInteger temp = new BigInteger(1, input); 
-      //BigInteger temp = new BigInteger(input); XXX: this might have something to do with bug
-      return temp.longValue();
-
    }
 
    public static byte[] getByteTime()
