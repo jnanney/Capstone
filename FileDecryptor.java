@@ -34,6 +34,10 @@ public class FileDecryptor
          byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
          sym = (SymmetricDataPacket) packets.get(i + 3).getPacket();
          byte[] cipher = sym.getEncryptedData();
+         if(cipher.length == 2)
+         {
+            System.out.println("\nBINGO at " + i + "\n");
+         }
          byte[] plain = new byte[cipher.length];
          for(int j = 0; j < plain.length; j++)
          {
@@ -43,7 +47,24 @@ public class FileDecryptor
          System.out.println("Plain is " + java.util.Arrays.toString(plain));
          System.out.println("frE is " + java.util.Arrays.toString(frEncrypted));
          System.out.println("cipher is " + java.util.Arrays.toString(cipher));
-         fr = cipher;
+         System.out.println("FR is " + java.util.Arrays.toString(fr));
+         if(i != 4)
+         {
+            fr = cipher;
+         }
+         else
+         {
+            byte[] second = cipher.clone();
+            sym = (SymmetricDataPacket) packets.get(3).getPacket();
+            byte[] first = sym.getEncryptedData();
+            fr = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+            for(int j = 0; j < 6; j++)
+            {
+               fr[j] = first[j + 2];
+            }
+            fr[6] = second[0];
+            fr[7] = second[1];
+         }
       }
    }
 
