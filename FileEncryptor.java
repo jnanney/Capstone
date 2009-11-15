@@ -28,14 +28,6 @@ public class FileEncryptor
       this.publicKey=key;
       makeLiteralPacket(new FileInputStream(input));
       encryptFile();
-      for(OpenPGPPacket packet : encrypted)
-      {
-         if(packet.getPacket() instanceof SymmetricDataPacket)
-         {
-            SymmetricDataPacket sym = (SymmetricDataPacket) packet.getPacket();
-            System.out.println("Encrypted data " + Arrays.toString(sym.getEncryptedData()));
-         }
-      }
    }
    
    private void compress(InputStream in) throws IOException
@@ -118,16 +110,20 @@ public class FileEncryptor
          {
             cipher = new byte[toEncrypt.length - i];
          }
+         System.out.print("Plain is [" ); 
          for(int j = i, k = 0; j < i + cipher.length; j++, k++)
          {
             cipher[k] = (byte) (frEncrypted[k] ^ toEncrypt[j]);
+            System.out.print(toEncrypt[j] + ", ");
             fr[k] = cipher[k];
          }
          encrypted.addAll(createPackets(des, cipher));
+         System.out.println("\nfrE is " + java.util.Arrays.toString(frEncrypted));
          System.out.println("Encrypted is " + java.util.Arrays.toString(cipher));
          des = new TripleDESEncryption(Common.makeBytesLong(cipher));
          frEncrypted = Common.makeLongBytes(des.encrypt());
       }
+      System.out.println("End of encryption\n\n\n");
    }
 
 

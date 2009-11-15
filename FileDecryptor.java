@@ -34,16 +34,15 @@ public class FileDecryptor
          byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
          sym = (SymmetricDataPacket) packets.get(i + 3).getPacket();
          byte[] cipher = sym.getEncryptedData();
-         System.out.println("cipher is " + java.util.Arrays.toString(cipher));
          byte[] plain = new byte[cipher.length];
          for(int j = 0; j < plain.length; j++)
          {
             plain[j] = (byte) (frEncrypted[j] ^ cipher[j]);
          }
          out.write(plain);
-         /*System.out.println("Plain is " + java.util.Arrays.toString(plain));
+         System.out.println("Plain is " + java.util.Arrays.toString(plain));
          System.out.println("frE is " + java.util.Arrays.toString(frEncrypted));
-         System.out.println("cipher is " + java.util.Arrays.toString(cipher));*/
+         System.out.println("cipher is " + java.util.Arrays.toString(cipher));
          fr = cipher;
       }
    }
