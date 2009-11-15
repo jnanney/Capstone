@@ -28,17 +28,23 @@ public class FileDecryptor
       long[] sessionKeys = getNextKeys(packets, 0);
       TripleDESEncryption des = new TripleDESEncryption(0, sessionKeys[0],
                                     sessionKeys[1], sessionKeys[2]);
-      byte[] cipher = Common.makeLongBytes(des.encrypt());
+      byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
       SymmetricDataPacket sym = (SymmetricDataPacket) packets.get(3).getPacket();
       byte[] encrypted = sym.getEncryptedData();
       byte[] random = new byte[8];
       for(int i = 0; i < encrypted.length; i++)
       {
-         random[i] = (byte) (encrypted[i] ^ cipher[i]);
+         random[i] = (byte) (encrypted[i] ^ frEncrypted[i]);
       }
-      System.out.println("Encrypted length " + encrypted.length);
       System.out.println("Random data            " + java.util.Arrays.toString(random));
-
+      sessionKeys = getNextKeys(packets, 4);
+      des = new TripleDESEncryption(Common.makeBytesLong(encrypted), sessionKeys[0], sessionKeys[1], sessionKeys[2]);
+      frEncrypted = Common.makeLongBytes(des.encrypt()); 
+      sym = (SymmetricDataPacket) packets.get(7).getPacket();
+      encrypted = sym.getEncryptedData();
+      System.out.println("Encrypted is " + java.util.Arrays.toString(encrypted));
+      System.out.println("0 " + (byte) (frEncrypted[0] ^ encrypted[0]));
+      System.out.println("1 " + (byte) (frEncrypted[1] ^ encrypted[1]));
    }
 
    public void write(File output) throws MalformedPacketException, IOException, 
