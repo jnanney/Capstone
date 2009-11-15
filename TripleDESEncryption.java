@@ -18,6 +18,14 @@ public class TripleDESEncryption
       key2 = new DESKey();
       key3 = new DESKey();
    }
+
+   public TripleDESEncryption(long original, long[] keys)
+   {
+      this.original = original;
+      key1 = new DESKey(keys[0]);
+      key2 = new DESKey(keys[1]);
+      key3 = new DESKey(keys[2]);
+   }
    
    /**
     * Constructor that accepts longs as DES keys. Note that the order of the 
