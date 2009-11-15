@@ -42,9 +42,26 @@ public class FileDecryptor
       frEncrypted = Common.makeLongBytes(des.encrypt()); 
       sym = (SymmetricDataPacket) packets.get(7).getPacket();
       encrypted = sym.getEncryptedData();
-      System.out.println("Encrypted is " + java.util.Arrays.toString(encrypted));
-      System.out.println("0 " + (byte) (frEncrypted[0] ^ encrypted[0]));
-      System.out.println("1 " + (byte) (frEncrypted[1] ^ encrypted[1]));
+      if(((byte) (frEncrypted[0] ^ encrypted[0])) != random[6] || 
+         ((byte) (frEncrypted[1] ^ encrypted[1])) != random[7])
+      {
+         throw new MalformedPacketException("Checksum failed");
+      }
+      byte[] temp = new byte[8];
+      for(int i = 0, j = 3; i < temp.length; i++, j++)
+      {
+         temp[i] = random[j];
+      }
+      temp[6] = (byte) (frEncrypted[0] ^ encrypted[0]);
+      temp[7] = (byte) (frEncrypted[1] ^ encrypted[1]);
+      //Now we've checked the random data so get to the feal stuff
+      for(int i = 8; i < packets.size(); i += 4)
+      {
+         sessionKeys = getNextKeys(packets, i);
+         des = new TripleDESEncryption(Common.makeBytesLong(temp), sessionKeys[0], sessionKeys[1], sessionKeys[2]);
+         sym = (SymmetricDataPacket) packets.get(i + 3).getPacket();
+         encrypted = sym.getEncryptedData();
+      }
    }
 
    public void write(File output) throws MalformedPacketException, IOException, 
