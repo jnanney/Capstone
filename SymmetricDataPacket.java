@@ -6,12 +6,12 @@ public class SymmetricDataPacket implements PacketSpecificInterface
    private byte[] encryptedData;
    public SymmetricDataPacket(byte[] data)
    {
-      encryptedData = data;
+      encryptedData = OpenPGP.getMultiprecisionInteger(data, 0);
    }
 
-   public SymmetricDataPacket(long data)
+   public SymmetricDataPacket(byte[] encryptedData, boolean isMPI)
    {
-      encryptedData = Common.makeLongBytes(data);
+      this.encryptedData = encryptedData;
    }
 
    public byte[] getEncryptedData()
@@ -26,6 +26,6 @@ public class SymmetricDataPacket implements PacketSpecificInterface
 
    public int getBodyLength()
    {
-      return encryptedData.length + OpenPGP.MPI_LENGTH_BYTES;
+      return encryptedData.length + 2;
    }
 }

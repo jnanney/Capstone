@@ -49,6 +49,12 @@ public class FileEncryptor
    
    private void makeLiteralPacket(InputStream in) throws IOException
    {
+      byte[] data = Common.readAllData(in);
+      toEncrypt = data;
+   }
+
+   /*private void makeLiteralPacket(InputStream in) throws IOException
+   {
       byte FORMAT = 0x62;
       byte[] data = Common.readAllData(in); 
       LiteralDataPacket literal = new LiteralDataPacket(FORMAT, 
@@ -58,7 +64,7 @@ public class FileEncryptor
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       literalDataPacket.write(out);
       toEncrypt = out.toByteArray();
-   }
+   }*/
 
    private void encryptFile() throws InvalidSelectionException
    {
@@ -70,7 +76,7 @@ public class FileEncryptor
       byte[] randomData = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
       Random rand = new Random();
       rand.nextBytes(randomData);
-
+      System.out.println("Random data before enc " + java.util.Arrays.toString(randomData));
       byte[] cipher = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
       for(int i = 0; i < OpenPGP.TRIPLEDES_BLOCK_BYTES; i++)
       {
@@ -78,7 +84,6 @@ public class FileEncryptor
          fr[i] = cipher[i];
       }
       encrypted.addAll(createPackets(des, cipher));
-
       des = new TripleDESEncryption(Common.makeBytesLong(fr));
       frEncrypted = Common.makeLongBytes(des.encrypt());
       //We XOR the left two octets of frEncrypted with the last two octets of
@@ -169,8 +174,7 @@ public class FileEncryptor
                                            des.getKey2());
       EncryptedSessionKeyPacket key3 = new EncryptedSessionKeyPacket(publicKey,
                                            des.getKey3());
-
-      SymmetricDataPacket symData = new SymmetricDataPacket(cipher);
+      SymmetricDataPacket symData = new SymmetricDataPacket(cipher, false);
       result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key1));
       result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key2));
       result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key3));
@@ -178,9 +182,4 @@ public class FileEncryptor
       return result;
    }
 
-   private List<OpenPGPPacket> encryptPacket(RSABaseKey rsaKey, byte[] data) 
-      throws InvalidSelectionException
-   {
-      return null;
-   }
 }

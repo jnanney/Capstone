@@ -12,18 +12,32 @@ public class FileDecryptor
    private ArrayList<Byte> data;
 
    public FileDecryptor(File input, RSAPrivateKey key) 
-      throws MalformedPacketException, IOException
+      throws MalformedPacketException, IOException, InvalidSelectionException
    {
       this.input = input;
       this.key = key;
       decryptFile();
    }
    
-   public void decryptFile() throws MalformedPacketException, IOException
+   public void decryptFile() throws MalformedPacketException, IOException, 
+      InvalidSelectionException
    {
       ByteArrayOutputStream toBytes = new ByteArrayOutputStream();
       PacketReader reader = new PacketReader(input);
       List<OpenPGPPacket> packets = reader.readPackets();
+      long[] sessionKeys = getNextKeys(packets, 0);
+      TripleDESEncryption des = new TripleDESEncryption(0, sessionKeys[0],
+                                    sessionKeys[1], sessionKeys[2]);
+      byte[] cipher = Common.makeLongBytes(des.encrypt());
+      SymmetricDataPacket sym = (SymmetricDataPacket) packets.get(3).getPacket();
+      byte[] encrypted = sym.getEncryptedData();
+      byte[] random = new byte[8];
+      for(int i = 0; i < encrypted.length; i++)
+      {
+         random[i] = (byte) (encrypted[i] ^ cipher[i]);
+      }
+      System.out.println("Encrypted length " + encrypted.length);
+      System.out.println("Random data            " + java.util.Arrays.toString(random));
 
    }
 
@@ -38,7 +52,7 @@ public class FileDecryptor
       RSAEncryption rsa;
       for(int i = start, j = 0; i < packets.size() && j < keys.length; i++, j++)
       {
-         (EncryptedSessionKeyPacket) sessionKey = (EncryptedSessionKeyPacket) 
+         EncryptedSessionKeyPacket sessionKey = (EncryptedSessionKeyPacket) 
                                                     packets.get(i).getPacket();
          
          rsa = new RSAEncryption(sessionKey.getEncryptedKey(), key);

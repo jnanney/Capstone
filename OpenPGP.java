@@ -50,7 +50,7 @@ public class OpenPGP
    public static byte[] makeMultiprecisionInteger(byte[] num)
    {
       byte[] result = new byte[num.length + OpenPGP.MPI_LENGTH_BYTES];
-      int numBits = result.length * Byte.SIZE;
+      int numBits = num.length * Byte.SIZE;
       result[0] = (byte) (numBits >> 8);
       result[1] = (byte) (numBits & 0xFF);
       for(int i = OpenPGP.MPI_LENGTH_BYTES; i < result.length; i++)

@@ -5,6 +5,11 @@ public class Test
 {
    public static void main(String[] args) throws Exception
    {
+      if(args.length != 2)
+      {
+         System.err.println("Usage: java Test <encrypted file> <decrypted file>");
+         System.exit(1);
+      }
       RSAPrivateKey key = new RSAPrivateKey(1024);
       FileEncryptor encryptor = new FileEncryptor(new File("hello"), key);
       //encryptor.encryptFile();

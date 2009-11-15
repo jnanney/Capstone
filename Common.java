@@ -33,7 +33,7 @@ public class Common
 
    public static long makeBytesLong(byte[] input)
    {
-      return makeBytesLong(input, 0, Long.SIZE / Byte.SIZE);
+      return makeBytesLong(input, 0, input.length);
    }
 
    /**

@@ -9,9 +9,9 @@ public class Temp
 {
    public static void main(String[] args) throws Exception
    {
-      byte num = -1;
-      byte num2 = 4;
-      byte result = (byte) (num ^ num2);
-      System.out.println("Result was " + result);
+      /*byte[] array = new byte[]{0, 80, -24, -68, 40, -117, -87, 35, -9, 20};
+      byte[] result = OpenPGP.getMultiprecisionInteger(array, 0);
+      System.out.println(Arrays.toString(result));*/
+
    }
 }
