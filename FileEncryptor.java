@@ -53,19 +53,6 @@ public class FileEncryptor
       toEncrypt = data;
    }
 
-   /*private void makeLiteralPacket(InputStream in) throws IOException
-   {
-      byte FORMAT = 0x62;
-      byte[] data = Common.readAllData(in); 
-      LiteralDataPacket literal = new LiteralDataPacket(FORMAT, 
-                                  input.getName(), data);
-      OpenPGPPacket literalDataPacket = new OpenPGPPacket(
-                                    OpenPGP.LITERAL_DATA_PACKET_TAG, literal);
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      literalDataPacket.write(out);
-      toEncrypt = out.toByteArray();
-   }*/
-
    private void encryptFile() throws InvalidSelectionException
    {
       encrypted = new ArrayList<OpenPGPPacket>();
@@ -125,49 +112,6 @@ public class FileEncryptor
       }
       System.out.println("End of encryption\n\n\n");
    }
-
-
-      /*long fr = 0;
-      byte[] resync = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
-      byte[] randomData = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
-      Random rand = new Random();
-      rand.nextBytes(randomData);
-      TripleDESEncryption des = new TripleDESEncryption(feedbackRegister);
-      long frEncrypted = des.encrypt();
-      long randomLong = Common.makeBytesLong(randomData);
-      long cipherText = randomLong ^ frEncrypted;
-      byte[] cipher = Common.makeLongBytes(cipherText);
-      for(int i = 2; i < OpenPGP.TRIPLEDES_BLOCK_BYTES; i++)
-      {
-         resync[i - 2] = cipher[i];
-      }
-      result.addAll(createPackets(des, cipher));
-      feedbackRegister = cipherText;
-      des = new TripleDESEncryption(feedbackRegister);
-      frEncrypted = des.encrypt();
-
-      //TODO: give better name
-      byte[] temp = Common.makeLongBytes(frEncrypted);
-      byte[] nextCipher = new byte[2];
-      //randomData[6] and [7] have already been used but they are included 
-      //again as a quick way to check the encryption.
-      nextCipher[0] = temp[0] ^ randomData[6];
-      nextCipher[1] = temp[1] ^ randomData[7];
-      result.addAll(createPackets(des, nextCipher));
-
-      resync[6] = nextCipher[0];
-      resync[7] = nextCipher[1];
-      feedbackRegister = makeBytesLong(resync);
-      int i = 0;
-      while(i < toEncrypt.length)
-      {
-         des = new TripleDESEncryption(feedbackRegister);
-         frEncrypted = des.encrypt();
-
-      }
-
-
-   }*/
 
    private List<OpenPGPPacket> createPackets(TripleDESEncryption des, byte[] cipher)
    {
