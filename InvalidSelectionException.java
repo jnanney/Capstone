@@ -1,4 +1,4 @@
-public class InvalidSelectionException extends Exception
+public class InvalidSelectionException extends RuntimeException
 {
    public InvalidSelectionException()
    {
