@@ -58,7 +58,6 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       checksum = new byte[2];
       checksum[0] = data[i++];
       checksum[1] = data[i++];
-      System.out.println("Read in was " + decryptionExponent);
    }
    
    public BigInteger[] getPrimes()

@@ -9,7 +9,7 @@ public class FileDecryptor
 {
    private RSAPrivateKey key;
    private File input;
-   private byte[] data; 
+   private byte[] data;
 
    public FileDecryptor(File input, RSAPrivateKey key) 
       throws MalformedPacketException, IOException, InvalidSelectionException
@@ -34,6 +34,8 @@ public class FileDecryptor
       {
          randomData[i] = (byte) (cipher[i] ^ frEncrypted[i]);
       }
+      System.out.println("Random data is " + java.util.Arrays.toString(randomData));
+      System.out.println("Cipher data is " + java.util.Arrays.toString(cipher));
       des = new TripleDESEncryption(Common.makeBytesLong(cipher), getNextKeys(packets, 4));
       for(int i = 0; i < 6; i++)
       {
@@ -47,6 +49,7 @@ public class FileDecryptor
       {
          randomCheck[i] = (byte) (cipher[i] ^ frEncrypted[i]);   
       }
+      System.out.println("Last two random " + java.util.Arrays.toString(randomCheck));
       fr[6] = cipher[0];
       fr[7] = cipher[1];
       if(randomCheck[0] != randomData[6] || randomCheck[1] != randomData[7])
@@ -60,7 +63,7 @@ public class FileDecryptor
 
    public void decryptFile() throws MalformedPacketException, IOException
    {
-      FileOutputStream out = new FileOutputStream("kermit");
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
       PacketReader reader = new PacketReader(input);
       List<OpenPGPPacket> packets = reader.readPackets();
       byte[] fr = processRandomData(packets);
@@ -81,12 +84,15 @@ public class FileDecryptor
          out.write(plain);
          fr = cipher;
       }
+      data = out.toByteArray();
    }
 
 
    public void write(File output) throws MalformedPacketException, IOException, 
       InvalidSelectionException
    {
+      FileOutputStream out = new FileOutputStream(output);
+      out.write(data);
    }
 
    private long[] getNextKeys(List<OpenPGPPacket> packets, int start)
@@ -99,8 +105,10 @@ public class FileDecryptor
                                                     packets.get(i).getPacket();
          
          rsa = new RSAEncryption(sessionKey.getEncryptedKey(), key);
+         System.out.println("Key " + j + " is " + rsa.decrypt());
          keys[j] = rsa.decrypt().longValue();
       }
+      System.out.println("Keys are " + java.util.Arrays.toString(keys));
       return keys;
    }
 }

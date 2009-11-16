@@ -16,17 +16,19 @@ public class Test
       encryptor.write(new File(args[0]));
 
       FileDecryptor decryptor = new FileDecryptor(new File(args[0]), key);
-      //decryptor.write(new File(args[1]));
+      decryptor.write(new File(args[1]));
 
-      /*Runtime rt = Runtime.getRuntime();
-
-      Process p = rt.exec("diff hello.tmp " + args[1]);
-      p.waitFor();
-      if(p.exitValue() != 0)
-      {
-         key.write(new FileOutputStream("last"));
-         System.exit(p.exitValue());
-      }
-      System.exit(0);*/
+      Runtime rt = Runtime.getRuntime();
+      Process p = rt.exec("diff hello " + args[1]);
+      
+      //if(p.waitFor() != 0)
+      //{
+         OpenPGPPacket keyToWrite = new OpenPGPPacket(OpenPGP.PRIVATE_KEY_PACKET_TAG, key);
+         keyToWrite.write(new FileOutputStream("last"));
+         /*PacketReader reader = new PacketReader(new File("last"));
+         reader.readPackets();*/
+         //System.exit(p.exitValue());
+      //}
+      //System.exit(0);
    }
 }
