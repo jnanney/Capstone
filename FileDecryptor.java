@@ -37,7 +37,7 @@ public class FileDecryptor
       des = new TripleDESEncryption(Common.makeBytesLong(cipher), getNextKeys(packets, 4));
       for(int i = 0; i < 6; i++)
       {
-         fr[i] = randomData[i + 2];
+         fr[i] = cipher[i + 2];
       }
       SymmetricDataPacket secondSym = (SymmetricDataPacket) packets.get(7).getPacket();
       cipher = secondSym.getEncryptedData();
@@ -47,9 +47,14 @@ public class FileDecryptor
       {
          randomCheck[i] = (byte) (cipher[i] ^ frEncrypted[i]);   
       }
-      System.out.println(java.util.Arrays.toString(randomData));
-      System.out.println(java.util.Arrays.toString(randomCheck));
-      return null;
+      fr[6] = cipher[0];
+      fr[7] = cipher[1];
+      if(randomCheck[0] != randomData[6] || randomCheck[1] != randomData[7])
+      {
+         throw new MalformedPacketException(
+                  "Random data could not be duplicated");
+      }
+      return fr;
    }
 
 
@@ -58,11 +63,10 @@ public class FileDecryptor
       FileOutputStream out = new FileOutputStream("kermit");
       PacketReader reader = new PacketReader(input);
       List<OpenPGPPacket> packets = reader.readPackets();
-      processRandomData(packets);
-      byte[] fr = Common.makeLongBytes(0);
+      byte[] fr = processRandomData(packets);
       TripleDESEncryption des;
       SymmetricDataPacket sym;
-      for(int i = 0; i < packets.size(); i += 4)
+      for(int i = 8; i < packets.size(); i += 4)
       {
          des = new TripleDESEncryption(Common.makeBytesLong(fr), 
                                        getNextKeys(packets, i));
@@ -74,25 +78,8 @@ public class FileDecryptor
          {
             plain[j] = (byte) (frEncrypted[j] ^ cipher[j]);
          }
-         System.out.println("Plain is " + java.util.Arrays.toString(plain));
          out.write(plain);
-         if(i != 4)
-         {
-            fr = cipher;
-         }
-         else
-         {
-            byte[] second = cipher.clone();
-            sym = (SymmetricDataPacket) packets.get(3).getPacket();
-            byte[] first = sym.getEncryptedData();
-            fr = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
-            for(int j = 0; j < 6; j++)
-            {
-               fr[j] = first[j + 2];
-            }
-            fr[6] = second[0];
-            fr[7] = second[1];
-         }
+         fr = cipher;
       }
    }
 
