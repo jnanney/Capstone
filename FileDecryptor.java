@@ -19,6 +19,7 @@ public class FileDecryptor
       decryptFile();
    }
    
+
    private byte[] processRandomData(List<OpenPGPPacket> packets) 
       throws MalformedPacketException
    {
@@ -87,6 +88,9 @@ public class FileDecryptor
       data = out.toByteArray();
    }
 
+   private void processResult()
+   {
+   }
 
    public void write(File output) throws MalformedPacketException, IOException, 
       InvalidSelectionException

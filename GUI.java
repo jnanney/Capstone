@@ -215,10 +215,10 @@ public class GUI
             if(returnValue == JFileChooser.APPROVE_OPTION)
             {
                File selectedFile = chooser.getSelectedFile();
-               PacketReader reader = new PacketReader(selectedFile);
                List<OpenPGPPacket> packets = null;
                try
                {
+                  PacketReader reader = new PacketReader(selectedFile);
                   packets = reader.readPackets();
                   key = (RSABaseKey) (packets.get(0).getPacket());
                }

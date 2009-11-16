@@ -1,22 +1,28 @@
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 public class PacketReader
 {
-   private File input;
-   public PacketReader(File input)
+   private InputStream readIn;
+
+   public PacketReader(InputStream input)
    {
-      this.input = input;
+      this.readIn = input;
+   }
+
+   public PacketReader(File input) throws FileNotFoundException
+   {
+      this.readIn = new FileInputStream(input);
    }
 
    public List<OpenPGPPacket> readPackets() throws MalformedPacketException,
-      IOException, FileNotFoundException
+      IOException
    {
       ArrayList<OpenPGPPacket> packets = new ArrayList<OpenPGPPacket>();
-      FileInputStream readIn = new FileInputStream(input);
       byte tag = 0;
       int firstLengthOctet = 0;
       int length = 0;
