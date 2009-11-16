@@ -50,7 +50,14 @@ public class FileEncryptor
    private void makeLiteralPacket(InputStream in) throws IOException
    {
       byte[] data = Common.readAllData(in);
-      toEncrypt = data;
+      byte FORMAT = 0x62;
+      LiteralDataPacket literal = new LiteralDataPacket(FORMAT, input.getName(), 
+                                                        data);
+      OpenPGPPacket literalPacket = new OpenPGPPacket(
+                                    OpenPGP.LITERAL_DATA_PACKET_TAG, literal);
+      ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
+      literalPacket.write(arrayOut);
+      toEncrypt = arrayOut.toByteArray();
    }
 
    private void encryptFile() throws InvalidSelectionException
