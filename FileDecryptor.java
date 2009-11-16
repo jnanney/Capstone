@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 
 public class FileDecryptor
 {
@@ -17,6 +18,7 @@ public class FileDecryptor
       this.input = input;
       this.key = key;
       decryptFile();
+      processResult();
    }
    
 
@@ -88,8 +90,21 @@ public class FileDecryptor
       data = out.toByteArray();
    }
 
-   private void processResult()
+   private void processResult() throws MalformedPacketException, IOException
    {
+      ByteArrayInputStream in = new ByteArrayInputStream(data);
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      PacketReader reader = new PacketReader(in);
+      List<OpenPGPPacket> packets = reader.readPackets();
+      for(OpenPGPPacket current : packets)
+      {
+         if(current.getPacket() instanceof LiteralDataPacket)
+         {
+            LiteralDataPacket literal = (LiteralDataPacket) current.getPacket();
+            out.write(literal.getLiteralData());
+         }
+      }
+      data = out.toByteArray();
    }
 
    public void write(File output) throws MalformedPacketException, IOException, 
