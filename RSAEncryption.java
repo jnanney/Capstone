@@ -31,7 +31,7 @@ public class RSAEncryption
 	   BigInteger n = key.getPrimeProduct();
       if(original.compareTo(n) > 0)
       {
-         System.out.println("Message too large.  Implement splitting");
+         System.err.println("Message too large.  Implement splitting");
       }
 
       BigInteger cyphertext = original.modPow(key.getEncryptionExponent(), n);

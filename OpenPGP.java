@@ -1,23 +1,42 @@
 import java.math.BigInteger;
+/**
+ * This class contains constants and methods specific to the OpenPGP standard.
+ * @author - Jonathan Nanney
+ * */
 public class OpenPGP
 {
    //The left two bits will always be 1 in a new format tag. So it should be 3
    //(which is 2 1-bits) shifted five places.
    public static final byte NEW_TAG_MASK = 3 << 5;
+   /** Constant that indicates a packet uses RSA*/
    public static final byte RSA_CONSTANT = 1;
+   /** Constant that indicates packet uses 3DES */
    public static final byte TRIPLEDES_CONSTANT = 2;
+   /** The tag for packets that hold a public key */
    public static final byte PUBLIC_KEY_PACKET_TAG = 6 | NEW_TAG_MASK;
+   /** The tag for packets that hold a private key */
    public static final byte PRIVATE_KEY_PACKET_TAG = 5 | NEW_TAG_MASK;
+   /** The tag for packets that hold unencrypted data */
    public static final byte LITERAL_DATA_PACKET_TAG = 11 | NEW_TAG_MASK;
+   /** The tag for packets that hold a session key encrypted with a public key */
    public static final byte PK_SESSION_KEY_TAG = 1 | NEW_TAG_MASK;
+   /** The tag for packets that hold data encrypted with a symmetric algorithm */
    public static final byte SYMMETRIC_DATA_TAG = 9 | NEW_TAG_MASK;
+   /** The tag for packets that hold compressed data */
    public static final byte COMPRESSED_DATA_TAG = 8 | NEW_TAG_MASK;
+   /** The maximum length that can be expressed in a 1 byte MPI */
    public static final long MAX_ONE_OCTET = 191;
+   /** The maximum length that can be expressed in a 2 byte MPI */
    public static final long MAX_TWO_OCTETS = 8383;
+   /** The maximum length that can be exprssed with a 5 byte MPI */
    public static final long MAX_FIVE_OCTETS = 0xFFFFFFFF;
-   public static final byte PUBLIC_KEY_VERSION = 4;
-   public static final byte TIME_BYTES = 4;
+   /** The number of bytes in an MPI used for the length of the MPI*/
    public static final byte MPI_LENGTH_BYTES = 2; 
+   /** The version number for public key packets */
+   public static final byte PUBLIC_KEY_VERSION = 4;
+   /** The number of bytes used to express the time */
+   public static final byte TIME_BYTES = 4;
+   /** The number of bytes that 3DES can encrypt at once */
    public static final byte TRIPLEDES_BLOCK_BYTES = 8;
    
    public static byte[] getMultiprecisionInteger(byte[] data, int start)
@@ -46,7 +65,14 @@ public class OpenPGP
       }
       return result;
    }
-
+   
+   /**
+    * Turns a number into a multiprecision integer (MPI).  MPI's are simply 
+    * unsigned numbers where the first 2 bytes indicate the length of the MPI
+    * in bits.
+    * @param num - the number to turn into an MPI
+    * @return the created MPI
+    * */
    public static byte[] makeMultiprecisionInteger(byte[] num)
    {
       byte[] result = new byte[num.length + OpenPGP.MPI_LENGTH_BYTES];
@@ -59,9 +85,14 @@ public class OpenPGP
       }
       return result;
    }
-    
-   public static byte[] makeNewFormatLength(long length)
 
+   /**
+    * Given a length in bytes will express that length as a new format packet 
+    * length.  Old format packets will never and should never be generated.
+    * @param length - the length in bytes of the packet
+    * @return the packet length expressed in 1,2 or 5 bytes.
+    * */
+   public static byte[] makeNewFormatLength(long length)
    {
       byte[] result = new byte[0];
       if(length <= OpenPGP.MAX_ONE_OCTET)
@@ -89,7 +120,15 @@ public class OpenPGP
       }
       return result;
    }
-
+   
+   /**
+    * Gets the length of an packet.  New format because PGP used to generate 
+    * packets differently.  Packets in the new format will always have a tag
+    * where the left two most bits are 1.  This version currently does not 
+    * accept old format packets.  
+    * @param bytes - the data to get the length from
+    * @return the length in bytes of a packet
+    * */
    public static int getNewFormatLength(int[] bytes)
    {
       int result = 0;

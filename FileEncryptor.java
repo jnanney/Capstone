@@ -133,7 +133,7 @@ public class FileEncryptor
          frEncrypted = Common.makeLongBytes(des.encrypt());
       }
    }
-
+   
    private List<OpenPGPPacket> createPackets(TripleDESEncryption des, byte[] cipher)
    {
       ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
