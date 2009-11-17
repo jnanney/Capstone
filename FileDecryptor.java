@@ -88,6 +88,7 @@ public class FileDecryptor
          fr = cipher;
       }
       data = out.toByteArray();
+      System.out.println("data " + java.util.Arrays.toString(data));
    }
 
    private void processResult() throws MalformedPacketException, IOException

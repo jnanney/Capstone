@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterOutputStream;
 
 public class FileEncryptor
 {
@@ -35,8 +36,20 @@ public class FileEncryptor
    {
       ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
       DeflaterOutputStream deflater = new DeflaterOutputStream(arrayOut);
-      deflater.write(toEncrypt);
+      //DeflaterOutputStream deflater = new DeflaterOutputStream(new FileOutputStream("weez"));
+      System.out.println("ToEncrypt length " + toEncrypt.length);
+      deflater.write(toEncrypt, 0, toEncrypt.length);
+      deflater.finish();
       byte[] compressed = arrayOut.toByteArray();
+
+      System.out.println("Compressed length " + compressed.length);
+      ByteArrayOutputStream temp = new ByteArrayOutputStream();
+      InflaterOutputStream inflater = new InflaterOutputStream(temp);
+      inflater.write(compressed, 0, compressed.length);
+      byte[] temp2 = temp.toByteArray();
+      System.out.println("Decompressed length " + temp2.length);
+
+      System.out.println("Compressed length is " + compressed.length);
       CompressedDataPacket comp = new CompressedDataPacket(compressed, false);
       OpenPGPPacket tempPacket = new OpenPGPPacket(OpenPGP.COMPRESSED_DATA_TAG,
          comp);
