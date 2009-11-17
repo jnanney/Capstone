@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
-
+import java.util.zip.InflaterOutputStream;
 public class FileDecryptor
 {
    private RSAPrivateKey key;
@@ -96,12 +96,33 @@ public class FileDecryptor
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       PacketReader reader = new PacketReader(in);
       List<OpenPGPPacket> packets = reader.readPackets();
-      for(OpenPGPPacket current : packets)
+      while(packets.size() > 0)
       {
+         OpenPGPPacket current = packets.get(0);
          if(current.getPacket() instanceof LiteralDataPacket)
          {
             LiteralDataPacket literal = (LiteralDataPacket) current.getPacket();
             out.write(literal.getLiteralData());
+            packets.remove(0);
+         }
+         else if(current.getPacket() instanceof CompressedDataPacket)
+         {
+            CompressedDataPacket compressed = (CompressedDataPacket) 
+                                                current.getPacket();
+            byte[] compressedData = compressed.getCompressedData();
+            ByteArrayOutputStream decompressed = new ByteArrayOutputStream();
+            InflaterOutputStream inflater = new InflaterOutputStream(decompressed);
+            inflater.write(compressedData, 0, compressedData.length);
+            ByteArrayInputStream readData = new ByteArrayInputStream(
+                                             decompressed.toByteArray());
+            reader = new PacketReader(readData);
+            List<OpenPGPPacket> morePackets = reader.readPackets();
+            packets.addAll(morePackets);
+            packets.remove(0);
+         }
+         else
+         {
+            System.out.println("Packet " + current + " is not supported");
          }
       }
       data = out.toByteArray();

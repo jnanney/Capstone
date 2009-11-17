@@ -12,7 +12,6 @@ public class Test
       }
       RSAPrivateKey key = new RSAPrivateKey(1024);
       FileEncryptor encryptor = new FileEncryptor(new File("hello"), key);
-      //encryptor.encryptFile();
       encryptor.write(new File(args[0]));
 
       FileDecryptor decryptor = new FileDecryptor(new File(args[0]), key);
@@ -23,7 +22,7 @@ public class Test
       
       //if(p.waitFor() != 0)
       //{
-         OpenPGPPacket keyToWrite = new OpenPGPPacket(OpenPGP.PRIVATE_KEY_PACKET_TAG, key);
+      /*   OpenPGPPacket keyToWrite = new OpenPGPPacket(OpenPGP.PRIVATE_KEY_PACKET_TAG, key);
          keyToWrite.write(new FileOutputStream("last"));
          /*PacketReader reader = new PacketReader(new File("last"));
          reader.readPackets();*/

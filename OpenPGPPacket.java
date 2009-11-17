@@ -32,6 +32,9 @@ public class OpenPGPPacket
          case OpenPGP.PRIVATE_KEY_PACKET_TAG:
             packetInfo = new RSAPrivateKey(data);
             break;
+         case OpenPGP.COMPRESSED_DATA_TAG:
+            packetInfo = new CompressedDataPacket(data);
+            break;
          default:
             System.err.println("Tag " + tag + " is not a supported tag");
       }

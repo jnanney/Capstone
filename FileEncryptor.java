@@ -27,15 +27,22 @@ public class FileEncryptor
       this.input = input;
       this.publicKey=key;
       makeLiteralPacket(new FileInputStream(input));
+      compress();
       encryptFile();
    }
    
-   private void compress(InputStream in) throws IOException
+   private void compress() throws IOException
    {
       ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
       DeflaterOutputStream deflater = new DeflaterOutputStream(arrayOut);
       deflater.write(toEncrypt);
-      toEncrypt = arrayOut.toByteArray();
+      byte[] compressed = arrayOut.toByteArray();
+      CompressedDataPacket comp = new CompressedDataPacket(compressed, false);
+      OpenPGPPacket tempPacket = new OpenPGPPacket(OpenPGP.COMPRESSED_DATA_TAG,
+         comp);
+      ByteArrayOutputStream toEncryptArrayOut = new ByteArrayOutputStream();
+      tempPacket.write(toEncryptArrayOut);
+      toEncrypt = toEncryptArrayOut.toByteArray();
    }
 
    public void write(File output) throws IOException, FileNotFoundException
