@@ -39,6 +39,14 @@ public class OpenPGP
    /** The number of bytes that 3DES can encrypt at once */
    public static final byte TRIPLEDES_BLOCK_BYTES = 8;
    
+   /**
+    * Takes an array of bytes representing an MPI (multiprecision integer) 
+    * and returns just the number without the length bytes.  MPIs are unsigned
+    * integers with 2 length bytes at the beginning.
+    * @param data - the array to get the number from
+    * @param start - the index of the array where the MPI starts
+    * @return a byte array representing the number.  
+    * */
    public static byte[] getMultiprecisionInteger(byte[] data, int start)
    {
       int i = start;
@@ -52,6 +60,12 @@ public class OpenPGP
       return mpi;
    }
 
+   /**
+    * Takes a number and returns it as an MPI (multiprecision integer).  An 
+    * MPI is a unsigned integer with 2 length bytes at the beginning.
+    * @param num - the number to turn into an MPI
+    * @return a byte array containg the MPI
+    * */
    public static byte[] makeMultiprecisionInteger(BigInteger num)
    {
       byte[] temp = num.toByteArray();
@@ -87,8 +101,9 @@ public class OpenPGP
    }
 
    /**
-    * Given a length in bytes will express that length as a new format packet 
-    * length.  Old format packets will never and should never be generated.
+    * Given the length of a packet in bytes it will convert that length to the
+    * format needed for packets.  Old format packets will never and should 
+    * never be generated.
     * @param length - the length in bytes of the packet
     * @return the packet length expressed in 1,2 or 5 bytes.
     * */
