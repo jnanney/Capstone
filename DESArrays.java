@@ -1,5 +1,15 @@
+/**
+ * This class contains functions that have all the arrays needed for DES.  
+ * @author Jonathan Nanney
+ * */
 public class DESArrays
 {
+   /**
+    * This function has all of the selection tables that are used to turn a 6 
+    * bit number into a 4 bit number
+    * @param tableNum - the number of table to get 1-8
+    * @return the requested table
+    * */
    public static byte[][] getSelectionTables(int tableNum)
    {
       final byte[][] s1 =
@@ -70,7 +80,7 @@ public class DESArrays
 
       return allS[tableNum - 1];
    }
-
+   
    public static int[] getPermutationFunction()
    {
       final int[] array = 
