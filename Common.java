@@ -6,9 +6,12 @@ import java.util.List;
 import java.io.InputStream;
 import java.io.IOException;
 
+/**
+ * Class that contains static functions that can be used multiple places.  
+ * @author Jonathan Nanney
+ * */
 public class Common
 {
-   public static final int CHAR_SIZE = 5;
    private Common() {}
   
   
@@ -30,7 +33,12 @@ public class Common
       }
       return result;
    }
-
+   
+   /**
+    * This method turns bytes into a long
+    * @param input - the bytes to turn into a long
+    * @return the long created from these bytes
+    * */
    public static long makeBytesLong(byte[] input)
    {
       return makeBytesLong(input, 0, input.length);
@@ -59,7 +67,12 @@ public class Common
       }
       return result;
    }
-
+   
+   /**
+    * Turns a list of Byte objects into an array of byte primitives
+    * @param bytes - the list of Bytes to turn into primitives
+    * @return the array of bytes
+    * */
    public static byte[] makeByteListPrimitive(List<Byte> bytes)
    {
       byte[] result = new byte[bytes.size()];
@@ -69,7 +82,12 @@ public class Common
       }
       return result;
    }
-
+   
+   /**
+    * Turns a long into an array of bytes
+    * @param number - the number to put into a byte array
+    * @return the array of bytes
+    * */
    public static byte[] makeLongBytes(long number)
    {
       int bytesInLong = Long.SIZE / Byte.SIZE;
@@ -82,7 +100,12 @@ public class Common
       }
       return result;
    }
-
+   
+   /**
+    * Gets the current time expressed as seconds since Jan 1, 1970 and puts it
+    * into an array of 4 bytes
+    * @return the epoch time in a byte array
+    * */
    public static byte[] getByteTime()
    {
       Calendar cal = new GregorianCalendar();
@@ -98,19 +121,7 @@ public class Common
       }
       return byteTime;
    }
-
-   public static String makeStringFromLong(long input)
-      throws InvalidSelectionException
-   {
-      String result = "";
-      for(int i = 0; i < 4; i++)
-      {
-         char temp = (char) getBits(input, i*16 + 1, (i+1)*16);
-         result += temp;
-      }
-      return result;
-   }
-
+   
    /**
     * Gets the bits from the starting to the ending position inclusive.  
     * Numbering starts at 1 and ends at 64.  Since Java is Big-Endian bit 1 is
@@ -135,8 +146,13 @@ public class Common
       return result;
    }
 
-
-
+   
+   /**
+    * Gets the bit in the specificified position.  Indexing starts at 1.
+    * @param number - the number to get the bit from
+    * @param position - the position of the bit to get.  Indexing starts at 1
+    * @return a 1 or 0 depending on what the specified bit was set to
+    * */
    public static byte getBit(byte number, int position)
       throws InvalidSelectionException
    {
@@ -183,14 +199,30 @@ public class Common
          return 0;
       }
    }
-
+   
+   /**
+    * Given two 32 bit numbers this will make one long
+    * @param left - the number to be placed in the most significant places
+    * @param right - the number to be placed in the least significant places
+    * @return the 64 bit number
+    * */
    public static long makeLong(int left, int right)
    {
       long result = ((long) left) << 32;
       result = result | right;
       return result;
    }
-
+   
+   /**
+    * Switches the position of bits in a number based on the array.
+    * @param original - the number to switch the positions in 
+    * @param newPositions - the array with the bits in their new positions.  
+    *        Format of the array is that each element of the array has a
+    *        number which represents which bit from the original to take.  e.g
+    *        if there is an array {64, 63} this will move the last two bits
+    *        into the first 2 places
+    * @return a long with the bits in their new positions.
+    * */
    public static long switchBits(long original, int newPositions[]) 
       throws InvalidSelectionException
    {
@@ -202,7 +234,12 @@ public class Common
       }
       return result;
    }
-
+   
+   /**
+    * Returns a string of the number in binary.  Used for debugging
+    * @param num - the number to make a string out of.
+    * @return num as a String of bits
+    * */
    public static String showBinary(long num)
    {
       String result = "";
@@ -213,75 +250,5 @@ public class Common
       }
       return result;
     
-   }
-
-   public static String makeNumberString(String string)
-   {
-      String result = "";
-      char[] array = string.toCharArray();
-      Formatter formatter = new Formatter();
-      for(char current : array)
-      {
-         formatter.format("%05d", (int) current);
-      }
-      return formatter.toString();
-   }
-
-   public static String makeCharString(String string)
-   {
-      String result = "";
-      for(int i = 0; i < string.length(); i += CHAR_SIZE)
-      {
-         String sub = string.substring(i, i + CHAR_SIZE);
-         char c = (char) (Integer.valueOf(sub).intValue());
-         result += c;
-      }
-      return result;
-   }
-   
-   /*public static String[] split(String string, int subsize)
-   {
-	   int numElements = (int) Math.ceil((double) string.length() / subsize);
-	   String result[] = new String[numElements];
-	   for(int i = 0; i * subsize < string.length(); i++)
-	   {
-		   if(i * subsize + subsize > string.length())
-		   {
-			   result[i] = string.substring(i * subsize);
-		   }
-		   else
-		   {
-			   result[i] = string.substring(i * subsize, i * subsize + subsize);
-		   }
-	   }
-	   return result;
-   }
-
-   /*public static String[] split(String string, int subsize)
-   {
-      ArrayList<String> result = new ArrayList<String>();
-      for(int i = 0, current = 0; i < string.length(); i++)
-      {
-         if(
-      }
-
-   }*/
-
-   public static String[] split(String string, int subsize)
-   {
-      int numElements = (int) Math.ceil((double) string.length() / subsize);
-      String result[] = new String[numElements];
-      for(int i = 0; i * subsize < string.length(); i++)
-      {
-         if(i * subsize + subsize > string.length())
-         {
-            result[i] = string.substring(i * subsize);
-         }
-         else
-         {
-            result[i] = string.substring(i * subsize, i * subsize + subsize);
-         }
-      }
-      return result;
    }
 }
