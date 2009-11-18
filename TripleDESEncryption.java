@@ -18,7 +18,11 @@ public class TripleDESEncryption
       key2 = new DESKey();
       key3 = new DESKey();
    }
-
+   
+   /** Constructor that takes an array of longs for keys
+    * @param original - the data to encrypt
+    * @param keys - an array of 3 longs to use as keys
+    * */
    public TripleDESEncryption(long original, long[] keys)
    {
       this.original = original;
@@ -106,17 +110,29 @@ public class TripleDESEncryption
    {
       return new DESKey[] {key1, key2, key3};
    }
-
+   
+   /**
+    * Gets the first key
+    * @return the first 3DES key
+    * */
    public long getKey1()
    {
       return key1.getKey();
    }
-
+   
+   /**
+    * Gets the second key
+    * @return the second 3DES key
+    * */
    public long getKey2()
    {
       return key2.getKey();
    }
-
+   
+   /**
+    * Gets the third key
+    * @return the third 3DES key
+    * */
    public long getKey3()
    {
       return key3.getKey();
