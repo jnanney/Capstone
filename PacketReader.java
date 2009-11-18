@@ -5,20 +5,38 @@ import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+/**
+ * This class will read packets from an input stream
+ * @author Jonathan Nanney
+ * */
 public class PacketReader
 {
+   /** The input stream to read from */
    private InputStream readIn;
-
+   
+   /**
+    * Constructor that takes an input stream to read from
+    * @param input - the input stream to read from
+    * */
    public PacketReader(InputStream input)
    {
       this.readIn = input;
    }
-
+   
+   /**
+    * Constructor that takes a file and creates a new FileInputStream
+    * @param input - the file to create an input stream from
+    * */
    public PacketReader(File input) throws FileNotFoundException
    {
       this.readIn = new FileInputStream(input);
    }
-
+   
+   /**
+    * Reads packets from the input stream and returns them in a list
+    * @return the list of packets that were read
+    * */
    public List<OpenPGPPacket> readPackets() throws MalformedPacketException,
       IOException
    {
