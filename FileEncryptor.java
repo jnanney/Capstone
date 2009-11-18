@@ -47,7 +47,7 @@ public class FileEncryptor
    
    /**
     * This method will compress the data and puts the result in the toEncrypt 
-    * array
+    * array.  Algorithm used is DEFLATE
     * */
    private void compress() throws IOException
    {
