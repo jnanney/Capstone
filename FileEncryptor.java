@@ -14,17 +14,30 @@ import java.io.ByteArrayInputStream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
 
+/**
+ * This class will encrypt a file and allows the user to write the encrypted
+ * data to multiple files
+ * @author Jonathan Nanney
+ * */
 public class FileEncryptor
 {
+   /** The file to encrypt */
    private File input;
+   /** The encrypted packets */
    private ArrayList<OpenPGPPacket> encrypted;
+   /** The public key to use to encrypt */
    private RSABaseKey publicKey;
+   /** The data to encrypt */
    private byte[] toEncrypt;
-
+   
+   /**
+    * Constructor that takes a file to encrypt and a key to encrypt it with
+    * @param input - the file to encrypt
+    * @param key - the key to encrypt the file with
+    * */
    public FileEncryptor(File input, RSABaseKey key) 
       throws FileNotFoundException, IOException, InvalidSelectionException
    {
-      //literalData = new ArrayList<Byte>();
       this.input = input;
       this.publicKey=key;
       makeLiteralPacket(new FileInputStream(input));
@@ -32,24 +45,20 @@ public class FileEncryptor
       encryptFile();
    }
    
+   /**
+    * This method will compress the data and puts the result in the toEncrypt 
+    * array
+    * */
    private void compress() throws IOException
    {
+      //TODO: clean this code up
       ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
       DeflaterOutputStream deflater = new DeflaterOutputStream(arrayOut);
       //DeflaterOutputStream deflater = new DeflaterOutputStream(new FileOutputStream("weez"));
-      System.out.println("ToEncrypt length " + toEncrypt.length);
       deflater.write(toEncrypt, 0, toEncrypt.length);
       deflater.finish();
       byte[] compressed = arrayOut.toByteArray();
 
-      System.out.println("Compressed length " + compressed.length);
-      ByteArrayOutputStream temp = new ByteArrayOutputStream();
-      InflaterOutputStream inflater = new InflaterOutputStream(temp);
-      inflater.write(compressed, 0, compressed.length);
-      byte[] temp2 = temp.toByteArray();
-      System.out.println("Decompressed length " + temp2.length);
-
-      System.out.println("Compressed length is " + compressed.length);
       CompressedDataPacket comp = new CompressedDataPacket(compressed, false);
       OpenPGPPacket tempPacket = new OpenPGPPacket(OpenPGP.COMPRESSED_DATA_TAG,
          comp);
@@ -57,7 +66,11 @@ public class FileEncryptor
       tempPacket.write(toEncryptArrayOut);
       toEncrypt = toEncryptArrayOut.toByteArray();
    }
-
+   
+   /**
+    * This method writes the encrypted file to a file.
+    * @param output - the file to write to
+    * */
    public void write(File output) throws IOException, FileNotFoundException
    {
       FileOutputStream out = new FileOutputStream(output);
@@ -67,9 +80,17 @@ public class FileEncryptor
       }
    }
    
+   /**
+    * This turns the original file into a literal data packet and puts the 
+    * result into encrypt.  
+    * @param in - the input stream to read the original file from
+    * */
    private void makeLiteralPacket(InputStream in) throws IOException
    {
       byte[] data = Common.readAllData(in);
+      //b in ascii means that the data is treated as binary data.  Another
+      //option could be 0x72 or t in ascii which would treat the data as text.
+      //That isn't currently implemented.
       byte FORMAT = 0x62;
       LiteralDataPacket literal = new LiteralDataPacket(FORMAT, input.getName(), 
                                                         data);
@@ -79,9 +100,15 @@ public class FileEncryptor
       literalPacket.write(arrayOut);
       toEncrypt = arrayOut.toByteArray();
    }
-
+   
+   /**
+    * This method encrypts a file and puts the results in the encrypted packet
+    * list.
+    * */
    private void encryptFile() throws InvalidSelectionException
    {
+      //TODO: clean this code up a lot.  Probably move the code that encrypts
+      //random data into its method.
       encrypted = new ArrayList<OpenPGPPacket>();
       byte[] fr = Common.makeLongBytes(0);
       long frLong = Common.makeBytesLong(fr);
@@ -134,6 +161,16 @@ public class FileEncryptor
       }
    }
    
+   /**
+    * This method creates the next 4 encrypted packets.  The first three 
+    * packets hold the 3 public key encrypted session keys and the last packet
+    * holds the encrypted data
+    * @param des - holds the 3DES keys to encrypt and put in 
+    *              EncryptedSessionKeyPacket
+    * @param cipher - the data that was encrypted with 3DES to put into a 
+    *                 SymmetricDataPacket
+    * @return A list of the packets that were created
+    * */
    private List<OpenPGPPacket> createPackets(TripleDESEncryption des, byte[] cipher)
    {
       ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
@@ -151,5 +188,4 @@ public class FileEncryptor
       result.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData));
       return result;
    }
-
 }
