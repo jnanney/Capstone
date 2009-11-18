@@ -71,6 +71,12 @@ public class TripleDESEncryption
     * */
    public long encrypt() throws InvalidSelectionException
    {
+      /* Encryption is done by encrypting it 3 times with regular DES, 
+       * preferably with 3 separate keys.  It encrypts with key1, decrypts 
+       * with key2, and encrypts with key3.  This is done so that if you need
+       * to stay backwards compatible with regular DES you can; just give it 
+       * the same key 3 times.
+       * */
       DESEncryption des1 = new DESEncryption(original, key1);
       long current = des1.encrypt();
       DESEncryption des2 = new DESEncryption(current, key2);
