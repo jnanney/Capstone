@@ -41,7 +41,7 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
          System.err.println("Invalid Public key constant " + data[i - 1]);
       }
       byte[] key = OpenPGP.getMultiprecisionInteger(data, i);
-      encryptedKey = new BigInteger(1, key); //XXX: hopefully this will help.  Makes number positive
+      encryptedKey = new BigInteger(1, key);
       //encryptedKey = new BigInteger(key);
    }
 

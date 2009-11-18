@@ -61,12 +61,14 @@ public class FileDecryptor
       }
       System.out.println("Random data is " + java.util.Arrays.toString(randomData));
       System.out.println("Cipher data is " + java.util.Arrays.toString(cipher));
-      des = new TripleDESEncryption(Common.makeBytesLong(cipher), getNextKeys(packets, 4));
+      des = new TripleDESEncryption(Common.makeBytesLong(cipher), 
+                                    getNextKeys(packets, 4));
       for(int i = 0; i < 6; i++)
       {
          fr[i] = cipher[i + 2];
       }
-      SymmetricDataPacket secondSym = (SymmetricDataPacket) packets.get(7).getPacket();
+      SymmetricDataPacket secondSym = (SymmetricDataPacket) 
+                                          packets.get(7).getPacket();
       cipher = secondSym.getEncryptedData();
       byte[] randomCheck = new byte[2];
       frEncrypted = Common.makeLongBytes(des.encrypt());
@@ -74,7 +76,8 @@ public class FileDecryptor
       {
          randomCheck[i] = (byte) (cipher[i] ^ frEncrypted[i]);   
       }
-      System.out.println("Last two random " + java.util.Arrays.toString(randomCheck));
+      System.out.println("Last two random " + 
+                         java.util.Arrays.toString(randomCheck));
       fr[6] = cipher[0];
       fr[7] = cipher[1];
       if(randomCheck[0] != randomData[6] || randomCheck[1] != randomData[7])
@@ -143,7 +146,8 @@ public class FileDecryptor
                                                 current.getPacket();
             byte[] compressedData = compressed.getCompressedData();
             ByteArrayOutputStream decompressed = new ByteArrayOutputStream();
-            InflaterOutputStream inflater = new InflaterOutputStream(decompressed);
+            InflaterOutputStream inflater = new InflaterOutputStream(
+                                                 decompressed);
             inflater.write(compressedData, 0, compressedData.length);
             ByteArrayInputStream readData = new ByteArrayInputStream(
                                              decompressed.toByteArray());
