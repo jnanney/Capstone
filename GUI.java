@@ -28,8 +28,6 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-
-
 public class GUI
 {
    //The number of rows in the file list text area
