@@ -44,7 +44,7 @@ public class GUI
    /*
     * Creates and displays a new GUI object
     **/
-   public GUI() throws Exception //TODO: replace
+   public GUI() 
    {
       JFrame frame = new JFrame("File Encryption With OpenPGP");
       frame.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -61,8 +61,7 @@ public class GUI
    }
    
 
-   private void createGUI(final Container pane) throws IOException, 
-      FileNotFoundException
+   private void createGUI(final Container pane) 
    {
       final ArrayList<File> encryptList = new ArrayList<File>();
       final ArrayList<File> decryptList = new ArrayList<File>();
@@ -141,13 +140,13 @@ public class GUI
    }
 
    private JPanel createEncryptionPanel(final Container pane, final List<File> 
-      fileList) throws IOException, FileNotFoundException
+      fileList) 
    {
       JButton addFileButton = new JButton("Add File");  
       JButton encryptButton = new JButton("Encrypt Files");
       final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
       JScrollPane scrollingFileText = new JScrollPane(fileText);
-      JPanel panel = new JPanel(); 
+      final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
 
       panel.add(scrollingFileText, BorderLayout.PAGE_START);
@@ -186,11 +185,15 @@ public class GUI
                }
                catch(FileNotFoundException fnfe)
                {
-                  System.err.println(fnfe.getMessage());
+                  JOptionPane.showMessageDialog(panel, current.getName() + 
+                     " was not found", "File Not Found", 
+                     JOptionPane.ERROR_MESSAGE);
                }
                catch(IOException ioe)
                {
-                  System.err.println(ioe.getMessage());
+                  JOptionPane.showMessageDialog(panel, "There was a problem "
+                     + "reading or writing file: " + current.getName(), 
+                     "IO Exception", JOptionPane.ERROR_MESSAGE);
                }
             }
          }
