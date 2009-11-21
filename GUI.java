@@ -271,8 +271,9 @@ public class GUI
                      OpenPGP.PUBLIC_KEY_PACKET_TAG, publicKey);
                   OpenPGPPacket privatePacket = new OpenPGPPacket(
                   OpenPGP.PRIVATE_KEY_PACKET_TAG, privateKey);
-                  File privateFile = chooser.getSelectedFile();
-                  File publicFile = new File(privateFile.toString() + ".pub");
+                  File basicFile = chooser.getSelectedFile();
+                  File privateFile = new File(basicFile.toString() + ".priv");
+                  File publicFile = new File(basicFile.toString() + ".pub");
                   FileOutputStream publicOut = new FileOutputStream(publicFile);
                   FileOutputStream privateOut = new FileOutputStream(privateFile);
                   publicPacket.write(publicOut);
