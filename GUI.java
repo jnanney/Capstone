@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 
 public class GUI
@@ -56,7 +58,6 @@ public class GUI
 
    public static void main(String[] args) throws Exception //TODO: replace
    {
-
       GUI gui = new GUI();
    }
    
@@ -215,6 +216,9 @@ public class GUI
          public void actionPerformed(ActionEvent evt)
          {
             JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+               "Public and Private Keys", "priv", "pub");
+            chooser.setFileFilter(filter);
             int returnValue = chooser.showOpenDialog(pane);
             if(returnValue == JFileChooser.APPROVE_OPTION)
             {
@@ -251,6 +255,9 @@ public class GUI
          public void actionPerformed(ActionEvent evt) 
          {
             JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+               "Public and Private Keys", "priv", "pub");
+            chooser.setFileFilter(filter);
             int returnValue = chooser.showSaveDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION) 
             {
