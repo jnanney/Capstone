@@ -206,6 +206,7 @@ public class GUI
       JButton existingKey = new JButton("Use an existing key");
       final JTextField keyLength = new JTextField("1024", 10);      
       GridBagConstraints constraints = new GridBagConstraints();
+      
       constraints.fill = GridBagConstraints.HORIZONTAL;
       panel.add(newKey, constraints);
       /*panel.add(newKey);
