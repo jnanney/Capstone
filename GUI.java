@@ -238,20 +238,18 @@ public class GUI
                }
                catch(MalformedPacketException mpe)
                {
-                  JOptionPane packetMessage = new JOptionPane(
-                     "Malformed Packet", JOptionPane.ERROR_MESSAGE);
-                  packetMessage.showMessageDialog(panel, "Invalid key file");
+                  JOptionPane.showMessageDialog(panel, "Invalid key file", 
+                  "Malformed Packet", JOptionPane.ERROR_MESSAGE);
                }
                catch(IOException ioe)
                {
-                  System.out.println(ioe.getMessage());
-                  System.exit(1);
+                  JOptionPane.showMessageDialog(panel, "Problem reading key",
+                     "IO Exception", JOptionPane.ERROR_MESSAGE);
                }
                catch(ClassCastException cce)
                {
-                  JOptionPane error = new JOptionPane("Invalid valid key file", 
-                     JOptionPane.ERROR_MESSAGE);
-                  error.showMessageDialog(panel, "Invalid key file");
+                  JOptionPane.showMessageDialog(panel, "Invalid key file", 
+                     "Invalid Key", JOptionPane.ERROR_MESSAGE);
                }
             }
          }
@@ -288,11 +286,13 @@ public class GUI
                }
                catch(FileNotFoundException nfe)
                {
-                  System.out.println(nfe.getMessage());
+                  JOptionPane.showMessageDialog(panel,  "File Not Found",
+                  "File Not Found", JOptionPane.ERROR_MESSAGE);
                }
                catch(IOException ioe)
                {
-                  System.out.println(ioe.getMessage());
+                  JOptionPane.showMessageDialog(panel,  "Problem writing file",
+                  "IO Exception", JOptionPane.ERROR_MESSAGE);
                }
             }
          }
