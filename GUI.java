@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.Popup;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
@@ -127,7 +126,6 @@ public class GUI
                }
                catch(MalformedPacketException mpe)
                {
-                  System.err.println(mpe.getMessage());
                }
                catch(IOException ioe)
                {
@@ -233,8 +231,9 @@ public class GUI
                }
                catch(MalformedPacketException mpe)
                {
-                  System.out.println(mpe.getMessage());
-                  System.exit(1);
+                  JOptionPane packetMessage = new JOptionPane(
+                     "Malformed Packet", JOptionPane.ERROR_MESSAGE);
+                  packetMessage.showMessageDialog(panel, "Invalid key file");
                }
                catch(IOException ioe)
                {

@@ -30,7 +30,7 @@ public class OpenPGPPacket
     * @param tag - the tag that identifies the packet
     * @param data - the data in the packet after the header.
     * */
-   public OpenPGPPacket(byte tag, byte[] data) 
+   public OpenPGPPacket(byte tag, byte[] data) throws MalformedPacketException
    {
       this.tag = tag;
       switch(tag)
@@ -54,7 +54,7 @@ public class OpenPGPPacket
             packetInfo = new CompressedDataPacket(data);
             break;
          default:
-            System.err.println("Tag " + tag + " is not a supported tag");
+            throw new MalformedPacketException("Tag " + tag + " is invalid");
       }
    }
    
