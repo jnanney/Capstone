@@ -199,28 +199,17 @@ public class GUI
    private JPanel createRSAOptionPanel(final Container pane)
    {
       final JPanel panel = new JPanel();
-      panel.setLayout(new GridBagLayout());
+      GridBagLayout gridbag = new GridBagLayout();
+      panel.setLayout(gridbag);
       JButton newKey = new JButton("Generate a new key");
       JButton existingKey = new JButton("Use an existing key");
       final JTextField keyLength = new JTextField("1024", 10);      
+      GridBagConstraints constraints = new GridBagConstraints();
+      constraints.fill = GridBagConstraints.HORIZONTAL;
+      panel.add(newKey, constraints);
       /*panel.add(newKey);
       panel.add(existingKey);
       panel.add(keyLength);*/
-
-      GridBagConstraints constraints = new GridBagConstraints();
-      constraints.fill = constraints.HORIZONTAL;
-      /*constraints.gridx = 0;
-      constraints.gridy = 
-      constraints.weightx = 0.5;*/
-      constraints.anchor = constraints.FIRST_LINE_START;
-      panel.add(keyLength, constraints);
-
-      GridBagConstraints constraints2 = new GridBagConstraints();
-      constraints2.fill = constraints2.HORIZONTAL;
-      constraints2.gridx = 1;
-      constraints2.gridy = 0;
-      constraints2.weightx = 0.5;
-      panel.add(newKey, constraints2);
       existingKey.addActionListener(new ActionListener()
       {
          public void actionPerformed(ActionEvent evt)
