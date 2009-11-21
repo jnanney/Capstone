@@ -85,7 +85,7 @@ public class GUI
       JButton decryptButton = new JButton("Decrypt Files");
       final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
       JScrollPane scrollingFileText = new JScrollPane(fileText);
-      JPanel panel = new JPanel(); 
+      final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
 
       panel.add(scrollingFileText, BorderLayout.PAGE_START);
@@ -126,6 +126,9 @@ public class GUI
                }
                catch(MalformedPacketException mpe)
                {
+                  JOptionPane.showMessageDialog(panel, 
+                     current.getName() + " is not a valid encrypted file", 
+                     "Invalid file", JOptionPane.ERROR_MESSAGE);
                }
                catch(IOException ioe)
                {
@@ -207,6 +210,7 @@ public class GUI
       
       constraints.fill = GridBagConstraints.HORIZONTAL;
       panel.add(newKey, constraints);
+      panel.add(existingKey, constraints);
       /*panel.add(newKey);
       panel.add(existingKey);
       panel.add(keyLength);*/
