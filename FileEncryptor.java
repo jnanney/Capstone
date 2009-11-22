@@ -41,7 +41,7 @@ public class FileEncryptor
       this.input = input;
       this.publicKey=key;
       makeLiteralPacket(new FileInputStream(input));
-      compress();
+      //compress();
       encryptFile();
    }
    
@@ -107,6 +107,7 @@ public class FileEncryptor
     * */
    private void encryptFile() throws InvalidSelectionException
    {
+      System.out.println("Starting encryption");
       //TODO: clean this code up a lot.  Probably move the code that encrypts
       //random data into its method.
       encrypted = new ArrayList<OpenPGPPacket>();
@@ -173,6 +174,9 @@ public class FileEncryptor
     * */
    private List<OpenPGPPacket> createPackets(TripleDESEncryption des, byte[] cipher)
    {
+      System.out.println("Key 1 " + des.getKey1());
+      System.out.println("Key 2 " + des.getKey2());
+      System.out.println("Key 3 " + des.getKey3());
       ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
 
       EncryptedSessionKeyPacket key1 = new EncryptedSessionKeyPacket(publicKey,

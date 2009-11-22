@@ -78,7 +78,10 @@ public class RSAEncryption
 
       RSAPrivateKey privateKey = (RSAPrivateKey) key;
 	   BigInteger n = key.getPrimeProduct();
+      System.out.println("In big int decryptionExponent is  " +privateKey.getDecryptionExponent()); 
+      System.out.println("In big int n is  " + n);
       BigInteger result = original.modPow(privateKey.getDecryptionExponent(), n);
+      System.out.println("And the result is " + result);
 	   return result;
    }
    

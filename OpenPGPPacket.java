@@ -54,7 +54,8 @@ public class OpenPGPPacket
             packetInfo = new CompressedDataPacket(data);
             break;
          default:
-            throw new MalformedPacketException("Tag " + tag + " is invalid");
+            System.err.println("Tag " + (OpenPGP.NEW_TAG_MASK ^ tag) + " is invalid");
+            //throw new MalformedPacketException("Tag " + tag + " is invalid");
       }
    }
    

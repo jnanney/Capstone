@@ -98,6 +98,7 @@ public class FileDecryptor
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       PacketReader reader = new PacketReader(input);
       List<OpenPGPPacket> packets = reader.readPackets();
+      System.out.println("\n\nStarting decryption");
       byte[] fr = processRandomData(packets);
       TripleDESEncryption des;
       SymmetricDataPacket sym;
