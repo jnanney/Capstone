@@ -13,8 +13,21 @@ import java.io.IOException;
 public class Common
 {
    private Common() {}
-  
-  
+   
+   /**
+    * This function performs a left circular shift.  That is, it's as if you 
+    * did a regular left shift and moved the bits that were pushed off onto 
+    * the right end.
+    * @param num - the number to shift.
+    * @param shiftLength - the amount of bits to shift by
+    * @return the number shifted left circularly.
+    * */
+   public static int rotateLeftCircular(int num, int shiftLength)
+   {
+      //This code copied almost exactly out of FIPS-180-2 page 8.
+      return (num << shiftLength) | (num >>> (Integer.SIZE - shiftLength));
+   }
+
    /**
     * This method turns a specific subset of a byte array into a long
     * @param data - the array to get the bytes from
