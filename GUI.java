@@ -212,6 +212,7 @@ public class GUI
       constraints.fill = GridBagConstraints.HORIZONTAL;
       panel.add(newKey, constraints);
       panel.add(existingKey, constraints);
+      panel.add(keyLength, constraints);
       /*panel.add(newKey);
       panel.add(existingKey);
       panel.add(keyLength);*/
