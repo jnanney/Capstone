@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
+import java.util.Arrays;
 
 public class UnitTests
 {
@@ -49,6 +50,14 @@ public class UnitTests
       byte[] decompressed = Common.readAllData(inflate);
       Assert.assertTrue(decompressed != result);
       Assert.assertTrue(java.util.Arrays.equals(decompressed, array));
+   }
+
+   @Test public void padTest() throws Exception
+   {
+      byte[] in = new byte[4];
+      Arrays.fill(in, (byte) 0);
+      byte[] result = SHA1.pad(in);
+      System.out.println("length = " + result.length);
    }
 
 }

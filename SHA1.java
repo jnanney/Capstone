@@ -1,7 +1,12 @@
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.io.IOException;
+
 public class SHA1
 {
    private byte[] original;
-   private static final int BLOCK_BITS = 512;
+   private static final int BLOCK_BYTES = 64;
+   private static final int LENGTH_BYTES = 8;
    private static final int FUNC_BOUND1 = 20;
    private static final int FUNC_BOUND2 = 40;
    private static final int FUNC_BOUND3 = 60;
@@ -12,11 +17,28 @@ public class SHA1
       this.original = pad(data);
    }
 
-   private byte[] pad(byte[] data)
+   public static byte[] pad(byte[] data)
    {
-      int toAdd = (data.length ) % BLOCK_BITS;
-      return null;
+      ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+      int minLength = data.length + LENGTH_BYTES + 1;
+      int zerosToAdd = BLOCK_BYTES - (minLength % BLOCK_BYTES);
+      
+      try
+      {
+         byteStream.write(data);
+         byteStream.write(1 << 7);
+         byte[] zeros = new byte[zerosToAdd];
+         Arrays.fill(zeros, (byte) 0);
+         byteStream.write(zeros);
+         byteStream.write(Common.makeLongBytes(data.length * Byte.SIZE));
+      }
+      catch(IOException ioe)
+      {
+         System.err.println(ioe.getMessage());
+      }
+      return byteStream.toByteArray();
    }
+
    
    /**
     * This method does addition modulo 2^32 as required by the SHA-1 standard.
@@ -62,5 +84,4 @@ public class SHA1
          return 0;
       }
    }
-
 }
