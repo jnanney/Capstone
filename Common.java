@@ -28,6 +28,18 @@ public class Common
       return (num << shiftLength) | (num >>> (Integer.SIZE - shiftLength));
    }
 
+   public static int makeBytesInt(byte[] data, int start, int end)
+   {
+      int result = 0;
+      for(int i = start; i < end; i++)
+      {
+         result = result << Byte.SIZE;
+         int byteValue = (int) (0xFF & data[i]);
+         result = result | byteValue;
+      }
+      return result;
+   }
+
    /**
     * This method turns a specific subset of a byte array into a long
     * @param data - the array to get the bytes from

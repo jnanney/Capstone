@@ -6,6 +6,7 @@ public class SHA1
 {
    private byte[] original;
    private static final int BLOCK_BYTES = 64;
+   private static final int BLOCK_ITERATIONS = 80;
    private static final int LENGTH_BYTES = 8;
    private static final int FUNC_BOUND1 = 20;
    private static final int FUNC_BOUND2 = 40;
@@ -39,7 +40,39 @@ public class SHA1
       return byteStream.toByteArray();
    }
 
-   
+   public byte[] compute()
+   {
+      int blocks = original.length / BLOCK_BYTES;
+      int[] hashValues = new int[]{0x67452301, 0xefcdab89, 0x98badcfe, 
+                                   0x10325476, 0xc3d2e1f0};
+      for(int i = 0; i < blocks; i++)
+      {
+         int a = hashValues[0]; 
+         int b = hashValues[1]; 
+         int c = hashValues[2]; 
+         int d = hashValues[3]; 
+         int e = hashValues[4]; 
+         int temp;
+         int[] w = messageScheduler(original, i);
+         for(int j = 0; j < BLOCK_ITERATIONS; j++)
+         {
+            temp = Common.rotateLeftCircular(a, 5) + sha1Function(j, b, c, d) +
+                   constant(j) + w[j];
+            e = d;
+            d = c;
+            c = Common.rotateLeftCircular(b, 30);
+            b = a;
+            a = temp;
+         }
+         hashValues[0] = a + hashValues[0];
+         hashValues[1] = b + hashValues[1];
+         hashValues[2] = c + hashValues[2];
+         hashValues[3] = d + hashValues[3];
+         hashValues[4] = e + hashValues[4];
+      }
+      return null;
+   }
+
    /**
     * This method does addition modulo 2^32 as required by the SHA-1 standard.
     * @param first - the first number to add
@@ -82,6 +115,53 @@ public class SHA1
       else
       {
          return 0;
+      }
+   }
+
+   public int[] messageScheduler(byte[] data, int start)
+   {
+      int BOUNDARY = 16;
+      int PREV_INDEX1 = 3;
+      int PREV_INDEX2 = 8;
+      int PREV_INDEX3 = 14;
+      int PREV_INDEX4 = 16;
+
+      int[] result = new int[BLOCK_ITERATIONS];
+      int bytesInInt = Integer.SIZE / Byte.SIZE;
+      int i;
+      for(i = 0; i < BOUNDARY; i++)
+      {
+         result[i] = Common.makeBytesInt(data, i, i + bytesInInt);
+      }
+      for(; i < result.length; i++)
+      {
+         int temp = result[i - PREV_INDEX1] ^ result[i - PREV_INDEX2] ^ 
+             result[i - PREV_INDEX3] ^ result[i - PREV_INDEX4];
+         result[i] = Common.rotateLeftCircular(temp, 1);
+      }
+      return result;
+   }
+
+   public int constant(int iteration)
+   {
+      int FIRST_BOUNDARY = 20;
+      int SECOND_BOUNDARY = 40;
+      int THIRD_BOUNDARY = 60;
+      if(iteration < FIRST_BOUNDARY)
+      {
+         return 0x5a827999;
+      }
+      else if(iteration < SECOND_BOUNDARY)
+      {
+         return 0x6ed9eba1;
+      }
+      else if(iteration < THIRD_BOUNDARY)
+      {
+         return 0x8f1bbcdc;
+      }
+      else
+      {
+         return 0xca62c1d6;
       }
    }
 }
