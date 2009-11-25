@@ -125,7 +125,19 @@ public class Common
       }
       return result;
    }
-   
+
+   public static byte[] makeIntBytes(int number)
+   {
+      int bytesInInt = Integer.SIZE / Byte.SIZE;
+      byte[] result = new byte[bytesInInt];
+      long shiftSpaces = Integer.SIZE - Byte.SIZE;
+      for(int i = 0; i < bytesInInt; i++)
+      {
+         result[i] = (byte) (number >>> shiftSpaces);
+         shiftSpaces -= bytesInInt;
+      }
+      return result;
+   }
    /**
     * Gets the current time expressed as seconds since Jan 1, 1970 and puts it
     * into an array of 4 bytes

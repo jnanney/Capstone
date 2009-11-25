@@ -70,7 +70,18 @@ public class SHA1
          hashValues[3] = d + hashValues[3];
          hashValues[4] = e + hashValues[4];
       }
-      return null;
+      byte[] result = new byte[20];
+      int counter = 0;
+      for(int i = 0; i < hashValues.length; i++)
+      {
+         byte[] temp = Common.makeIntBytes(hashValues[i]);
+         for(int j = 0; j < temp.length; j++)
+         {
+            result[counter] = temp[j];
+            counter++;
+         }
+      }
+      return result;
    }
 
    /**
