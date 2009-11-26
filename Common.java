@@ -121,7 +121,7 @@ public class Common
       for(int i = 0; i < bytesInLong; i++)
       {
          result[i] = (byte) (number >>> shiftSpaces);
-         shiftSpaces -= bytesInLong;
+         shiftSpaces -= Byte.SIZE;
       }
       return result;
    }
@@ -131,10 +131,10 @@ public class Common
       int bytesInInt = Integer.SIZE / Byte.SIZE;
       byte[] result = new byte[bytesInInt];
       long shiftSpaces = Integer.SIZE - Byte.SIZE;
-      for(int i = 0; i < bytesInInt; i++)
+      for(int i = 0; i < result.length; i++)
       {
          result[i] = (byte) (number >>> shiftSpaces);
-         shiftSpaces -= bytesInInt;
+         shiftSpaces -= Byte.SIZE;
       }
       return result;
    }

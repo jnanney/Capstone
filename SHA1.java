@@ -16,8 +16,6 @@ public class SHA1
    public SHA1(byte[] data)
    {
       this.original = pad(data);
-      System.out.println("original " + Arrays.toString(data));
-      System.out.println("Padded " + Arrays.toString(original));
    }
 
    public static byte[] pad(byte[] data)
@@ -60,21 +58,25 @@ public class SHA1
          int e = hashValues[4]; 
          int temp;
          int[] w = messageScheduler(original, i);
+         System.out.println("i\ta\tb\tc\td\te");
          for(int j = 0; j < BLOCK_ITERATIONS; j++)
          {
-            temp = Common.rotateLeftCircular(a, 5) + sha1Function(j, b, c, d) +
-                   constant(j) + w[j];
+            temp = addMod2(Common.rotateLeftCircular(a, 5), sha1Function(j, b, c, d)); 
+            temp = addMod2(temp, e);
+            temp = addMod2(temp, constant(j));
+            temp = addMod2(temp, w[j]);
             e = d;
             d = c;
             c = Common.rotateLeftCircular(b, 30);
             b = a;
             a = temp;
+            System.out.println(j + "\t" + Integer.toHexString(a) +"\t" +Integer.toHexString(b)+ "\t" + Integer.toHexString(c)+ "\t" + Integer.toHexString(d) + "\t" + Integer.toHexString(e) + "\t");
          }
-         hashValues[0] = a + hashValues[0];
-         hashValues[1] = b + hashValues[1];
-         hashValues[2] = c + hashValues[2];
-         hashValues[3] = d + hashValues[3];
-         hashValues[4] = e + hashValues[4];
+         hashValues[0] = addMod2(a, hashValues[0]);
+         hashValues[1] = addMod2(b, hashValues[1]);
+         hashValues[2] = addMod2(c, hashValues[2]);
+         hashValues[3] = addMod2(d, hashValues[3]);
+         hashValues[4] = addMod2(e, hashValues[4]);
       }
       System.out.println("original hashed " + Arrays.toString(hashValues));
       byte[] result = new byte[20];
@@ -82,6 +84,8 @@ public class SHA1
       for(int i = 0; i < hashValues.length; i++)
       {
          byte[] temp = Common.makeIntBytes(hashValues[i]);
+         System.out.println("hashValues " + hashValues[i]);
+         System.out.println("Temp " + Arrays.toString(temp));
          for(int j = 0; j < temp.length; j++)
          {
             result[counter] = temp[j];
@@ -102,7 +106,6 @@ public class SHA1
       //Integer.MAX holds 2^32 - 1 since it's giving the signed max.  
       //The unsigned value will be double of that + 1
       long MAX_UNSIGNED_INT = ((long) Integer.MAX_VALUE + 1) * 2;
-      System.out.println("max unsigned int " + MAX_UNSIGNED_INT);
       //Holds the maximum value of an int.
       long FULL_INT = 0xFFFFFFFFL;
       long total = (first & FULL_INT) + (second & FULL_INT);
@@ -150,7 +153,7 @@ public class SHA1
       int i;
       for(i = 0; i < BOUNDARY; i++)
       {
-         result[i] = Common.makeBytesInt(data, i, i + bytesInInt);
+         result[i] = Common.makeBytesInt(data, (i*4), (i*4) + bytesInInt);
       }
       for(; i < result.length; i++)
       {
