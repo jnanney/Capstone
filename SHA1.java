@@ -1,6 +1,6 @@
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class SHA1
 {
