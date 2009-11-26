@@ -16,6 +16,8 @@ public class SHA1
    public SHA1(byte[] data)
    {
       this.original = pad(data);
+      System.out.println("original " + Arrays.toString(data));
+      System.out.println("Padded " + Arrays.toString(original));
    }
 
    public static byte[] pad(byte[] data)
@@ -31,6 +33,10 @@ public class SHA1
          byte[] zeros = new byte[zerosToAdd];
          Arrays.fill(zeros, (byte) 0);
          byteStream.write(zeros);
+         byte[] temp = Common.makeLongBytes(data.length * Byte.SIZE);
+         System.out.println("data length is " + data.length);
+         System.out.println("Size is " + data.length * Byte.SIZE);
+         System.out.println("Size is " + Arrays.toString(temp));
          byteStream.write(Common.makeLongBytes(data.length * Byte.SIZE));
       }
       catch(IOException ioe)
@@ -70,6 +76,7 @@ public class SHA1
          hashValues[3] = d + hashValues[3];
          hashValues[4] = e + hashValues[4];
       }
+      System.out.println("original hashed " + Arrays.toString(hashValues));
       byte[] result = new byte[20];
       int counter = 0;
       for(int i = 0; i < hashValues.length; i++)
@@ -90,11 +97,12 @@ public class SHA1
     * @param second - the second number to add
     * @return the two numbers added together mod 2^32
     * */
-   private int addMod2(int first, int second)
+   public static int addMod2(int first, int second)
    {
       //Integer.MAX holds 2^32 - 1 since it's giving the signed max.  
       //The unsigned value will be double of that + 1
-      long MAX_UNSIGNED_INT = (Integer.MAX_VALUE + 1) * 2;
+      long MAX_UNSIGNED_INT = ((long) Integer.MAX_VALUE + 1) * 2;
+      System.out.println("max unsigned int " + MAX_UNSIGNED_INT);
       //Holds the maximum value of an int.
       long FULL_INT = 0xFFFFFFFFL;
       long total = (first & FULL_INT) + (second & FULL_INT);
