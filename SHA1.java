@@ -16,6 +16,7 @@ public class SHA1
    public SHA1(byte[] data)
    {
       this.original = pad(data);
+      System.out.println("After padding size is " + original.length);
    }
 
    public static byte[] pad(byte[] data)
@@ -57,7 +58,7 @@ public class SHA1
          int d = hashValues[3]; 
          int e = hashValues[4]; 
          int temp;
-         int[] w = messageScheduler(original, i);
+         int[] w = messageScheduler(original, i * BLOCK_BYTES);
          System.out.println("i\ta\tb\tc\td\te");
          for(int j = 0; j < BLOCK_ITERATIONS; j++)
          {
@@ -77,15 +78,13 @@ public class SHA1
          hashValues[2] = addMod2(c, hashValues[2]);
          hashValues[3] = addMod2(d, hashValues[3]);
          hashValues[4] = addMod2(e, hashValues[4]);
+         System.out.println("original hashed " + Arrays.toString(hashValues));
       }
-      System.out.println("original hashed " + Arrays.toString(hashValues));
       byte[] result = new byte[20];
       int counter = 0;
       for(int i = 0; i < hashValues.length; i++)
       {
          byte[] temp = Common.makeIntBytes(hashValues[i]);
-         System.out.println("hashValues " + hashValues[i]);
-         System.out.println("Temp " + Arrays.toString(temp));
          for(int j = 0; j < temp.length; j++)
          {
             result[counter] = temp[j];
@@ -153,8 +152,10 @@ public class SHA1
       int i;
       for(i = 0; i < BOUNDARY; i++)
       {
-         result[i] = Common.makeBytesInt(data, (i*4), (i*4) + bytesInInt);
+         //((i+start) * 4), ((i+start) * 4) + bytesInInt);
+         result[i] = Common.makeBytesInt(data, (i*4) + start, (i*4) + start + 4);
       }
+      System.out.println("W is " + Arrays.toString(result));
       for(; i < result.length; i++)
       {
          int temp = result[i - PREV_INDEX1] ^ result[i - PREV_INDEX2] ^ 
