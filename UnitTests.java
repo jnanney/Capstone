@@ -52,12 +52,5 @@ public class UnitTests
       Assert.assertTrue(java.util.Arrays.equals(decompressed, array));
    }
 
-   @Test public void padTest() throws Exception
-   {
-      byte[] in = new byte[4];
-      Arrays.fill(in, (byte) 0);
-      byte[] result = SHA1.pad(in);
-      System.out.println("length = " + result.length);
-   }
 
 }

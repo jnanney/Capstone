@@ -8,21 +8,40 @@ import java.util.Arrays;
  * */
 public class SHA1
 {
-   private byte[] unhashed;
+   /** The number of bytes in one block of data */
    private static final int BLOCK_BYTES = 64;
+   /** For each block the hash function does 80 iterations */
    private static final int BLOCK_ITERATIONS = 80;
+   /** The number of bytes used for the length of a padded message */
    private static final int LENGTH_BYTES = 8;
+   /** Different results are given by the sha1Function depending on which 
+    * iteration it is.  FUNC_BOUND1-4 give the boundaries at which the 
+    * function switches to something else. So if the iteration is less than 20
+    * the function will perform 1 computation but if it's exactly 20 it will 
+    * perform a different one.*/
    private static final int FUNC_BOUND1 = 20;
    private static final int FUNC_BOUND2 = 40;
    private static final int FUNC_BOUND3 = 60;
    private static final int FUNC_BOUND4 = 80;
-
-   public static byte[] pad(byte[] data)
+   
+   /**
+    * This function takes an array of data and returns a new array that has 
+    * been padded to be a multiple of 512 bits.   The returned value will 
+    * always have extra padding even if the original was a multiple of 512
+    * bits.  After the original data there is a 1 bit, followed by some number
+    * of 0 bits, followed by 8 bytes which gives the length of the original 
+    * data in bits.
+    * @param data - the original data
+    * @return the original data plus padding to make it a multiple of 512 bits
+    * */
+   private static byte[] pad(byte[] data)
    {
       ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+      //the length of the data after the length bytes and the byte containing
+      //a 1 bit have been padded on.
       int minLength = data.length + LENGTH_BYTES + 1;
+      //The number of zeros to add to the data.
       int zerosToAdd = BLOCK_BYTES - (minLength % BLOCK_BYTES);
-      
       try
       {
          byteStream.write(data);
@@ -31,9 +50,6 @@ public class SHA1
          Arrays.fill(zeros, (byte) 0);
          byteStream.write(zeros);
          byte[] temp = Common.makeLongBytes(data.length * Byte.SIZE);
-         System.out.println("data length is " + data.length);
-         System.out.println("Size is " + data.length * Byte.SIZE);
-         System.out.println("Size is " + Arrays.toString(temp));
          byteStream.write(Common.makeLongBytes(data.length * Byte.SIZE));
       }
       catch(IOException ioe)
@@ -42,7 +58,12 @@ public class SHA1
       }
       return byteStream.toByteArray();
    }
-
+   
+   /**
+    * Given some data this function computes the SHA-1 hash of the data.  
+    * @param data - the data to be hashed
+    * @return a hashed 160 bit number
+    * */
    public static byte[] hash(byte[] data)
    {
       byte[] original = pad(data);
@@ -97,7 +118,7 @@ public class SHA1
     * @param second - the second number to add
     * @return the two numbers added together mod 2^32
     * */
-   public static int addMod2(int first, int second)
+   private static int addMod2(int first, int second)
    {
       //Integer.MAX holds 2^32 - 1 since it's giving the signed max.  
       //The unsigned value will be double of that + 1
@@ -107,7 +128,17 @@ public class SHA1
       long total = (first & FULL_INT) + (second & FULL_INT);
       return (int) (total % MAX_UNSIGNED_INT);
    }
-
+   
+   /**
+    * This function gives the result of the sha-1 function given in the 
+    * standard.  The function used will be different depending on which 
+    * iteration this is.  Order of first, second, and third doesn't matter.
+    * @param iteration - which iteration from 0-79 we are on
+    * @param first - one number to be used in the function
+    * @param second - one number to be used in the function
+    * @param third - one number to be used in the function
+    * @return the result of the function.  
+    * */
    private static int sha1Function(int iteration, int first, int second, 
       int third)
    {
@@ -133,10 +164,17 @@ public class SHA1
       }
       else
       {
+         //Hopefully, this will never happen
          return 0;
       }
    }
-
+   
+   /**
+    * Computes the message schedule as defined in the standard
+    * @param data - an array with the data to use for the message schedule
+    * @param start - the first array index to start getting data from
+    * @return the message schedule as an array of size 80
+    * */
    private static int[] messageScheduler(byte[] data, int start)
    {
       int BOUNDARY = 16;
@@ -161,7 +199,13 @@ public class SHA1
       }
       return result;
    }
-
+   
+   /**
+    * Different arbitrary constants are used depending on the iteration.  
+    * These constants are defined in the standard
+    * @param iteration - which iteration from 0-79 we are in
+    * @return the requested constant
+    * */
    private static int constant(int iteration)
    {
       int FIRST_BOUNDARY = 20;
