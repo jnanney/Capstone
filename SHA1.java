@@ -2,9 +2,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * This class computes the SHA-1 hash as given in the FIPS-180 standard.  
+ * @author Jonathan Nanney
+ * */
 public class SHA1
 {
-   private byte[] original;
+   private byte[] unhashed;
    private static final int BLOCK_BYTES = 64;
    private static final int BLOCK_ITERATIONS = 80;
    private static final int LENGTH_BYTES = 8;
@@ -12,12 +16,6 @@ public class SHA1
    private static final int FUNC_BOUND2 = 40;
    private static final int FUNC_BOUND3 = 60;
    private static final int FUNC_BOUND4 = 80;
-
-   public SHA1(byte[] data)
-   {
-      this.original = pad(data);
-      System.out.println("After padding size is " + original.length);
-   }
 
    public static byte[] pad(byte[] data)
    {
@@ -45,8 +43,9 @@ public class SHA1
       return byteStream.toByteArray();
    }
 
-   public byte[] compute()
+   public static byte[] hash(byte[] data)
    {
+      byte[] original = pad(data);
       int blocks = original.length / BLOCK_BYTES;
       int[] hashValues = new int[]{0x67452301, 0xefcdab89, 0x98badcfe, 
                                    0x10325476, 0xc3d2e1f0};
@@ -71,14 +70,12 @@ public class SHA1
             c = Common.rotateLeftCircular(b, 30);
             b = a;
             a = temp;
-            System.out.println(j + "\t" + Integer.toHexString(a) +"\t" +Integer.toHexString(b)+ "\t" + Integer.toHexString(c)+ "\t" + Integer.toHexString(d) + "\t" + Integer.toHexString(e) + "\t");
          }
          hashValues[0] = addMod2(a, hashValues[0]);
          hashValues[1] = addMod2(b, hashValues[1]);
          hashValues[2] = addMod2(c, hashValues[2]);
          hashValues[3] = addMod2(d, hashValues[3]);
          hashValues[4] = addMod2(e, hashValues[4]);
-         System.out.println("original hashed " + Arrays.toString(hashValues));
       }
       byte[] result = new byte[20];
       int counter = 0;
@@ -111,7 +108,8 @@ public class SHA1
       return (int) (total % MAX_UNSIGNED_INT);
    }
 
-   private int sha1Function(int iteration, int first, int second, int third)
+   private static int sha1Function(int iteration, int first, int second, 
+      int third)
    {
       if(iteration < 0 || iteration >= FUNC_BOUND4)
       {
@@ -139,7 +137,7 @@ public class SHA1
       }
    }
 
-   public int[] messageScheduler(byte[] data, int start)
+   private static int[] messageScheduler(byte[] data, int start)
    {
       int BOUNDARY = 16;
       int PREV_INDEX1 = 3;
@@ -155,7 +153,6 @@ public class SHA1
          //((i+start) * 4), ((i+start) * 4) + bytesInInt);
          result[i] = Common.makeBytesInt(data, (i*4) + start, (i*4) + start + 4);
       }
-      System.out.println("W is " + Arrays.toString(result));
       for(; i < result.length; i++)
       {
          int temp = result[i - PREV_INDEX1] ^ result[i - PREV_INDEX2] ^ 
@@ -165,7 +162,7 @@ public class SHA1
       return result;
    }
 
-   public int constant(int iteration)
+   private static int constant(int iteration)
    {
       int FIRST_BOUNDARY = 20;
       int SECOND_BOUNDARY = 40;
