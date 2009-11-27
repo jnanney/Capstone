@@ -49,11 +49,11 @@ public class RSABaseKey implements PacketSpecificInterface
       }
       byte[] mpi = OpenPGP.getMultiprecisionInteger(data, i);
       i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
-      n = new BigInteger(mpi);
+      n = new BigInteger(1, mpi); //XXX
 
       mpi = OpenPGP.getMultiprecisionInteger(data, i);
       i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
-      encryptionExponent = new BigInteger(mpi);
+      encryptionExponent = new BigInteger(1, mpi); //XXX
       return i;
    }
 

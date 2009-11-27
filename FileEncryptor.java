@@ -40,7 +40,9 @@ public class FileEncryptor
    {
       this.input = input;
       this.publicKey=key;
-      makeLiteralPacket(new FileInputStream(input));
+      FileInputStream in = new FileInputStream(input);
+      makeLiteralPacket(in);
+      in.close();
       compress();
       encryptFile();
    }
@@ -78,6 +80,7 @@ public class FileEncryptor
       {
          current.write(out);
       }
+      out.close();
    }
    
    /**

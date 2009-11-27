@@ -50,7 +50,7 @@ public class OpenPGP
    public static byte[] getMultiprecisionInteger(byte[] data, int start)
    {
       int i = start;
-      int mpiLength = (data[i++] << Byte.SIZE) | data[i++];
+      int mpiLength = (data[i++] << Byte.SIZE) | ((int) data[i++] & 0XFF);
       mpiLength = 0xFFFF & mpiLength;
       byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
@@ -69,15 +69,7 @@ public class OpenPGP
    public static byte[] makeMultiprecisionInteger(BigInteger num)
    {
       byte[] temp = num.toByteArray();
-      byte[] result = new byte[temp.length + 2];
-      int numBits = temp.length * Byte.SIZE;
-      result[0] = (byte) (numBits >> 8);
-      result[1] = (byte) (numBits & 0xFF);
-      for(int i = 2; i < result.length; i++)
-      {
-         result[i] = temp[i - 2];
-      }
-      return result;
+      return makeMultiprecisionInteger(temp);
    }
    
    /**

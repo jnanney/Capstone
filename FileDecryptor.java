@@ -59,8 +59,6 @@ public class FileDecryptor
       {
          randomData[i] = (byte) (cipher[i] ^ frEncrypted[i]);
       }
-      System.out.println("Random data is " + java.util.Arrays.toString(randomData));
-      System.out.println("Cipher data is " + java.util.Arrays.toString(cipher));
       des = new TripleDESEncryption(Common.makeBytesLong(cipher), 
                                     getNextKeys(packets, 4));
       for(int i = 0; i < 6; i++)
@@ -76,8 +74,6 @@ public class FileDecryptor
       {
          randomCheck[i] = (byte) (cipher[i] ^ frEncrypted[i]);   
       }
-      System.out.println("Last two random " + 
-                         java.util.Arrays.toString(randomCheck));
       fr[6] = cipher[0];
       fr[7] = cipher[1];
       if(randomCheck[0] != randomData[6] || randomCheck[1] != randomData[7])
@@ -117,7 +113,6 @@ public class FileDecryptor
          fr = cipher;
       }
       data = out.toByteArray();
-      System.out.println("data " + java.util.Arrays.toString(data));
    }
    
    /**
@@ -173,6 +168,7 @@ public class FileDecryptor
    {
       FileOutputStream out = new FileOutputStream(output);
       out.write(data);
+      out.close();
    }
    
    /**
@@ -188,12 +184,11 @@ public class FileDecryptor
       {
          EncryptedSessionKeyPacket sessionKey = (EncryptedSessionKeyPacket) 
                                                     packets.get(i).getPacket();
-         
-         rsa = new RSAEncryption(sessionKey.getEncryptedKey(), key);
-         System.out.println("Key " + j + " is " + rsa.decrypt());
-         keys[j] = rsa.decrypt().longValue();
+          
+         rsa = new RSAEncryption(sessionKey.getEncryptedKey().toByteArray(), key);
+         byte[] tempKey = rsa.decrypt().toByteArray();
+         keys[j] = Common.makeBytesLong(tempKey);
       }
-      System.out.println("Keys are " + java.util.Arrays.toString(keys));
       return keys;
    }
 }

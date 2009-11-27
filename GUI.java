@@ -282,6 +282,8 @@ public class GUI
                   FileOutputStream privateOut = new FileOutputStream(privateFile);
                   publicPacket.write(publicOut);
                   privatePacket.write(privateOut);
+                  publicOut.close();
+                  privateOut.close();
                }
                catch(FileNotFoundException nfe)
                {

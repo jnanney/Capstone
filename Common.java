@@ -13,8 +13,33 @@ import java.io.IOException;
 public class Common
 {
    private Common() {}
-  
-  
+   
+   /**
+    * This function performs a left circular shift.  That is, it's as if you 
+    * did a regular left shift and moved the bits that were pushed off onto 
+    * the right end.
+    * @param num - the number to shift.
+    * @param shiftLength - the amount of bits to shift by
+    * @return the number shifted left circularly.
+    * */
+   public static int rotateLeftCircular(int num, int shiftLength)
+   {
+      //This code copied almost exactly out of FIPS-180-2 page 8.
+      return (num << shiftLength) | (num >>> (Integer.SIZE - shiftLength));
+   }
+
+   public static int makeBytesInt(byte[] data, int start, int end)
+   {
+      int result = 0;
+      for(int i = start; i < end; i++)
+      {
+         result = result << Byte.SIZE;
+         int byteValue = (int) (0xFF & data[i]);
+         result = result | byteValue;
+      }
+      return result;
+   }
+
    /**
     * This method turns a specific subset of a byte array into a long
     * @param data - the array to get the bytes from
@@ -96,11 +121,23 @@ public class Common
       for(int i = 0; i < bytesInLong; i++)
       {
          result[i] = (byte) (number >>> shiftSpaces);
-         shiftSpaces -= bytesInLong;
+         shiftSpaces -= Byte.SIZE;
       }
       return result;
    }
-   
+
+   public static byte[] makeIntBytes(int number)
+   {
+      int bytesInInt = Integer.SIZE / Byte.SIZE;
+      byte[] result = new byte[bytesInInt];
+      long shiftSpaces = Integer.SIZE - Byte.SIZE;
+      for(int i = 0; i < result.length; i++)
+      {
+         result[i] = (byte) (number >>> shiftSpaces);
+         shiftSpaces -= Byte.SIZE;
+      }
+      return result;
+   }
    /**
     * Gets the current time expressed as seconds since Jan 1, 1970 and puts it
     * into an array of 4 bytes

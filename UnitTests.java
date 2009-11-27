@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.InflaterInputStream;
+import java.util.Arrays;
 
 public class UnitTests
 {
@@ -50,5 +51,6 @@ public class UnitTests
       Assert.assertTrue(decompressed != result);
       Assert.assertTrue(java.util.Arrays.equals(decompressed, array));
    }
+
 
 }

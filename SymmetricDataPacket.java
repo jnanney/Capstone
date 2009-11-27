@@ -12,7 +12,7 @@ public class SymmetricDataPacket implements PacketSpecificInterface
    public SymmetricDataPacket(byte[] data, boolean isMPI)
    {
       //this.encryptedData = data;
-      this.encryptedData = (byte[]) data.clone();
+      this.encryptedData = data.clone();
    }
 
    public byte[] getEncryptedData()
