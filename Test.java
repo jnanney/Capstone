@@ -18,7 +18,7 @@ public class Test
       decryptor.write(new File(args[2]));
 
       Runtime rt = Runtime.getRuntime();
-      Process p = rt.exec("diff " + args[0] + " " + args[1]);
+      Process p = rt.exec("diff " + args[0] + " " + args[2]);
       
       if(p.waitFor() != 0)
       {
