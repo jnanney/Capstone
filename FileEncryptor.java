@@ -43,7 +43,7 @@ public class FileEncryptor
       FileInputStream in = new FileInputStream(input);
       makeLiteralPacket(in);
       in.close();
-      //compress();
+      compress();
       encryptFile();
    }
    
