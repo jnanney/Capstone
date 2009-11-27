@@ -50,13 +50,15 @@ public class OpenPGP
    public static byte[] getMultiprecisionInteger(byte[] data, int start)
    {
       int i = start;
-      int mpiLength = (data[i++] << Byte.SIZE) | data[i++];
+      int mpiLength = (data[i++] << Byte.SIZE) | ((int) data[i++] & 0XFF);
       mpiLength = 0xFFFF & mpiLength;
       byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
       {
          mpi[j] = data[i];
       }
+      System.out.println("MPI length read in " + mpiLength + " actually, " + mpi.length);
+      System.out.println("MPI when read is " + java.util.Arrays.toString(mpi));
       return mpi;
    }
 
@@ -68,16 +70,11 @@ public class OpenPGP
     * */
    public static byte[] makeMultiprecisionInteger(BigInteger num)
    {
+      System.out.println("Making MPI original: " + num);
       byte[] temp = num.toByteArray();
-      byte[] result = new byte[temp.length + 2];
-      int numBits = temp.length * Byte.SIZE;
-      result[0] = (byte) (numBits >> 8);
-      result[1] = (byte) (numBits & 0xFF);
-      for(int i = 2; i < result.length; i++)
-      {
-         result[i] = temp[i - 2];
-      }
-      return result;
+      System.out.println("Byte array " + java.util.Arrays.toString(temp));
+      System.out.println("Length of byte array " + temp.length);
+      return makeMultiprecisionInteger(temp);
    }
    
    /**
@@ -97,6 +94,7 @@ public class OpenPGP
       {
          result[i] = num[i - OpenPGP.MPI_LENGTH_BYTES];
       }
+      System.out.println("After becoming MPI " + java.util.Arrays.toString(result));
       return result;
    }
 

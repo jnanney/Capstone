@@ -1,7 +1,7 @@
 import java.io.OutputStream;
-
 import java.io.IOException;
 import java.math.BigInteger;
+
 public class EncryptedSessionKeyPacket implements PacketSpecificInterface
 {
    private static final byte VERSION = 3;
@@ -14,15 +14,16 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
       byte[] key = Common.makeLongBytes(unencryptedKey);
       RSAEncryption rsa = new RSAEncryption(key, rsaKey);
       encryptedKey = rsa.encrypt();
+      System.out.println("Right after encrypting " + encryptedKey);
       keyID = rsaKey.getKeyID();
    }
 
-   public EncryptedSessionKeyPacket(RSABaseKey rsaKey, byte[] unencryptedKey)
+   /*public EncryptedSessionKeyPacket(RSABaseKey rsaKey, byte[] unencryptedKey)
    {
       RSAEncryption rsa = new RSAEncryption(unencryptedKey, rsaKey);
       encryptedKey = rsa.encrypt();
       keyID = rsaKey.getKeyID();
-   }
+   }*/
    
    public EncryptedSessionKeyPacket(byte[] data)
    {
@@ -59,6 +60,7 @@ public class EncryptedSessionKeyPacket implements PacketSpecificInterface
    {
       output.write(new byte[]{VERSION});
       output.write(keyID);
+      System.out.println("Key ID is " + java.util.Arrays.toString(keyID));
       output.write(new byte[]{OpenPGP.RSA_CONSTANT});
       output.write(OpenPGP.makeMultiprecisionInteger(encryptedKey));
    }

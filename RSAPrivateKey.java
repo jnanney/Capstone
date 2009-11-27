@@ -46,15 +46,15 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       byte string2Key = data[i++]; //TODO: do something with this maybe
       byte[] mpi = OpenPGP.getMultiprecisionInteger(data, i);
       i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
-      decryptionExponent = new BigInteger(mpi);
+      decryptionExponent = new BigInteger(1, mpi); //XXX
       
       mpi = OpenPGP.getMultiprecisionInteger(data, i);
       i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
-      prime1 = new BigInteger(mpi);
+      prime1 = new BigInteger(1, mpi); //XXX
 
       mpi = OpenPGP.getMultiprecisionInteger(data, i);
       i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
-      prime2 = new BigInteger(mpi);
+      prime2 = new BigInteger(1, mpi); //XXX
       checksum = new byte[2];
       checksum[0] = data[i++];
       checksum[1] = data[i++];

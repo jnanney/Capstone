@@ -22,6 +22,7 @@ public class RSAEncryption
    public RSAEncryption(byte[] data, RSABaseKey key)
    {
       original = new BigInteger(SIGN, data);
+      System.out.println("IN rsaencryption " + original);
       this.key = key;
    }
 
@@ -86,9 +87,9 @@ public class RSAEncryption
     * Allows you to switch the data to encrypt/decrypt
     * @param newText - the new data to encrypt/decrypt
     * */
-   public void switchOriginal(BigInteger newText)
+   /*public void switchOriginal(BigInteger newText)
    {
       this.original = newText;
-   }
+   }*/
 
 }
