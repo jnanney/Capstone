@@ -188,8 +188,8 @@ public class FileDecryptor
       {
          EncryptedSessionKeyPacket sessionKey = (EncryptedSessionKeyPacket) 
                                                     packets.get(i).getPacket();
-         
-         rsa = new RSAEncryption(sessionKey.getEncryptedKey(), key);
+          
+         rsa = new RSAEncryption(sessionKey.getEncryptedKey().toByteArray(), key);
          System.out.println("Key " + j + " is " + rsa.decrypt());
          keys[j] = rsa.decrypt().longValue();
       }

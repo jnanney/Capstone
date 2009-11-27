@@ -30,11 +30,11 @@ public class RSAEncryption
     * @param original - the data to encrypt/decrypt
     * @param key - the RSA key to use for encryption/decryption
     * */
-   public RSAEncryption(BigInteger original, RSABaseKey key)
+   /*public RSAEncryption(BigInteger original, RSABaseKey key)
    {
       this.original = original;
       this.key = key;
-   }
+   }*/
    
    /**
     * Constructor that takes the data to encrypt/decrypt and will generate a
