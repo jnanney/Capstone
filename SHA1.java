@@ -79,7 +79,6 @@ public class SHA1
          int e = hashValues[4]; 
          int temp;
          int[] w = messageScheduler(original, i * BLOCK_BYTES);
-         System.out.println("i\ta\tb\tc\td\te");
          for(int j = 0; j < BLOCK_ITERATIONS; j++)
          {
             temp = addMod2(Common.rotateLeftCircular(a, 5), sha1Function(j, b, c, d)); 
