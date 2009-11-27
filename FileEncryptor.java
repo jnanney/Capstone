@@ -40,8 +40,10 @@ public class FileEncryptor
    {
       this.input = input;
       this.publicKey=key;
-      makeLiteralPacket(new FileInputStream(input));
-      compress();
+      FileInputStream in = new FileInputStream(input);
+      makeLiteralPacket(in);
+      in.close();
+      //compress();
       encryptFile();
    }
    
@@ -78,6 +80,7 @@ public class FileEncryptor
       {
          current.write(out);
       }
+      out.close();
    }
    
    /**
@@ -181,6 +184,9 @@ public class FileEncryptor
                                            des.getKey2());
       EncryptedSessionKeyPacket key3 = new EncryptedSessionKeyPacket(publicKey,
                                            des.getKey3());
+      System.out.println("Key 1 before enc " + des.getKey1());
+      System.out.println("Key 2 before enc " + des.getKey2());
+      System.out.println("Key 3 before enc " + des.getKey3());
       SymmetricDataPacket symData = new SymmetricDataPacket(cipher, false);
       result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key1));
       result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key2));

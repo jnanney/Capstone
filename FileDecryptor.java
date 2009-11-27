@@ -173,6 +173,7 @@ public class FileDecryptor
    {
       FileOutputStream out = new FileOutputStream(output);
       out.write(data);
+      out.close();
    }
    
    /**
@@ -190,8 +191,10 @@ public class FileDecryptor
                                                     packets.get(i).getPacket();
           
          rsa = new RSAEncryption(sessionKey.getEncryptedKey().toByteArray(), key);
-         System.out.println("Key " + j + " is " + rsa.decrypt());
-         keys[j] = rsa.decrypt().longValue();
+         byte[] tempKey = rsa.decrypt().toByteArray();
+         keys[j] = Common.makeBytesLong(tempKey);
+         System.out.println("Key " + j + " is " + keys[j]);
+         System.out.println("Key " + j + " is also " + rsa.decrypt());
       }
       System.out.println("Keys are " + java.util.Arrays.toString(keys));
       return keys;
