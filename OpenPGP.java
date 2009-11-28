@@ -5,8 +5,10 @@ import java.math.BigInteger;
  * */
 public class OpenPGP
 {
-   //The left two bits will always be 1 in a new format tag. So it should be 3
-   //(which is 2 1-bits) shifted five places.
+   /** Constant indicating that the packet uses the SHA-1 hash algorithm */
+   public static final byte SHA1_CONSTANT = 2;
+   /**The left two bits will always be 1 in a new format tag. So it should be 3
+   (which is 2 1-bits) shifted five places. */
    public static final byte NEW_TAG_MASK = 3 << 5;
    /** Constant that indicates a packet uses RSA*/
    public static final byte RSA_CONSTANT = 1;
