@@ -13,7 +13,7 @@ import java.io.IOException;
 public class Common
 {
    private Common() {}
-   private static final byte BYTE_MASK = 0xFF;
+   private static final byte BYTE_MASK = (byte) 0xFF;
 
    /**
     * This function performs a left circular shift.  That is, it's as if you 
