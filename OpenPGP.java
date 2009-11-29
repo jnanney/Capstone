@@ -14,6 +14,8 @@ public class OpenPGP
    public static final byte RSA_CONSTANT = 1;
    /** Constant that indicates packet uses 3DES */
    public static final byte TRIPLEDES_CONSTANT = 2;
+   /** Tag for signature packets */
+   public static final byte SIGNATURE_PACKET_TAG = 2 | NEW_TAG_MASK;
    /** The tag for packets that hold a public key */
    public static final byte PUBLIC_KEY_PACKET_TAG = 6 | NEW_TAG_MASK;
    /** The tag for packets that hold a private key */
