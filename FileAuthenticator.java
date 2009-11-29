@@ -1,9 +1,9 @@
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
-import java.util.List;
+import java.io.FileInputStream;
 
 public class FileAuthenticator
 {
@@ -37,10 +37,8 @@ public class FileAuthenticator
       out.close();
    }
 
-   public boolean check() throws MalformedPacketException, IOException
+   public boolean check()
    {
-      PacketReader reader = new PacketReader(input);
-      List<OpenPGPPacket> packets = reader.readPackets();
       return true;
    }
 }
