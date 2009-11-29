@@ -26,17 +26,6 @@ public class RSAEncryption
    }
 
    /**
-    * Constructor that takes the data to encrypt/decrypt and a RSA key.
-    * @param original - the data to encrypt/decrypt
-    * @param key - the RSA key to use for encryption/decryption
-    * */
-   /*public RSAEncryption(BigInteger original, RSABaseKey key)
-   {
-      this.original = original;
-      this.key = key;
-   }*/
-   
-   /**
     * Constructor that takes the data to encrypt/decrypt and will generate a
     * new key of the given length.
     * @param data - the data to encrypt/decrypt
