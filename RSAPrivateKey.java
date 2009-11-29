@@ -43,7 +43,7 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
    public RSAPrivateKey(byte[] data)
    {
       int i = super.readData(data);
-      byte string2Key = data[i++]; //TODO: do something with this maybe
+      byte string2Key = data[i++]; 
       byte[] mpi = OpenPGP.getMultiprecisionInteger(data, i);
       i += mpi.length + OpenPGP.MPI_LENGTH_BYTES;
       decryptionExponent = new BigInteger(1, mpi); //XXX
