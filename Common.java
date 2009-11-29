@@ -13,7 +13,6 @@ import java.io.IOException;
 public class Common
 {
    private Common() {}
-   private static final byte BYTE_MASK = (byte) 0xFF;
 
    /**
     * This function performs a left circular shift.  That is, it's as if you 
@@ -35,7 +34,7 @@ public class Common
       for(int i = start; i < end; i++)
       {
          result = result << Byte.SIZE;
-         int byteValue = (int) (BYTE_MASK & data[i]);
+         int byteValue = (int) (0xFF & data[i]);
          result = result | byteValue;
       }
       return result;
@@ -54,7 +53,7 @@ public class Common
       for(int i = start; i < end; i++)
       {
          result = result << Byte.SIZE;
-         long byteValue = (long) (BYTE_MASK & data[i]);
+         long byteValue = (long) (0xFF & data[i]);
          result = result | byteValue;
       }
       return result;

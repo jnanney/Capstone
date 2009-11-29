@@ -55,7 +55,7 @@ public class OpenPGP
    {
       int i = start;
       int mpiLength = (data[i++] << Byte.SIZE) | ((int) data[i++] & 0XFF);
-      mpiLength = 0xFFFF & mpiLength;
+      mpiLength = 0XFFFF & mpiLength;
       byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
       {
@@ -156,7 +156,6 @@ public class OpenPGP
       else if(bytes.length == 5)
       {
          result = (bytes[1] << 24) | (bytes[2] << 16) | (bytes[3] << 8) | bytes[4];
-         result = 0xFFFFFFFF;
       }
       return result;
    }
