@@ -59,7 +59,6 @@ public class DESKey
 
    private void generateKey()
    {
-      //TODO: make every 8th bit a 1 or 0 depending on parity
       key = 0;
       Random random = new Random();
       int oneBits = 0;
