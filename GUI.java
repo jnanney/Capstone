@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.io.File;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GUI
 {
@@ -40,7 +43,7 @@ public class GUI
    /*
     * Creates and displays a new GUI object
     **/
-   public GUI() throws Exception //TODO: replace
+   public GUI() 
    {
       JFrame frame = new JFrame("File Encryption With OpenPGP");
       frame.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -51,15 +54,13 @@ public class GUI
       frame.setVisible(true);
    }
 
-   public static void main(String[] args) throws Exception //TODO: replace
+   public static void main(String[] args) 
    {
-
       GUI gui = new GUI();
    }
    
 
-   private void createGUI(final Container pane) throws IOException, 
-      FileNotFoundException
+   private void createGUI(final Container pane) 
    {
       final ArrayList<File> encryptList = new ArrayList<File>();
       final ArrayList<File> decryptList = new ArrayList<File>();
@@ -82,7 +83,7 @@ public class GUI
       JButton decryptButton = new JButton("Decrypt Files");
       final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
       JScrollPane scrollingFileText = new JScrollPane(fileText);
-      JPanel panel = new JPanel(); 
+      final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
 
       panel.add(scrollingFileText, BorderLayout.PAGE_START);
@@ -123,6 +124,9 @@ public class GUI
                }
                catch(MalformedPacketException mpe)
                {
+                  JOptionPane.showMessageDialog(panel, 
+                     current.getName() + " is not a valid encrypted file", 
+                     "Invalid file", JOptionPane.ERROR_MESSAGE);
                }
                catch(IOException ioe)
                {
@@ -135,13 +139,13 @@ public class GUI
    }
 
    private JPanel createEncryptionPanel(final Container pane, final List<File> 
-      fileList) throws IOException, FileNotFoundException
+      fileList)
    {
       JButton addFileButton = new JButton("Add File");  
       JButton encryptButton = new JButton("Encrypt Files");
       final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
       JScrollPane scrollingFileText = new JScrollPane(fileText);
-      JPanel panel = new JPanel(); 
+      final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
 
       panel.add(scrollingFileText, BorderLayout.PAGE_START);
@@ -191,11 +195,15 @@ public class GUI
                      }
                      catch(FileNotFoundException fnfe)
                      {
-                        System.err.println(fnfe.getMessage());
+                        JOptionPane.showMessageDialog(panel, current.getName() + 
+                           " was not found", "File Not Found", 
+                           JOptionPane.ERROR_MESSAGE);
                      }
                      catch(IOException ioe)
                      {
-                        System.err.println(ioe.getMessage());
+                        JOptionPane.showMessageDialog(panel, "There was a problem "
+                           + "reading or writing file: " + current.getName(), 
+                           "IO Exception", JOptionPane.ERROR_MESSAGE);
                      }
                      return null;
                   }
@@ -236,20 +244,18 @@ public class GUI
                }
                catch(MalformedPacketException mpe)
                {
-                  JOptionPane packetMessage = new JOptionPane(
-                     "Malformed Packet", JOptionPane.ERROR_MESSAGE);
-                  packetMessage.showMessageDialog(panel, "Invalid key file");
+                  JOptionPane.showMessageDialog(panel, "Invalid key file", 
+                  "Malformed Packet", JOptionPane.ERROR_MESSAGE);
                }
                catch(IOException ioe)
                {
-                  System.out.println(ioe.getMessage());
-                  System.exit(1);
+                  JOptionPane.showMessageDialog(panel, "Problem reading key",
+                     "IO Exception", JOptionPane.ERROR_MESSAGE);
                }
                catch(ClassCastException cce)
                {
-                  JOptionPane error = new JOptionPane("Invalid valid key file", 
-                     JOptionPane.ERROR_MESSAGE);
-                  error.showMessageDialog(panel, "Invalid key file");
+                  JOptionPane.showMessageDialog(panel, "Invalid key file", 
+                     "Invalid Key", JOptionPane.ERROR_MESSAGE);
                }
             }
          }
@@ -260,6 +266,9 @@ public class GUI
          public void actionPerformed(ActionEvent evt) 
          {
             JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+               "Public and Private Keys", "priv", "pub");
+            chooser.setFileFilter(filter);
             int returnValue = chooser.showSaveDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION) 
             {
@@ -273,8 +282,9 @@ public class GUI
                      OpenPGP.PUBLIC_KEY_PACKET_TAG, publicKey);
                   OpenPGPPacket privatePacket = new OpenPGPPacket(
                   OpenPGP.PRIVATE_KEY_PACKET_TAG, privateKey);
-                  File privateFile = chooser.getSelectedFile();
-                  File publicFile = new File(privateFile.toString() + ".pub");
+                  File basicFile = chooser.getSelectedFile();
+                  File privateFile = new File(basicFile.toString() + ".priv");
+                  File publicFile = new File(basicFile.toString() + ".pub");
                   FileOutputStream publicOut = new FileOutputStream(publicFile);
                   FileOutputStream privateOut = new FileOutputStream(privateFile);
                   publicPacket.write(publicOut);
@@ -284,11 +294,13 @@ public class GUI
                }
                catch(FileNotFoundException nfe)
                {
-                  System.out.println(nfe.getMessage());
+                  JOptionPane.showMessageDialog(panel,  "File Not Found",
+                  "File Not Found", JOptionPane.ERROR_MESSAGE);
                }
                catch(IOException ioe)
                {
-                  System.out.println(ioe.getMessage());
+                  JOptionPane.showMessageDialog(panel,  "Problem writing file",
+                  "IO Exception", JOptionPane.ERROR_MESSAGE);
                }
             }
          }
