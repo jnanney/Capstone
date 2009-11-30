@@ -54,7 +54,7 @@ public class OpenPGP
    public static byte[] getMultiprecisionInteger(byte[] data, int start)
    {
       int i = start;
-      int mpiLength = (data[i++] << Byte.SIZE) | ((int) data[i++] & 0XFF);
+      int mpiLength = (data[i++] << Byte.SIZE) | ((int) data[i++] & Common.BYTE_MASK);
       mpiLength = 0XFFFF & mpiLength;
       byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
@@ -87,8 +87,8 @@ public class OpenPGP
    {
       byte[] result = new byte[num.length + OpenPGP.MPI_LENGTH_BYTES];
       int numBits = num.length * Byte.SIZE;
-      result[0] = (byte) (numBits >> 8);
-      result[1] = (byte) (numBits & 0xFF);
+      result[0] = (byte) (numBits >> Byte.SIZE);
+      result[1] = (byte) (numBits & Common.BYTE_MASK);
       for(int i = OpenPGP.MPI_LENGTH_BYTES; i < result.length; i++)
       {
          result[i] = num[i - OpenPGP.MPI_LENGTH_BYTES];
@@ -115,15 +115,15 @@ public class OpenPGP
       {
          result = new byte[2];
          long first = (length >>> 8) + 191;
-         long second = (length & 0xFF) - 192;
-         result[0] = (byte) (first & 0xFF);
-         result[1] = (byte) (second & 0xFF);
+         long second = (length & Common.BYTE_MASK) - 192;
+         result[0] = (byte) (first & Common.BYTE_MASK);
+         result[1] = (byte) (second & Common.BYTE_MASK);
       }
       else if(length <= OpenPGP.MAX_FIVE_OCTETS)
       {
          result = new byte[5];
-         result[0] = (byte) 0xFF;
-         int mask = 0xFF;
+         result[0] = (byte) Common.BYTE_MASK;
+         int mask = Common.BYTE_MASK;
          for(int i = 1; i <result.length; i++)
          {
             result[i] = (byte) (length & (mask << ((4-i) * 8)));
@@ -146,7 +146,7 @@ public class OpenPGP
       if(bytes.length == 1)
       {
          result = bytes[0];
-         result = result & 0xFF;
+         result = result & Common.BYTE_MASK;
       }
       else if(bytes.length == 2)
       {
