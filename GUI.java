@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
-
+import javax.swing.SwingWorker;
 
 public class GUI
 {
@@ -167,25 +167,39 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
-            for(File current : fileList)
+            if(key == null)
+            {
+
+            }
+            else if(!(key instanceof RSAPrivateKey))
+            {
+            }
+            for(final File current : fileList)
             {
                JOptionPane newFilenamePrompt = new JOptionPane();
-               String newName = newFilenamePrompt.showInputDialog(pane, 
+               final String newName = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
-               try
-               {
-                  FileEncryptor encryptor = new FileEncryptor(current, key);
-                  encryptor.write(new File(current.getParentFile() + "/" + 
-                     newName));
-               }
-               catch(FileNotFoundException fnfe)
-               {
-                  System.err.println(fnfe.getMessage());
-               }
-               catch(IOException ioe)
-               {
-                  System.err.println(ioe.getMessage());
-               }
+               SwingWorker worker = new SwingWorker<Void, Void>() {
+                  public Void doInBackground()
+                  {
+                     try
+                     {
+                        FileEncryptor encryptor = new FileEncryptor(current, 
+                                                                    key);
+                        encryptor.write(new File(current.getParentFile() + 
+                                        "/" + newName));
+                     }
+                     catch(FileNotFoundException fnfe)
+                     {
+                        System.err.println(fnfe.getMessage());
+                     }
+                     catch(IOException ioe)
+                     {
+                        System.err.println(ioe.getMessage());
+                     }
+                     return null;
+                  }
+               };
             }
          }
       });
