@@ -38,7 +38,7 @@ public class Common
       for(int i = start; i < end; i++)
       {
          result = result << Byte.SIZE;
-         int byteValue = (int) (BYTE_MASK & data[i]);
+         int byteValue = BYTE_MASK & data[i];
          result = result | byteValue;
       }
       return result;

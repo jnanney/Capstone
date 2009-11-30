@@ -114,7 +114,7 @@ public class OpenPGP
       else if(length <= OpenPGP.MAX_TWO_OCTETS)
       {
          result = new byte[2];
-         long first = (length >>> 8) + 191;
+         long first = (length >>> Byte.SIZE) + 191;
          long second = (length & Common.BYTE_MASK) - 192;
          result[0] = (byte) (first & Common.BYTE_MASK);
          result[1] = (byte) (second & Common.BYTE_MASK);
