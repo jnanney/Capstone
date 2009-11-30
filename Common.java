@@ -14,6 +14,7 @@ public class Common
 {
 
    public static final int SIGN = 1;
+   public static final int BYTE_MASK = 0xFF;
    private Common() {}
 
    /**
@@ -36,7 +37,7 @@ public class Common
       for(int i = start; i < end; i++)
       {
          result = result << Byte.SIZE;
-         int byteValue = (int) (0xFF & data[i]);
+         int byteValue = (int) (BYTE_MASK & data[i]);
          result = result | byteValue;
       }
       return result;
@@ -55,7 +56,7 @@ public class Common
       for(int i = start; i < end; i++)
       {
          result = result << Byte.SIZE;
-         long byteValue = (long) (0xFF & data[i]);
+         long byteValue = (long) (BYTE_MASK & data[i]);
          result = result | byteValue;
       }
       return result;

@@ -94,7 +94,6 @@ public class OpenPGPPacket
       int length = packetInfo.getBodyLength();
       byte[] lengthArray = OpenPGP.makeNewFormatLength(length);
       output.write(new byte[]{tag});
-      System.out.println("Tag we're writing is " + tag);
       output.write(lengthArray);
       //Have the packetInfo write its specific stuff to this stream
       packetInfo.write(output);

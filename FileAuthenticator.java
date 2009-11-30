@@ -54,8 +54,6 @@ public class FileAuthenticator
       RSAEncryption rsa = new RSAEncryption(signatureData.toByteArray(), key);
       BigInteger hashedSignData = rsa.encrypt();
       BigInteger realHashed = new BigInteger(Common.SIGN, hashedLiteralData);
-      System.out.println("Encrypted " + hashedSignData);
-      System.out.println("Real " + realHashed);
       return realHashed.equals(hashedSignData);
    }
 }
