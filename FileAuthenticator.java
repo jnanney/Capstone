@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.math.BigInteger;
 
 public class FileAuthenticator
 {
@@ -16,7 +17,7 @@ public class FileAuthenticator
       this.key = key;
    }
 
-   public void write(File output) throws IOException, FileNotFoundException
+   public void signAndWrite(File output) throws IOException, FileNotFoundException
    {
       if(! (key instanceof RSAPrivateKey))
       {
@@ -41,6 +42,20 @@ public class FileAuthenticator
    {
       PacketReader reader = new PacketReader(input);
       List<OpenPGPPacket> packets = reader.readPackets();
-      return true;
+      if(packets.size() != 2)
+      {
+         throw new MalformedPacketException("Not a signed file");
+      }
+      SignaturePacket sig = (SignaturePacket) packets.get(0).getPacket();
+      LiteralDataPacket lit = (LiteralDataPacket) packets.get(1).getPacket();
+      BigInteger signatureData = sig.getSignature();
+      byte[] literalData = lit.getLiteralData();
+      byte[] hashedLiteralData = SHA1.hash(literalData);
+      RSAEncryption rsa = new RSAEncryption(signatureData.toByteArray(), key);
+      BigInteger hashedSignData = rsa.encrypt();
+      BigInteger realHashed = new BigInteger(Common.SIGN, hashedLiteralData);
+      System.out.println("Encrypted " + hashedSignData);
+      System.out.println("Real " + realHashed);
+      return realHashed.equals(hashedSignData);
    }
 }

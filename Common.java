@@ -12,6 +12,8 @@ import java.io.IOException;
  * */
 public class Common
 {
+
+   public static final int SIGN = 1;
    private Common() {}
 
    /**
