@@ -12,9 +12,15 @@ import java.io.IOException;
  * */
 public class Common
 {
-
+   /** When creating BigIntegers from a byte array, the 1 keeps the sign 
+    * positive */
    public static final int SIGN = 1;
+   /** When converting from a byte to a larger type (such as int or long) Java
+    * will do sign extension if the last bit of the original byte is a 1.  
+    * This mask provides a way to remove those added bits when doing a bitwise
+    * and with the number */
    public static final int BYTE_MASK = 0xFF;
+   /** Allows us to get only the last 2 bytes of a number */
    public static final int TWO_BYTE_MASK = 0xFFFF;
    private Common() {}
 
