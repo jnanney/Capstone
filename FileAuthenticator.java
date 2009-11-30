@@ -10,6 +10,8 @@ public class FileAuthenticator
 {
    private File input;
    private RSABaseKey key;
+   /** The number of packets that must be in a signed message */
+   private static final int SIGNED_PACKETS = 2;
 
    public FileAuthenticator(File input, RSABaseKey key) //throws IOException
    {
@@ -42,7 +44,7 @@ public class FileAuthenticator
    {
       PacketReader reader = new PacketReader(input);
       List<OpenPGPPacket> packets = reader.readPackets();
-      if(packets.size() != 2)
+      if(packets.size() != SIGNED_PACKETS)
       {
          throw new MalformedPacketException("Not a signed file");
       }
