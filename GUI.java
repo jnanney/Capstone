@@ -130,7 +130,9 @@ public class GUI
                }
                catch(IOException ioe)
                {
-                  System.err.println(ioe.getMessage());
+                  JOptionPane.showMessageDialog(null, "There was a problem "
+                     + "reading or writing a file", "IO Exception", 
+                     JOptionPane.ERROR_MESSAGE);
                }
             }
          }
@@ -184,8 +186,9 @@ public class GUI
                final String newName = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
                SwingWorker worker = new SwingWorker<Void, Void>() {
-                  public Void doInBackground()
+                  public Void doInBackground() 
                   {
+                     System.out.println("In background method");
                      try
                      {
                         FileEncryptor encryptor = new FileEncryptor(current, 
@@ -195,19 +198,20 @@ public class GUI
                      }
                      catch(FileNotFoundException fnfe)
                      {
-                        JOptionPane.showMessageDialog(panel, current.getName() + 
+                        JOptionPane.showMessageDialog(null, current.getName() + 
                            " was not found", "File Not Found", 
                            JOptionPane.ERROR_MESSAGE);
                      }
                      catch(IOException ioe)
                      {
-                        JOptionPane.showMessageDialog(panel, "There was a problem "
+                        JOptionPane.showMessageDialog(null, "There was a problem "
                            + "reading or writing file: " + current.getName(), 
                            "IO Exception", JOptionPane.ERROR_MESSAGE);
                      }
                      return null;
                   }
                };
+               worker.execute();
             }
          }
       });
