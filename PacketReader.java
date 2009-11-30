@@ -66,7 +66,7 @@ public class PacketReader
             //loop takes care of sign extension problems
             for(int i = 0; i < temp.length; i++)
             {
-               octets[i] = temp[i] & 0xFF;
+               octets[i] = temp[i] & Common.BYTE_MASK;
             }
             length = OpenPGP.getNewFormatLength(octets);
          }

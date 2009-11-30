@@ -15,6 +15,7 @@ public class Common
 
    public static final int SIGN = 1;
    public static final int BYTE_MASK = 0xFF;
+   public static final int TWO_BYTE_MASK = 0xFFFF;
    private Common() {}
 
    /**

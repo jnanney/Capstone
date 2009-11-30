@@ -145,7 +145,7 @@ public class DESEncryption
       throws InvalidSelectionException
    {
       byte firstBitPosition = 3;
-      byte lastBitPosition = 8;
+      byte lastBitPosition = Byte.SIZE;
       //get first and last bit as the row, get the middle 4 bits as the col
       int row = (Common.getBit(sixBits, firstBitPosition) << 1) | 
          (Common.getBit(sixBits, lastBitPosition));

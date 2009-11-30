@@ -150,12 +150,12 @@ public class OpenPGP
       }
       else if(bytes.length == 2)
       {
-         result = ((bytes[0] - 192) << 8) + bytes[1] + 192;
-         result = result & 0xFFFF;
+         result = ((bytes[0] - 192) << Byte.SIZE) + bytes[1] + 192;
+         result = result & Common.TWO_BYTE_MASK;
       }
       else if(bytes.length == 5)
       {
-         result = (bytes[1] << 24) | (bytes[2] << 16) | (bytes[3] << 8) | bytes[4];
+         result = (bytes[1] << 24) | (bytes[2] << 16) | (bytes[3] << Byte.SIZE) | bytes[4];
       }
       return result;
    }
