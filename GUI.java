@@ -1,6 +1,6 @@
 /**
  * Contains the main window for the application
- * Author - Jonathan Nanney
+ * @author - Jonathan Nanney
  **/
 
 import javax.swing.JFrame;
@@ -175,10 +175,15 @@ public class GUI
          {
             if(key == null)
             {
-
+               JOptionPane.showMessageDialog(null, "Cannot encrypt without " +
+                  "a key", "Key Problem", JOptionPane.ERROR_MESSAGE);
+               return;
             }
             else if(!(key instanceof RSAPrivateKey))
             {
+               JOptionPane.showMessageDialog(null, "Cannot encrypt with a " + 
+                  "public key", "Key Problem", JOptionPane.ERROR_MESSAGE);
+               return;
             }
             for(final File current : fileList)
             {
@@ -188,7 +193,6 @@ public class GUI
                SwingWorker worker = new SwingWorker<Void, Void>() {
                   public Void doInBackground() 
                   {
-                     System.out.println("In background method");
                      try
                      {
                         FileEncryptor encryptor = new FileEncryptor(current, 
@@ -312,4 +316,3 @@ public class GUI
       return panel;
    }
 }
-
