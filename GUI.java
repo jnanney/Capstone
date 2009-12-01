@@ -30,6 +30,7 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import java.awt.FlowLayout;
 import javax.swing.*; //TODO: remove
 import javax.swing.plaf.metal.*;
 import javax.swing.plaf.basic.BasicDirectoryModel;
@@ -145,22 +146,20 @@ public class GUI
 
    private JPanel createEncryptionPanel(final Container pane)
    {
-      JPanel buttonPanel = new JPanel(new BorderLayout());
+      JPanel buttonPanel = new JPanel(new FlowLayout());
+      buttonPanel.add(addFileButton);
+      buttonPanel.add(removeFileButton);
+      buttonPanel.add(encryptButton);
       JButton addFileButton = new JButton("Add File");  
       JButton encryptButton = new JButton("Encrypt Files");
       JButton removeFileButton = new JButton("Remove File(s)");
-      //final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
-      //JScrollPane scrollingFileText = new JScrollPane(fileText);
+
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
       final DefaultListModel model = new DefaultListModel();
       final JList list = new JList(model);
       JScrollPane scrollingList = new JScrollPane(list);
-      //panel.add(scrollingFileText, BorderLayout.PAGE_START);
       panel.add(scrollingList, BorderLayout.PAGE_START);
-      buttonPanel.add(addFileButton, BorderLayout.LINE_START);
-      buttonPanel.add(removeFileButton, BorderLayout.CENTER);
-      buttonPanel.add(encryptButton, BorderLayout.LINE_END);
 
       panel.add(buttonPanel, BorderLayout.PAGE_END);
       addFileButton.addActionListener(new ActionListener()
