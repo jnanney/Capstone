@@ -116,31 +116,38 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
-            RSAPrivateKey privateKey = (RSAPrivateKey) key;
+            final RSAPrivateKey privateKey = (RSAPrivateKey) key;
             for(int i = 0; i < model.size(); i++)
             {
                final File current = (File) model.get(i);
                JOptionPane newFilenamePrompt = new JOptionPane();
-               String newFilename = newFilenamePrompt.showInputDialog(pane, 
+               final String newFilename = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
-               try
-               {
-                  FileDecryptor decryptor = new FileDecryptor(current, privateKey);
-                  decryptor.write(new File(current.getParentFile() + "/" + 
-                     newFilename));
-               }
-               catch(MalformedPacketException mpe)
-               {
-                  JOptionPane.showMessageDialog(panel, 
-                     current.getName() + " is not a valid encrypted file", 
-                     "Invalid file", JOptionPane.ERROR_MESSAGE);
-               }
-               catch(IOException ioe)
-               {
-                  JOptionPane.showMessageDialog(null, "There was a problem "
-                     + "reading or writing a file", "IO Exception", 
-                     JOptionPane.ERROR_MESSAGE);
-               }
+               SwingWorker worker = new SwingWorker<Void, Void>() {
+                  public Void doInBackground()
+                  {
+                     try
+                     {
+                        FileDecryptor decryptor = new FileDecryptor(current, privateKey);
+                        decryptor.write(new File(current.getParentFile() + "/" + 
+                           newFilename));
+                     }
+                     catch(MalformedPacketException mpe)
+                     {
+                        JOptionPane.showMessageDialog(panel, 
+                           current.getName() + " is not a valid encrypted file", 
+                           "Invalid file", JOptionPane.ERROR_MESSAGE);
+                     }
+                     catch(IOException ioe)
+                     {
+                        JOptionPane.showMessageDialog(null, "There was a problem "
+                           + "reading or writing a file", "IO Exception", 
+                           JOptionPane.ERROR_MESSAGE);
+                     }
+                     return null;
+                  }
+               };
+               worker.execute();
             }
          }
       });
