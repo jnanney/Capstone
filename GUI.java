@@ -251,7 +251,6 @@ public class GUI
    {
       final JPanel panel = new JPanel(new BorderLayout()); 
       JPanel keySizePanel = new JPanel();
-      //BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
       BoxLayout layout = new BoxLayout(keySizePanel, BoxLayout.Y_AXIS);
       keySizePanel.setLayout(layout);
       JButton newKey = new JButton("Generate a new key");
@@ -266,15 +265,19 @@ public class GUI
       buttonPanel.add(newKey, BorderLayout.LINE_START);
       buttonPanel.add(existingKey, BorderLayout.LINE_END);
       keySizePanel.add(keySize); 
-      //panel.add(Box.createRigidArea(new Dimension(100, 100)));
-      panel.add(keySizePanel, BorderLayout.PAGE_START);
+      final JLabel keyLabel = new JLabel();
+      keyLabelChanger(keyLabel);
+      keySizePanel.add(keyLabel);
+      panel.add(keySizePanel, BorderLayout.WEST);
       panel.add(buttonPanel, BorderLayout.PAGE_END);
-
+      final FileNameExtensionFilter filter = new FileNameExtensionFilter(
+         "Public and Private Keys", "priv", "pub");
       existingKey.addActionListener(new ActionListener()
       {
          public void actionPerformed(ActionEvent evt)
          {
             JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(filter);
             int returnValue = chooser.showOpenDialog(pane);
             if(returnValue == JFileChooser.APPROVE_OPTION)
             {
@@ -285,6 +288,7 @@ public class GUI
                   PacketReader reader = new PacketReader(selectedFile);
                   packets = reader.readPackets();
                   key = (RSABaseKey) (packets.get(0).getPacket());
+                  keyLabelChanger(keyLabel);
                }
                catch(MalformedPacketException mpe)
                {
@@ -310,14 +314,13 @@ public class GUI
          public void actionPerformed(ActionEvent evt) 
          {
             JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-               "Public and Private Keys", "priv", "pub");
             chooser.setFileFilter(filter);
             int returnValue = chooser.showSaveDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION) 
             {
                String length = (String) keySize.getSelectedItem();
                key = new RSAPrivateKey(Integer.valueOf(length));
+               keyLabelChanger(keyLabel);
                try
                {
                   RSAPrivateKey privateKey = (RSAPrivateKey) key;
@@ -325,7 +328,7 @@ public class GUI
                   OpenPGPPacket publicPacket = new OpenPGPPacket(
                      OpenPGP.PUBLIC_KEY_PACKET_TAG, publicKey);
                   OpenPGPPacket privatePacket = new OpenPGPPacket(
-                  OpenPGP.PRIVATE_KEY_PACKET_TAG, privateKey);
+                     OpenPGP.PRIVATE_KEY_PACKET_TAG, privateKey);
                   File basicFile = chooser.getSelectedFile();
                   File privateFile = new File(basicFile.toString() + ".priv");
                   File publicFile = new File(basicFile.toString() + ".pub");
@@ -350,5 +353,21 @@ public class GUI
          }
       });
       return panel;
+   }
+
+   private void keyLabelChanger(JLabel keyLabel)
+   {
+      if(key == null)
+      {
+         keyLabel.setText("No key selected");
+      }
+      else if(key instanceof RSAPrivateKey)
+      {
+         keyLabel.setText("Private key selected");
+      }
+      else
+      {
+         keyLabel.setText("Public key selected");
+      }
    }
 }
