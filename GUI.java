@@ -249,9 +249,11 @@ public class GUI
 
    private JPanel createRSAOptionPanel(final Container pane)
    {
-      final JPanel panel = new JPanel(); 
-      BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-      panel.setLayout(layout);
+      final JPanel panel = new JPanel(new BorderLayout()); 
+      JPanel keySizePanel = new JPanel();
+      //BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+      BoxLayout layout = new BoxLayout(keySizePanel, BoxLayout.Y_AXIS);
+      keySizePanel.setLayout(layout);
       JButton newKey = new JButton("Generate a new key");
       final JComboBox keySize = new JComboBox();
       keySize.addItem("1024");
@@ -263,9 +265,10 @@ public class GUI
       JPanel buttonPanel = new JPanel(new BorderLayout());
       buttonPanel.add(newKey, BorderLayout.LINE_START);
       buttonPanel.add(existingKey, BorderLayout.LINE_END);
-      panel.add(keySize); 
-      panel.add(Box.createRigidArea(new Dimension(100, 100)));
-      panel.add(buttonPanel);
+      keySizePanel.add(keySize); 
+      //panel.add(Box.createRigidArea(new Dimension(100, 100)));
+      panel.add(keySizePanel, BorderLayout.PAGE_START);
+      panel.add(buttonPanel, BorderLayout.PAGE_END);
 
       existingKey.addActionListener(new ActionListener()
       {
