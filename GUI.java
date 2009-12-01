@@ -31,9 +31,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import java.awt.FlowLayout;
-import javax.swing.*; //TODO: remove
-import javax.swing.plaf.metal.*;
-import javax.swing.plaf.basic.BasicDirectoryModel;
+import javax.swing.JList;
+import javax.swing.DefaultListModel;
+import javax.swing.Box;
 
 public class GUI
 {
@@ -69,30 +69,35 @@ public class GUI
    private void createGUI(final Container pane) 
    {
       JPanel firstPanel = createEncryptionPanel(pane);
-      //JPanel secondPanel = createDecryptionPanel(pane);
+      JPanel secondPanel = createDecryptionPanel(pane);
       JPanel thirdPanel = createRSAOptionPanel(pane);
 
       JTabbedPane tabbedPane = new JTabbedPane();
       tabbedPane.add("Encrypt Files", firstPanel);
-      //tabbedPane.add("Decrypt Files", secondPanel);
+      tabbedPane.add("Decrypt Files", secondPanel);
       tabbedPane.add("RSA Options", thirdPanel);
       pane.add(tabbedPane);
 
    }
 
-   /*private JPanel createDecryptionPanel(final Container pane, 
-      final List<File> fileList)
+   private JPanel createDecryptionPanel(final Container pane)
    {
       JButton addFileButton = new JButton("Add File");  
       JButton decryptButton = new JButton("Decrypt Files");
-      final JTextArea fileText = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
-      JScrollPane scrollingFileText = new JScrollPane(fileText);
+      JButton removeFileButton = new JButton("Remove File(s)");
+      JPanel buttonPanel = new JPanel();
+      buttonPanel.add(addFileButton);
+      buttonPanel.add(removeFileButton);
+      buttonPanel.add(decryptButton);
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
 
-      panel.add(scrollingFileText, BorderLayout.PAGE_START);
-      panel.add(addFileButton, BorderLayout.LINE_START);
-      panel.add(decryptButton, BorderLayout.LINE_END);
+      final DefaultListModel model = new DefaultListModel();
+      final JList list = new JList(model);
+      JScrollPane scrollingList = new JScrollPane(list);
+      panel.add(scrollingList, BorderLayout.PAGE_START);
+      panel.add(buttonPanel, BorderLayout.PAGE_END);
+
       addFileButton.addActionListener(new ActionListener()
       {
          public void actionPerformed(ActionEvent evt)
@@ -102,10 +107,7 @@ public class GUI
             if (returnValue == JFileChooser.APPROVE_OPTION)
             {
                File selectedFile = chooser.getSelectedFile();
-               fileList.add(selectedFile);
-               int num = fileList.size();
-               fileText.append(num + ") " + selectedFile.getName() + "\n");
-
+               model.add(model.getSize(), selectedFile);
             }
          }
       });
@@ -115,8 +117,9 @@ public class GUI
          public void actionPerformed(ActionEvent evt)
          {
             RSAPrivateKey privateKey = (RSAPrivateKey) key;
-            for(File current : fileList)
+            for(int i = 0; i < model.size(); i++)
             {
+               final File current = (File) model.get(i);
                JOptionPane newFilenamePrompt = new JOptionPane();
                String newFilename = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
@@ -142,17 +145,17 @@ public class GUI
          }
       });
       return panel;
-   }*/
+   }
 
    private JPanel createEncryptionPanel(final Container pane)
    {
-      JPanel buttonPanel = new JPanel(new FlowLayout());
-      buttonPanel.add(addFileButton);
-      buttonPanel.add(removeFileButton);
-      buttonPanel.add(encryptButton);
+      JPanel buttonPanel = new JPanel();
       JButton addFileButton = new JButton("Add File");  
       JButton encryptButton = new JButton("Encrypt Files");
       JButton removeFileButton = new JButton("Remove File(s)");
+      buttonPanel.add(addFileButton);
+      buttonPanel.add(removeFileButton);
+      buttonPanel.add(encryptButton);
 
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
@@ -198,12 +201,6 @@ public class GUI
                   "a key", "Key Problem", JOptionPane.ERROR_MESSAGE);
                return;
             }
-            else if(!(key instanceof RSAPrivateKey))
-            {
-               JOptionPane.showMessageDialog(null, "Cannot encrypt with a " + 
-                  "public key", "Key Problem", JOptionPane.ERROR_MESSAGE);
-               return;
-            }
 
             for(int i = 0; i < model.size(); i++)
             {
@@ -245,25 +242,23 @@ public class GUI
 
    private JPanel createRSAOptionPanel(final Container pane)
    {
-      /*final JPanel panel = new JPanel();
-      javax.swing.BoxLayout box = new javax.swing.BoxLayout(panel, javax.swing.BoxLayout.Y_AXIS);
-      panel.setLayout(box);
-      */
-      final JPanel panel = new JPanel(new BorderLayout()); 
+      final JPanel panel = new JPanel(); 
+      BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+      panel.setLayout(layout);
       JButton newKey = new JButton("Generate a new key");
-      JComboBox c = new JComboBox();
-      c.addItem("1024");
-      c.addItem("2048");
-      c.addItem("4096");
+      final JComboBox keySize = new JComboBox();
+      keySize.addItem("1024");
+      keySize.addItem("2048");
+      keySize.addItem("4096");
+      Dimension comboBoxSize = new Dimension(100, 20);
+      keySize.setMaximumSize(comboBoxSize);
       JButton existingKey = new JButton("Use an existing key");
-      //final JTextField keyLength = new JTextField("1024", 10);
-      //keyLength.setPreferredSize(new java.awt.Dimension(10, 20));
       JPanel buttonPanel = new JPanel(new BorderLayout());
       buttonPanel.add(newKey, BorderLayout.LINE_START);
       buttonPanel.add(existingKey, BorderLayout.LINE_END);
-      //panel.add(keyLength, BorderLayout.PAGE_START);
-      panel.add(buttonPanel, BorderLayout.PAGE_END);
-      panel.add(c, BorderLayout.PAGE_START); 
+      panel.add(keySize); 
+      panel.add(Box.createRigidArea(new Dimension(100, 100)));
+      panel.add(buttonPanel);
 
       existingKey.addActionListener(new ActionListener()
       {
@@ -273,7 +268,7 @@ public class GUI
             int returnValue = chooser.showOpenDialog(pane);
             if(returnValue == JFileChooser.APPROVE_OPTION)
             {
-               File selectedFile = chooser.getSelectedFile();
+               File selectedFile = (File) chooser.getSelectedFile();
                List<OpenPGPPacket> packets = null;
                try
                {
@@ -311,8 +306,7 @@ public class GUI
             int returnValue = chooser.showSaveDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION) 
             {
-               //String length = keyLength.getText();
-               String length = "0";
+               String length = (String) keySize.getSelectedItem();
                key = new RSAPrivateKey(Integer.valueOf(length));
                try
                {
