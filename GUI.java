@@ -34,6 +34,9 @@ import java.awt.FlowLayout;
 import javax.swing.JList;
 import javax.swing.DefaultListModel;
 import javax.swing.Box;
+import javax.swing.text.JTextComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.border.EmptyBorder;
 
 public class GUI
 {
@@ -45,12 +48,14 @@ public class GUI
    private static final int WINDOW_HEIGHT = 250;
    private static final int WINDOW_WIDTH = 500;
    private RSABaseKey key;
-   
+   private JTextComponent keyNotifier;   
    /*
     * Creates and displays a new GUI object
     **/
    public GUI() 
    {
+      keyNotifier = new JFormattedTextField();
+      keyLabelChanger(keyNotifier);
       JFrame frame = new JFrame("File Encryption With OpenPGP");
       frame.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
       final Container contentPane = frame.getContentPane();
@@ -164,13 +169,17 @@ public class GUI
       buttonPanel.add(removeFileButton);
       buttonPanel.add(encryptButton);
 
+      JFormattedTextField keyField = new JFormattedTextField();
+      keyField.setEditable(false);
+      keyField.setDocument(keyNotifier.getDocument());
+      keyField.setBorder(new EmptyBorder(0,0,0,0));
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
       final DefaultListModel model = new DefaultListModel();
       final JList list = new JList(model);
       JScrollPane scrollingList = new JScrollPane(list);
       panel.add(scrollingList, BorderLayout.PAGE_START);
-
+      panel.add(keyField, BorderLayout.CENTER);
       panel.add(buttonPanel, BorderLayout.PAGE_END);
       addFileButton.addActionListener(new ActionListener()
       {
@@ -251,7 +260,7 @@ public class GUI
    {
       final JPanel panel = new JPanel(new BorderLayout()); 
       JPanel keySizePanel = new JPanel();
-      BoxLayout layout = new BoxLayout(keySizePanel, BoxLayout.Y_AXIS);
+      BoxLayout layout = new BoxLayout(keySizePanel, BoxLayout.X_AXIS);
       keySizePanel.setLayout(layout);
       JButton newKey = new JButton("Generate a new key");
       final JComboBox keySize = new JComboBox();
@@ -264,11 +273,14 @@ public class GUI
       JPanel buttonPanel = new JPanel(new BorderLayout());
       buttonPanel.add(newKey, BorderLayout.LINE_START);
       buttonPanel.add(existingKey, BorderLayout.LINE_END);
+      final JTextComponent keyLabel = new JFormattedTextField();
+      keyLabel.setEditable(false);
+      keyLabel.setDocument(keyNotifier.getDocument());
+      keyLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
       keySizePanel.add(keySize); 
-      final JLabel keyLabel = new JLabel();
-      keyLabelChanger(keyLabel);
+      keySizePanel.add(Box.createRigidArea(new Dimension(50, 0)));
       keySizePanel.add(keyLabel);
-      panel.add(keySizePanel, BorderLayout.WEST);
+      panel.add(keySizePanel, BorderLayout.PAGE_START);
       panel.add(buttonPanel, BorderLayout.PAGE_END);
       final FileNameExtensionFilter filter = new FileNameExtensionFilter(
          "Public and Private Keys", "priv", "pub");
@@ -355,7 +367,7 @@ public class GUI
       return panel;
    }
 
-   private void keyLabelChanger(JLabel keyLabel)
+   private void keyLabelChanger(JTextComponent keyLabel)
    {
       if(key == null)
       {
