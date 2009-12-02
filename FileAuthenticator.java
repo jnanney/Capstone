@@ -13,7 +13,7 @@ public class FileAuthenticator
    /** The number of packets that must be in a signed message */
    private static final int SIGNED_PACKETS = 2;
 
-   public FileAuthenticator(File input, RSABaseKey key) //throws IOException
+   public FileAuthenticator(File input, RSABaseKey key)
    {
       this.input = input;
       this.key = key;

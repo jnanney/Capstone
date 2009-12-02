@@ -7,7 +7,8 @@ import java.util.List;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
-public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
+public class RSAPrivateKey extends RSABaseKey implements 
+   PacketSpecificInterface
 {
    private BigInteger prime1;
    private BigInteger prime2;
@@ -26,7 +27,8 @@ public class RSAPrivateKey extends RSABaseKey implements PacketSpecificInterface
       prime1 = new BigInteger(numBits, primeCertainty, random);
       prime2 = new BigInteger(numBits, primeCertainty, random);
       BigInteger primeProduct = prime1.multiply(prime2);
-      totient = (prime1.subtract(BigInteger.ONE)).multiply(prime2.subtract(BigInteger.ONE));
+      totient = (prime1.subtract(BigInteger.ONE)).multiply(
+         prime2.subtract(BigInteger.ONE));
       BigInteger e;
       do
       {

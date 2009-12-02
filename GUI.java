@@ -104,6 +104,7 @@ public class GUI
       keyField.setDocument(keyNotifier.getDocument());
       keyField.setBorder(new EmptyBorder(0, 0, 0, 0));
       panel.add(keyField, BorderLayout.CENTER); 
+
       final DefaultListModel model = new DefaultListModel();
       final JList list = new JList(model);
       JScrollPane scrollingList = new JScrollPane(list);
@@ -128,6 +129,12 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
+            if(key == null)
+            {
+               JOptionPane.showMessageDialog(null, "Cannot encrypt without " +
+                  "a key", "Key Problem", JOptionPane.ERROR_MESSAGE);
+               return;
+            }
             final RSAPrivateKey privateKey = (RSAPrivateKey) key;
             for(int i = 0; i < model.size(); i++)
             {
@@ -393,7 +400,71 @@ public class GUI
    private JPanel createAuthenticationPanel(final Container pane)
    {
       JPanel panel = new JPanel();
+      final JTextArea log = new JTextArea(10, 30);
+      log.setEditable(false);
+      JScrollPane scrollingLog = new JScrollPane(log);
+      panel.add(scrollingLog);
+      JPanel buttonPanel = new JPanel();
+      JButton signFileButton = new JButton("Sign File");
+      JButton authenticateFileButton = new JButton("Authenticate File");
+      JButton clearLogButton = new JButton("Clear Log");
+      buttonPanel.add(signFileButton);
+      buttonPanel.add(authenticateFileButton);
+      buttonPanel.add(clearLogButton);
+      panel.add(buttonPanel);
 
+      clearLogButton.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt)
+         {
+            log.setText("");
+         }
+      });
+
+      authenticateFileButton.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt)
+         {
+            JFileChooser chooser = new JFileChooser();
+            int returnValue = chooser.showOpenDialog(pane);
+            if (returnValue == JFileChooser.APPROVE_OPTION)
+            {
+               File selectedFile = (File) chooser.getSelectedFile();
+               FileAuthenticator authenticator = new FileAuthenticator(
+                  selectedFile, key);
+               String logInfo = selectedFile.getName();
+               try
+               {
+                  if(authenticator.check())
+                  {
+                     logInfo += " was signed with this key";
+                  }
+                  else
+                  {
+                     logInfo += " was NOT signed with this key";
+                  }
+
+               }
+               catch(MalformedPacketException mpe)
+               {
+                  JOptionPane.showMessageDialog(null, "That was not a valid " +
+                     "OpenPGP message", "Malformed Packet", 
+                     JOptionPane.ERROR_MESSAGE);
+                  logInfo += " was not a valid OpenPGP message";
+               }
+               catch(IOException ioe)
+               {
+                  JOptionPane.showMessageDialog(null, "Problem reading the file",
+                     "Malformed Packet", JOptionPane.ERROR_MESSAGE);
+                  logInfo += " could not be read";
+               }
+               finally
+               {
+                  log.append(logInfo + "\n");
+               }
+            }
+         }
+      });
       return panel;
    }
 }
