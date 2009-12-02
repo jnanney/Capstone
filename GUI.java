@@ -425,6 +425,10 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
+            if(badKey())
+            {
+               return;
+            }
             JFileChooser chooser = new JFileChooser();
             int returnValue = chooser.showOpenDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION)
