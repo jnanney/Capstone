@@ -470,6 +470,16 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
+            if(badKey())
+            {
+               return;
+            }
+            else if(!(key instanceof RSAPrivateKey))
+            {
+               JOptionPane.showMessageDialog(null, "Cannot sign with a " +
+                  "public key", "Invalid Key", JOptionPane.ERROR_MESSAGE);
+               return;
+            }
             File[] files = requestTwoFiles(pane, "Choose a file to sign", 
                "Save the signed file as ");
             if(files[0] == null || files[1] == null)
@@ -526,5 +536,16 @@ public class GUI
       }
       System.out.println(java.util.Arrays.toString(files));
       return files;
+   }
+
+   private boolean badKey()
+   {
+      if(key == null)
+      {
+         JOptionPane.showMessageDialog(null, "No key is selected", 
+            "Key Problem", JOptionPane.ERROR_MESSAGE);
+         return true;
+      }
+      return false;
    }
 }
