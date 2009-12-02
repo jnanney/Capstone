@@ -75,12 +75,14 @@ public class GUI
    {
       JPanel firstPanel = createEncryptionPanel(pane);
       JPanel secondPanel = createDecryptionPanel(pane);
-      JPanel thirdPanel = createRSAOptionPanel(pane);
+      JPanel thirdPanel = createAuthenticationPanel(pane);
+      JPanel fourthPanel = createRSAOptionPanel(pane);
 
       JTabbedPane tabbedPane = new JTabbedPane();
       tabbedPane.add("Encrypt Files", firstPanel);
       tabbedPane.add("Decrypt Files", secondPanel);
-      tabbedPane.add("RSA Options", thirdPanel);
+      tabbedPane.add("Authenticate Files", thirdPanel);
+      tabbedPane.add("RSA Options", fourthPanel);
       pane.add(tabbedPane);
 
    }
@@ -381,5 +383,12 @@ public class GUI
       {
          keyLabel.setText("Public key selected");
       }
+   }
+
+   private JPanel createAuthenticationPanel(final Container pane)
+   {
+      JPanel panel = new JPanel();
+
+      return panel;
    }
 }
