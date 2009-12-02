@@ -68,6 +68,7 @@ public class SHA1
    {
       byte[] original = pad(data);
       int blocks = original.length / BLOCK_BYTES;
+      //Hash values start off with magic numbers given in the standard.
       int[] hashValues = new int[]{0x67452301, 0xefcdab89, 0x98badcfe, 
                                    0x10325476, 0xc3d2e1f0};
       for(int i = 0; i < blocks; i++)

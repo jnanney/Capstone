@@ -508,7 +508,6 @@ public class GUI
                authenticator.signAndWrite(files[1]);
                logInfo = files[0].getName() + " was signed as " + 
                   files[1].getName();
-               System.err.println("Got done");
             }
             catch(FileNotFoundException fnfe)
             {
@@ -549,7 +548,6 @@ public class GUI
             files[1] = (File) chooser.getSelectedFile();
          }
       }
-      System.out.println(java.util.Arrays.toString(files));
       return files;
    }
 
