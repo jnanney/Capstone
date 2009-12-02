@@ -99,6 +99,11 @@ public class GUI
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
 
+      JFormattedTextField keyField = new JFormattedTextField();
+      keyField.setEditable(false);
+      keyField.setDocument(keyNotifier.getDocument());
+      keyField.setBorder(new EmptyBorder(0, 0, 0, 0));
+      panel.add(keyField, BorderLayout.CENTER); 
       final DefaultListModel model = new DefaultListModel();
       final JList list = new JList(model);
       JScrollPane scrollingList = new JScrollPane(list);
@@ -174,7 +179,7 @@ public class GUI
       JFormattedTextField keyField = new JFormattedTextField();
       keyField.setEditable(false);
       keyField.setDocument(keyNotifier.getDocument());
-      keyField.setBorder(new EmptyBorder(0,0,0,0));
+      keyField.setBorder(new EmptyBorder(0, 0, 0, 0));
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
       final DefaultListModel model = new DefaultListModel();
