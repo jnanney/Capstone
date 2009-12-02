@@ -37,6 +37,7 @@ import javax.swing.Box;
 import javax.swing.text.JTextComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JProgressBar;
 
 public class GUI
 {
@@ -165,6 +166,11 @@ public class GUI
                      }
                      return null;
                   }
+
+                  protected void done()
+                  {
+                     model.removeElement(current);
+                  }
                };
                worker.execute();
             }
@@ -261,6 +267,11 @@ public class GUI
                            "IO Exception", JOptionPane.ERROR_MESSAGE);
                      }
                      return null;
+                  }
+
+                  protected void done()
+                  {
+                     model.removeElement(current);
                   }
                };
                worker.execute();
