@@ -19,7 +19,8 @@ public class FileAuthenticator
       this.key = key;
    }
 
-   public void signAndWrite(File output) throws IOException, FileNotFoundException
+   public void signAndWrite(File output) throws IOException, 
+      FileNotFoundException
    {
       if(! (key instanceof RSAPrivateKey))
       {

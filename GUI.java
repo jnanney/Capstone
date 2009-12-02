@@ -406,7 +406,7 @@ public class GUI
       panel.add(scrollingLog);
       JPanel buttonPanel = new JPanel();
       JButton signFileButton = new JButton("Sign File");
-      JButton authenticateFileButton = new JButton("Authenticate File");
+      JButton authenticateFileButton = new JButton("Check File");
       JButton clearLogButton = new JButton("Clear Log");
       buttonPanel.add(signFileButton);
       buttonPanel.add(authenticateFileButton);
@@ -465,6 +465,66 @@ public class GUI
             }
          }
       });
+      
+      signFileButton.addActionListener(new ActionListener()
+      {
+         public void actionPerformed(ActionEvent evt)
+         {
+            File[] files = requestTwoFiles(pane, "Choose a file to sign", 
+               "Save the signed file as ");
+            if(files[0] == null || files[1] == null)
+            {
+               return;
+            }
+            FileAuthenticator authenticator = new FileAuthenticator(files[0], key); 
+            String logInfo = "";
+            try
+            {
+               authenticator.signAndWrite(files[1]);
+               logInfo = files[0].getName() + " was signed as " + 
+                  files[1].getName();
+               System.err.println("Got done");
+            }
+            catch(FileNotFoundException fnfe)
+            {
+               JOptionPane.showMessageDialog(null, "File not found",
+                  "File Not Found Exception", JOptionPane.ERROR_MESSAGE);
+               logInfo = "File Not Found Exception";
+            }
+            catch(IOException ioe)
+            {
+               JOptionPane.showMessageDialog(null, "Problem reading or " +
+                  "writing file", "IO Exception", JOptionPane.ERROR_MESSAGE);
+               logInfo = "IO Exception";
+            }
+            finally
+            {
+               log.append(logInfo + "\n");   
+            }
+         }
+      });
       return panel;
+   }
+
+   private File[] requestTwoFiles(final Container pane, String openTitle, 
+      String saveTitle)
+   {
+      File[] files = new File[2];
+      JFileChooser chooser = new JFileChooser();
+      chooser.setDialogTitle(openTitle);
+      int returnValue = chooser.showOpenDialog(pane);
+      if(returnValue == JFileChooser.APPROVE_OPTION)
+      {
+         chooser.setDialogTitle(saveTitle);
+         files[0] = (File) chooser.getSelectedFile();
+         chooser = new JFileChooser();
+         returnValue = chooser.showSaveDialog(pane);
+         if(returnValue == JFileChooser.APPROVE_OPTION)
+         {
+            files[1] = (File) chooser.getSelectedFile();
+         }
+      }
+      System.out.println(java.util.Arrays.toString(files));
+      return files;
    }
 }
