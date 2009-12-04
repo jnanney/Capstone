@@ -495,19 +495,30 @@ public class GUI
                   "public key", "Invalid Key", JOptionPane.ERROR_MESSAGE);
                return;
             }
-            File[] files = requestTwoFiles(pane, "Choose a file to sign", 
-               "Save the signed file as ");
-            if(files[0] == null || files[1] == null)
+            JFileChooser chooser = new JFileChooser(System.getProperty(
+                                                    "user.dir"));
+            int chooserStatus = chooser.showOpenDialog(pane);
+            File fileToSign = null;
+            if(chooserStatus == JFileChooser.APPROVE_OPTION)
+            {
+               fileToSign = chooser.getSelectedFile();
+            }
+            else
             {
                return;
             }
-            FileAuthenticator authenticator = new FileAuthenticator(files[0], key); 
+
+            FileAuthenticator authenticator = new FileAuthenticator(
+                                                      fileToSign, key); 
+            String fileName = JOptionPane.showInputDialog(pane, 
+               "Enter a name for the signed file");
+            File signedFile = new File(fileName); 
             String logInfo = "";
             try
             {
-               authenticator.signAndWrite(files[1]);
-               logInfo = files[0].getName() + " was signed as " + 
-                  files[1].getName();
+               authenticator.signAndWrite(signedFile);
+               logInfo = fileToSign.getName() + " was signed as " + 
+                  signedFile.getName();
             }
             catch(FileNotFoundException fnfe)
             {
@@ -526,29 +537,8 @@ public class GUI
                log.append(logInfo + "\n");   
             }
          }
-      });
+      }); 
       return panel;
-   }
-
-   private File[] requestTwoFiles(final Container pane, String openTitle, 
-      String saveTitle)
-   {
-      File[] files = new File[2];
-      JFileChooser chooser = new JFileChooser();
-      chooser.setDialogTitle(openTitle);
-      int returnValue = chooser.showOpenDialog(pane);
-      if(returnValue == JFileChooser.APPROVE_OPTION)
-      {
-         chooser.setDialogTitle(saveTitle);
-         files[0] = (File) chooser.getSelectedFile();
-         chooser = new JFileChooser();
-         returnValue = chooser.showSaveDialog(pane);
-         if(returnValue == JFileChooser.APPROVE_OPTION)
-         {
-            files[1] = (File) chooser.getSelectedFile();
-         }
-      }
-      return files;
    }
 
    private boolean badKey()
