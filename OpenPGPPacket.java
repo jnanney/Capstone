@@ -82,7 +82,9 @@ public class OpenPGPPacket
    public String toString() 
    {
       //XOR removes the 2 1-bits that are required to be at start of tag
-      return "Tag : " + (tag ^ OpenPGP.NEW_TAG_MASK);
+      return "Tag : " + (tag ^ OpenPGP.NEW_TAG_MASK) + 
+             " length is " + packetInfo.getBodyLength() + "\n" + 
+             packetInfo.toString();
    }
    
    /**
