@@ -121,12 +121,15 @@ public class OpenPGP
       }
       else if(length <= OpenPGP.MAX_FIVE_OCTETS)
       {
+         int i = 0;
          result = new byte[5];
-         result[0] = (byte) Common.BYTE_MASK;
+         result[i++] = (byte) Common.BYTE_MASK;
          int mask = Common.BYTE_MASK;
-         for(int i = 1; i <result.length; i++)
+         int shiftSpaces = Byte.SIZE * 3;
+         for(; i < result.length; i++)
          {
-            result[i] = (byte) (length & (mask << ((4-i) * 8)));
+            result[i] = (byte) (length >>> shiftSpaces);
+            shiftSpaces -= Byte.SIZE;
          }
       }
       return result;
@@ -140,9 +143,9 @@ public class OpenPGP
     * @param bytes - the data to get the length from
     * @return the length in bytes of a packet
     * */
-   public static int getNewFormatLength(int[] bytes)
+   public static long getNewFormatLength(int[] bytes)
    {
-      int result = 0;
+      long result = 0;
       if(bytes.length == 1)
       {
          result = bytes[0];
@@ -153,9 +156,17 @@ public class OpenPGP
          result = ((bytes[0] - 192) << Byte.SIZE) + bytes[1] + 192;
          result = result & Common.TWO_BYTE_MASK;
       }
-      else if(bytes.length == 5)
+      else if(bytes.length == 4)
       {
-         result = (bytes[1] << 24) | (bytes[2] << 16) | (bytes[3] << Byte.SIZE) | bytes[4];
+         int shiftSpaces = 24;
+         for(int i = 0; i < bytes.length; i++)
+         {
+            long temp = Common.BYTE_MASK & bytes[i];
+            temp = temp << shiftSpaces;
+            result = result | temp;
+            shiftSpaces -= Byte.SIZE;
+         }
+         //result = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << Byte.SIZE) | bytes[3];
       }
       return result;
    }
