@@ -33,7 +33,7 @@ public class OpenPGP
    /** The maximum length that can be expressed in a 2 byte MPI */
    public static final long MAX_TWO_OCTETS = 8383;
    /** The maximum length that can be exprssed with a 5 byte MPI */
-   public static final long MAX_FIVE_OCTETS = 0xFFFFFFFF;
+   public static final long MAX_FIVE_OCTETS = 0xFFFFFFFFL;
    /** The number of bytes in an MPI used for the length of the MPI*/
    public static final byte MPI_LENGTH_BYTES = 2; 
    /** The version number for public key packets */
