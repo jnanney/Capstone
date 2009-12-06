@@ -318,7 +318,7 @@ public class GUI
             int returnValue = chooser.showOpenDialog(pane);
             if(returnValue == JFileChooser.APPROVE_OPTION)
             {
-               File selectedFile = (File) chooser.getSelectedFile();
+               File selectedFile = chooser.getSelectedFile();
                List<OpenPGPPacket> packets = null;
                try
                {
@@ -444,7 +444,7 @@ public class GUI
             int returnValue = chooser.showOpenDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION)
             {
-               File selectedFile = (File) chooser.getSelectedFile();
+               File selectedFile = chooser.getSelectedFile();
                FileAuthenticator authenticator = new FileAuthenticator(
                   selectedFile, key);
                String logInfo = selectedFile.getName();
