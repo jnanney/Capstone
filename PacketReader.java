@@ -43,7 +43,7 @@ public class PacketReader
       ArrayList<OpenPGPPacket> packets = new ArrayList<OpenPGPPacket>();
       byte tag = 0;
       int firstLengthOctet = 0;
-      int length = 0;
+      long length = 0;
       while(readIn.available() > 0)
       {
          tag = (byte) readIn.read(); 
@@ -75,7 +75,8 @@ public class PacketReader
             throw new MalformedPacketException("First octet is " + 
                firstLengthOctet);
          }
-         byte[] data = new byte[length];
+         //TODO: make this work in cases where length is interpreted as negative.
+         byte[] data = new byte[(int) length];
          int amount = readIn.read(data);
          packets.add(new OpenPGPPacket(tag, data));
       }
