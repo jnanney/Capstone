@@ -73,4 +73,9 @@ public class LiteralDataPacket implements PacketSpecificInterface
       output.write(date);
       output.write(literalData);
    }
+
+   public String toString()
+   {
+      return "Literal data packet of size " + this.getBodyLength();
+   }
 }
