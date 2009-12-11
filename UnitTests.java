@@ -24,7 +24,7 @@ public class UnitTests
       long original = 1234567;
       TripleDESEncryption des = new TripleDESEncryption(original);
       long encrypted = des.encrypt();
-      des.changeOriginal(encrypted);
+      des.changeData(encrypted);
       long decrypted = des.decrypt();
       Assert.assertTrue(encrypted != decrypted);
       Assert.assertTrue(decrypted == original);

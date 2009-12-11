@@ -43,7 +43,7 @@ public class FileEncryptor
       FileInputStream in = new FileInputStream(input);
       makeLiteralPacket(in);
       in.close();
-      //compress();
+      compress();
       encryptFile();
    }
    
@@ -125,8 +125,18 @@ public class FileEncryptor
          cipher[i] = (byte) (frEncrypted[i] ^ randomData[i]);
          fr[i] = cipher[i];
       }
-      encrypted.addAll(createPackets(des, cipher));
-      des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      EncryptedSessionKeyPacket key1 = new EncryptedSessionKeyPacket(publicKey,
+                                           des.getKey1());
+      EncryptedSessionKeyPacket key2 = new EncryptedSessionKeyPacket(publicKey,
+                                           des.getKey2());
+      EncryptedSessionKeyPacket key3 = new EncryptedSessionKeyPacket(publicKey,
+                                           des.getKey3());
+      encrypted.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key1));
+      encrypted.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key2));
+      encrypted.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key3));
+      //encrypted.addAll(createPackets(des, cipher));
+      //des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      des.changeData(Common.makeBytesLong(fr));
       frEncrypted = Common.makeLongBytes(des.encrypt());
       //We XOR the left two octets of frEncrypted with the last two octets of
       //random data.
@@ -141,7 +151,8 @@ public class FileEncryptor
       }
       fr[6] = tempCipher[0];
       fr[7] = tempCipher[1];
-      des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      //des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      des.changeData(Common.makeBytesLong(fr));
       frEncrypted = Common.makeLongBytes(des.encrypt());
       
       //We've encrypted 10 bytes of random data so now do the actual data
@@ -158,7 +169,8 @@ public class FileEncryptor
             fr[k] = cipher[k];
          }
          encrypted.addAll(createPackets(des, cipher));
-         des = new TripleDESEncryption(Common.makeBytesLong(cipher));
+         //des = new TripleDESEncryption(Common.makeBytesLong(cipher));
+         des.changeData(Common.makeBytesLong(cipher));
          frEncrypted = Common.makeLongBytes(des.encrypt());
       }
    }
@@ -177,16 +189,7 @@ public class FileEncryptor
    {
       ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
 
-      EncryptedSessionKeyPacket key1 = new EncryptedSessionKeyPacket(publicKey,
-                                           des.getKey1());
-      EncryptedSessionKeyPacket key2 = new EncryptedSessionKeyPacket(publicKey,
-                                           des.getKey2());
-      EncryptedSessionKeyPacket key3 = new EncryptedSessionKeyPacket(publicKey,
-                                           des.getKey3());
       SymmetricDataPacket symData = new SymmetricDataPacket(cipher, false);
-      result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key1));
-      result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key2));
-      result.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key3));
       result.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData));
       return result;
    }

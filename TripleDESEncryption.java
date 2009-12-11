@@ -102,7 +102,7 @@ public class TripleDESEncryption
    /**
     * Changes the value of the data to encrypt/decrypt
     * */
-   public void changeOriginal(long newLong)
+   public void changeData(long newLong)
    {
       this.original = newLong;
    }
