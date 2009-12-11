@@ -103,11 +103,79 @@ public class FileEncryptor
       toEncrypt = arrayOut.toByteArray();
    }
    
+   private void encryptFile() 
+   {
+      encrypted = new ArrayList<OpenPGPPacket>();
+      byte[] fr = Common.makeLongBytes(0);
+      
+      //Declare a new TripleDESEncryption object to encrypt the feedback 
+      //register encrypt the 3DES keys with the public key and add them to 
+      //the list of packets
+      TripleDESEncryption des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      EncryptedSessionKeyPacket key1 = new EncryptedSessionKeyPacket(publicKey,
+                                           des.getKey1());
+      EncryptedSessionKeyPacket key2 = new EncryptedSessionKeyPacket(publicKey,
+                                           des.getKey2());
+      EncryptedSessionKeyPacket key3 = new EncryptedSessionKeyPacket(publicKey,
+                                           des.getKey3());
+      encrypted.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key1));
+      encrypted.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key2));
+      encrypted.add(new OpenPGPPacket(OpenPGP.PK_SESSION_KEY_TAG, key3));
+
+      Random rand = new Random();
+      byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
+      byte[] randomData = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      rand.nextBytes(randomData);
+      byte[] cipher = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      //Loop makes the first 8 bytes of ciphertext, it's the encrypted 
+      //feedback register XORed with the first 8 bytes of random data.
+      for(int i = 0; i < cipher.length; i++)
+      {
+         cipher[i] = (byte) (frEncrypted[i] ^ randomData[i]);
+         fr[i] = cipher[i];
+      }
+      SymmetricDataPacket sym = new SymmetricDataPacket(cipher, true);
+      encrypted.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, sym));
+      des.changeData(Common.makeBytesLong(fr));
+      frEncrypted = Common.makeLongBytes(des.encrypt());
+      byte[] randomCheck = new byte[2];
+      randomCheck[0] = (byte) (frEncrypted[0] ^ randomData[6]);
+      randomCheck[1] = (byte) (frEncrypted[1] ^ randomData[7]);
+      sym = new SymmetricDataPacket(randomCheck, true);
+      encrypted.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, sym));
+      for(int i = 2; i < cipher.length; i++)
+      {
+         fr[i - 2] = cipher[i];
+      }
+      fr[6] = randomCheck[0];
+      fr[7] = randomCheck[1];
+      des.changeData(Common.makeBytesLong(fr));
+      frEncrypted = Common.makeLongBytes(des.encrypt());
+
+      cipher = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
+      for(int i = 0; i < toEncrypt.length; i += OpenPGP.TRIPLEDES_BLOCK_BYTES)
+      {
+         if(i + OpenPGP.TRIPLEDES_BLOCK_BYTES >= toEncrypt.length)
+         {
+            cipher = new byte[toEncrypt.length - i];
+         }
+
+         for(int j = i, k = 0; j < i + cipher.length; j++, k++)
+         {
+            cipher[k] = (byte) (frEncrypted[k] ^ toEncrypt[j]);
+         }
+         sym = new SymmetricDataPacket(cipher, true);
+         encrypted.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, sym));
+         des.changeData(Common.makeBytesLong(cipher));
+         frEncrypted = Common.makeLongBytes(des.encrypt());
+      }
+   }
+
    /**
     * This method encrypts a file and puts the results in the encrypted packet
     * list.
     * */
-   private void encryptFile() throws InvalidSelectionException
+   /*private void encryptFile() throws InvalidSelectionException
    {
       //TODO: clean this code up a lot.  Probably move the code that encrypts
       //random data into its method.
@@ -173,7 +241,7 @@ public class FileEncryptor
          des.changeData(Common.makeBytesLong(cipher));
          frEncrypted = Common.makeLongBytes(des.encrypt());
       }
-   }
+   }*/
    
    /**
     * This method creates the next 4 encrypted packets.  The first three 

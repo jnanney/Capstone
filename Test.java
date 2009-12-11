@@ -5,7 +5,7 @@ public class Test
 {
    public static void main(String[] args) throws Exception
    {
-      if(args.length != 4)
+      if(args.length != 4 && args.length != 3)
       {
          System.err.println("Usage: java Test <original> <encrypted file> <decrypted file> <iteration>");
          System.exit(1);
@@ -20,7 +20,7 @@ public class Test
       Runtime rt = Runtime.getRuntime();
       Process p = rt.exec("diff " + args[0] + " " + args[2]);
       
-      if(p.waitFor() != 0)
+      if(p.waitFor() != 0 && args.length == 4)
       {
          OpenPGPPacket keyToWrite = new OpenPGPPacket(OpenPGP.PRIVATE_KEY_PACKET_TAG, key);
          keyToWrite.write(new FileOutputStream("tests/key" + args[3]));

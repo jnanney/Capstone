@@ -79,6 +79,7 @@ public class PacketReader
          byte[] data = new byte[(int) length];
          int amount = readIn.read(data);
          packets.add(new OpenPGPPacket(tag, data));
+         System.out.println("Read tag " + (tag ^ OpenPGP.NEW_TAG_MASK));
       }
       readIn.close();
       return packets;

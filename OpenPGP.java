@@ -42,6 +42,8 @@ public class OpenPGP
    public static final byte TIME_BYTES = 4;
    /** The number of bytes that 3DES can encrypt at once */
    public static final byte TRIPLEDES_BLOCK_BYTES = 8;
+   /** The number of 3DES keys necessary */
+   public static final byte TRIPLEDES_KEYS = 3;
    
    /**
     * Takes an array of bytes representing an MPI (multiprecision integer) 
