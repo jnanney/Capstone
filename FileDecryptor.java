@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.util.zip.InflaterOutputStream;
-
+ 
 /**
- * This class is responsible for decrypting files
- * @author Jonathan Nanney
- * */
+* This class is responsible for decrypting files
+* @author Jonathan Nanney
+* */
 public class FileDecryptor
 {
    /** The private key that is used to decrypt the file */
@@ -21,11 +21,11 @@ public class FileDecryptor
    private byte[] data;
    
    /**
-    * Constructor that takes a file and a key to decrypt with
-    * @param input - the file to decrypt
-    * @param key - the private key used to decrypt
-    * */
-   public FileDecryptor(File input, RSAPrivateKey key) 
+* Constructor that takes a file and a key to decrypt with
+* @param input - the file to decrypt
+* @param key - the private key used to decrypt
+* */
+   public FileDecryptor(File input, RSAPrivateKey key)
       throws MalformedPacketException, IOException, InvalidSelectionException
    {
       this.input = input;
@@ -36,19 +36,19 @@ public class FileDecryptor
    
    
    /**
-    * This method decrypts the 10 bytes of random data prefixed to the data 
-    * and returns the feedback register.  Also does a quick check on data by
-    * comparing the last 2 bytes of the random data and making sure they're
-    * the same as the bytes before it.
-    * @param packets - the list packets in the encrypted message
-    * @return the feedback register which in this case will be bytes 3-10 of 
-    *         the ciphertext
-    * */
-   private byte[] processRandomData(List<OpenPGPPacket> packets) 
+* This method decrypts the 10 bytes of random data prefixed to the data
+* and returns the feedback register. Also does a quick check on data by
+* comparing the last 2 bytes of the random data and making sure they're
+* the same as the bytes before it.
+* @param packets - the list packets in the encrypted message
+* @return the feedback register which in this case will be bytes 3-10 of
+* the ciphertext
+* */
+   private byte[] processRandomData(List<OpenPGPPacket> packets)
       throws MalformedPacketException
    {
-      //TODO: get rid of magic numbers 
-      TripleDESEncryption des = new TripleDESEncryption(0, 
+      //TODO: get rid of magic numbers
+      TripleDESEncryption des = new TripleDESEncryption(0,
                                      getNextKeys(packets, 0));
       byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
       byte[] fr = new byte[OpenPGP.TRIPLEDES_BLOCK_BYTES];
@@ -59,20 +59,20 @@ public class FileDecryptor
       {
          randomData[i] = (byte) (cipher[i] ^ frEncrypted[i]);
       }
-      des = new TripleDESEncryption(Common.makeBytesLong(cipher), 
+      des = new TripleDESEncryption(Common.makeBytesLong(cipher),
                                     getNextKeys(packets, 4));
       for(int i = 0; i < 6; i++)
       {
          fr[i] = cipher[i + 2];
       }
-      SymmetricDataPacket secondSym = (SymmetricDataPacket) 
+      SymmetricDataPacket secondSym = (SymmetricDataPacket)
                                           packets.get(7).getPacket();
       cipher = secondSym.getEncryptedData();
       byte[] randomCheck = new byte[2];
       frEncrypted = Common.makeLongBytes(des.encrypt());
       for(int i = 0; i < cipher.length; i++)
       {
-         randomCheck[i] = (byte) (cipher[i] ^ frEncrypted[i]);   
+         randomCheck[i] = (byte) (cipher[i] ^ frEncrypted[i]);
       }
       fr[6] = cipher[0];
       fr[7] = cipher[1];
@@ -83,11 +83,11 @@ public class FileDecryptor
       }
       return fr;
    }
-
-
+ 
+ 
    /**
-    * Decrypts the file
-    * */
+* Decrypts the file
+* */
    public void decryptFile() throws MalformedPacketException, IOException
    {
       //TODO: clean up code and remove magic numbers
@@ -97,34 +97,29 @@ public class FileDecryptor
       byte[] fr = processRandomData(packets);
       TripleDESEncryption des;
       SymmetricDataPacket sym;
-      byte[] frEncrypted;
-      byte[] cipher;
       for(int i = 8; i < packets.size(); i += 4)
       {
-         des = new TripleDESEncryption(Common.makeBytesLong(fr), 
+         des = new TripleDESEncryption(Common.makeBytesLong(fr),
                                        getNextKeys(packets, i));
-         frEncrypted = Common.makeLongBytes(des.encrypt());
+         byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
          sym = (SymmetricDataPacket) packets.get(i + 3).getPacket();
-         cipher = sym.getEncryptedData();
+         byte[] cipher = sym.getEncryptedData();
          byte[] plain = new byte[cipher.length];
-         System.out.println("Cipher length is " + cipher.length);
          for(int j = 0; j < plain.length; j++)
          {
             plain[j] = (byte) (frEncrypted[j] ^ cipher[j]);
          }
          out.write(plain);
-         System.out.println("Currently at " + i + " out of " + packets.size());
-         System.out.println("Wrote " + java.util.Arrays.toString(plain));
          fr = cipher;
       }
       data = out.toByteArray();
    }
    
    /**
-    * This processes the file once it has been decrypted.  After decryption 
-    * the file can still be compressed or it might be in a LiteralDataPacket 
-    * so this function acts appropriately depending on what has been decrypted
-    * */
+* This processes the file once it has been decrypted. After decryption
+* the file can still be compressed or it might be in a LiteralDataPacket
+* so this function acts appropriately depending on what has been decrypted
+* */
    private void processResult() throws MalformedPacketException, IOException
    {
       ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -142,7 +137,7 @@ public class FileDecryptor
          }
          else if(current.getPacket() instanceof CompressedDataPacket)
          {
-            CompressedDataPacket compressed = (CompressedDataPacket) 
+            CompressedDataPacket compressed = (CompressedDataPacket)
                                                 current.getPacket();
             byte[] compressedData = compressed.getCompressedData();
             ByteArrayOutputStream decompressed = new ByteArrayOutputStream();
@@ -165,10 +160,10 @@ public class FileDecryptor
    }
    
    /**
-    * Writes the decrypted file to a file
-    * @param output - the file to write to
-    * */
-   public void write(File output) throws MalformedPacketException, IOException, 
+* Writes the decrypted file to a file
+* @param output - the file to write to
+* */
+   public void write(File output) throws MalformedPacketException, IOException,
       InvalidSelectionException
    {
       FileOutputStream out = new FileOutputStream(output);
@@ -177,17 +172,17 @@ public class FileDecryptor
    }
    
    /**
-    * Given the list of packets and the starting index this method just gets
-    * the 3 DES keys used for TripleDES decryption.
-    * @return the 3 DES keys used by TripleDES
-    * */
+* Given the list of packets and the starting index this method just gets
+* the 3 DES keys used for TripleDES decryption.
+* @return the 3 DES keys used by TripleDES
+* */
    private long[] getNextKeys(List<OpenPGPPacket> packets, int start)
    {
       long[] keys = new long[3];
       RSAEncryption rsa;
       for(int i = start, j = 0; i < packets.size() && j < keys.length; i++, j++)
       {
-         EncryptedSessionKeyPacket sessionKey = (EncryptedSessionKeyPacket) 
+         EncryptedSessionKeyPacket sessionKey = (EncryptedSessionKeyPacket)
                                                     packets.get(i).getPacket();
           
          rsa = new RSAEncryption(sessionKey.getEncryptedKey().toByteArray(), key);
@@ -197,3 +192,4 @@ public class FileDecryptor
       return keys;
    }
 }
+ 
