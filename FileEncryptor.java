@@ -43,7 +43,7 @@ public class FileEncryptor
       FileInputStream in = new FileInputStream(input);
       makeLiteralPacket(in);
       in.close();
-      compress();
+      //compress();
       encryptFile();
    }
    
@@ -56,7 +56,6 @@ public class FileEncryptor
       //TODO: clean this code up
       ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
       DeflaterOutputStream deflater = new DeflaterOutputStream(arrayOut);
-      //DeflaterOutputStream deflater = new DeflaterOutputStream(new FileOutputStream("weez"));
       deflater.write(toEncrypt, 0, toEncrypt.length);
       deflater.finish();
       byte[] compressed = arrayOut.toByteArray();

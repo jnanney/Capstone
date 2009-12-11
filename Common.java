@@ -125,7 +125,7 @@ public class Common
     * */
    public static byte[] makeLongBytes(long number)
    {
-      int bytesInLong = Long.SIZE / Byte.SIZE;
+      int bytesInLong = 8;
       byte[] result = new byte[bytesInLong];
       long shiftSpaces = Long.SIZE - Byte.SIZE;
       for(int i = 0; i < bytesInLong; i++)

@@ -97,19 +97,24 @@ public class FileDecryptor
       byte[] fr = processRandomData(packets);
       TripleDESEncryption des;
       SymmetricDataPacket sym;
+      byte[] frEncrypted;
+      byte[] cipher;
       for(int i = 8; i < packets.size(); i += 4)
       {
          des = new TripleDESEncryption(Common.makeBytesLong(fr), 
                                        getNextKeys(packets, i));
-         byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
+         frEncrypted = Common.makeLongBytes(des.encrypt());
          sym = (SymmetricDataPacket) packets.get(i + 3).getPacket();
-         byte[] cipher = sym.getEncryptedData();
+         cipher = sym.getEncryptedData();
          byte[] plain = new byte[cipher.length];
+         System.out.println("Cipher length is " + cipher.length);
          for(int j = 0; j < plain.length; j++)
          {
             plain[j] = (byte) (frEncrypted[j] ^ cipher[j]);
          }
          out.write(plain);
+         System.out.println("Currently at " + i + " out of " + packets.size());
+         System.out.println("Wrote " + java.util.Arrays.toString(plain));
          fr = cipher;
       }
       data = out.toByteArray();
