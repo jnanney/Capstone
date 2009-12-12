@@ -100,35 +100,6 @@ public class FileDecryptor
       data = out.toByteArray();
    }
 
-   /**
-   * Decrypts the file
-   * */
-   /*public void decryptFile() throws MalformedPacketException, IOException
-   {
-      //TODO: clean up code and remove magic numbers
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      PacketReader reader = new PacketReader(input);
-      List<OpenPGPPacket> packets = reader.readPackets();
-      byte[] fr = processRandomData(packets);
-      TripleDESEncryption des;
-      SymmetricDataPacket sym;
-      for(int i = 8; i < packets.size(); i += 4)
-      {
-         des = new TripleDESEncryption(Common.makeBytesLong(fr),
-                                       getNextKeys(packets, i));
-         byte[] frEncrypted = Common.makeLongBytes(des.encrypt());
-         sym = (SymmetricDataPacket) packets.get(i + 3).getPacket();
-         byte[] cipher = sym.getEncryptedData();
-         byte[] plain = new byte[cipher.length];
-         for(int j = 0; j < plain.length; j++)
-         {
-            plain[j] = (byte) (frEncrypted[j] ^ cipher[j]);
-         }
-         out.write(plain);
-         fr = cipher;
-      }
-      data = out.toByteArray();
-   }*/
    
    /**
    * This processes the file once it has been decrypted. After decryption
