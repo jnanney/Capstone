@@ -116,7 +116,8 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(System.getProperty(
+                                                    "user.dir"));
             int returnValue = chooser.showOpenDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION)
             {
@@ -205,7 +206,8 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(System.getProperty(
+                                                    "user.dir"));
             int returnValue = chooser.showOpenDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION)
             {
@@ -313,7 +315,8 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt)
          {
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(System.getProperty(
+                                                   "user.dir"));
             chooser.setFileFilter(filter);
             int returnValue = chooser.showOpenDialog(pane);
             if(returnValue == JFileChooser.APPROVE_OPTION)
@@ -350,7 +353,8 @@ public class GUI
       {
          public void actionPerformed(ActionEvent evt) 
          {
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(System.getProperty(
+                                                    "user.dir"));
             chooser.setFileFilter(filter);
             int returnValue = chooser.showSaveDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION) 
@@ -440,7 +444,8 @@ public class GUI
             {
                return;
             }
-            JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser(System.getProperty(
+                                                   "user.dir"));
             int returnValue = chooser.showOpenDialog(pane);
             if (returnValue == JFileChooser.APPROVE_OPTION)
             {
