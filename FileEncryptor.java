@@ -43,7 +43,7 @@ public class FileEncryptor
       FileInputStream in = new FileInputStream(input);
       makeLiteralPacket(in);
       in.close();
-      compress();
+      //compress();
       encryptFile();
    }
    
@@ -100,6 +100,7 @@ public class FileEncryptor
                                     OpenPGP.LITERAL_DATA_PACKET_TAG, literal);
       ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
       literalPacket.write(arrayOut);
+      literalPacket.write(new FileOutputStream("wow"));
       toEncrypt = arrayOut.toByteArray();
    }
    
@@ -134,6 +135,7 @@ public class FileEncryptor
          cipher[i] = (byte) (frEncrypted[i] ^ randomData[i]);
          fr[i] = cipher[i];
       }
+      System.out.println("Random data " + java.util.Arrays.toString(randomData));
       SymmetricDataPacket sym = new SymmetricDataPacket(cipher, true);
       encrypted.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, sym));
       des.changeData(Common.makeBytesLong(fr));
@@ -243,22 +245,4 @@ public class FileEncryptor
       }
    }*/
    
-   /**
-    * This method creates the next 4 encrypted packets.  The first three 
-    * packets hold the 3 public key encrypted session keys and the last packet
-    * holds the encrypted data
-    * @param des - holds the 3DES keys to encrypt and put in 
-    *              EncryptedSessionKeyPacket
-    * @param cipher - the data that was encrypted with 3DES to put into a 
-    *                 SymmetricDataPacket
-    * @return A list of the packets that were created
-    * */
-   private List<OpenPGPPacket> createPackets(TripleDESEncryption des, byte[] cipher)
-   {
-      ArrayList<OpenPGPPacket> result = new ArrayList<OpenPGPPacket>();
-
-      SymmetricDataPacket symData = new SymmetricDataPacket(cipher, false);
-      result.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, symData));
-      return result;
-   }
 }

@@ -20,6 +20,8 @@ public class OpenPGPPacket
     * */
    public OpenPGPPacket(byte tag, PacketSpecificInterface packetInfo)
    {
+      System.out.println("Creating with tag " + (tag ^ OpenPGP.NEW_TAG_MASK));
+      System.out.println("Size will be " + packetInfo.getBodyLength());
       this.tag = tag;
       this.packetInfo = packetInfo;
    }
@@ -57,7 +59,8 @@ public class OpenPGPPacket
             packetInfo = new SignaturePacket(data);
             break;
          default:
-            throw new MalformedPacketException("Tag " + tag + " is invalid");
+            throw new MalformedPacketException("Tag " + (tag ^ 
+               OpenPGP.NEW_TAG_MASK) + " is invalid");
       }
    }
    

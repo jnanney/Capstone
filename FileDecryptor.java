@@ -34,7 +34,7 @@ public class FileDecryptor
       this.key = key;
       //processRandomData();
       decryptFile();
-      //processResult();
+      processResult();
    }
    
    public void decryptFile() throws MalformedPacketException, IOException
@@ -76,6 +76,8 @@ public class FileDecryptor
       {
          randomCheck[j] = (byte) (cipher[j] ^ frEncrypted[j]);
       }
+      fr[6] = cipher[0];
+      fr[7] = cipher[1];
       if(randomCheck[0] != random[6] || randomCheck[1] != random[7])
       {
          throw new MalformedPacketException(
