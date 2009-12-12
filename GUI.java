@@ -143,7 +143,11 @@ public class GUI
                final File current = (File) model.get(i);
                JOptionPane newFilenamePrompt = new JOptionPane();
                final String newFilename = newFilenamePrompt.showInputDialog(pane, 
-                  "Type a new filename for " + current.getName());
+                  "Type a new filename for " + current.getName(), "");
+               if(newFilename == null || newFilename.trim().length() == 0)
+               {
+                  continue;
+               }
                SwingWorker worker = new SwingWorker<Void, Void>() {
                   public Void doInBackground()
                   {
@@ -242,6 +246,10 @@ public class GUI
                JOptionPane newFilenamePrompt = new JOptionPane();
                final String newName = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
+               if(newName == null || newName.trim().length() == 0) 
+               {
+                  continue;
+               }
                SwingWorker worker = new SwingWorker<Void, Void>() {
                   public Void doInBackground() 
                   {
