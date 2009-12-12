@@ -43,7 +43,7 @@ public class FileEncryptor
       FileInputStream in = new FileInputStream(input);
       makeLiteralPacket(in);
       in.close();
-      //compress();
+      compress();
       encryptFile();
    }
    
@@ -135,7 +135,6 @@ public class FileEncryptor
          cipher[i] = (byte) (frEncrypted[i] ^ randomData[i]);
          fr[i] = cipher[i];
       }
-      System.out.println("Random data " + java.util.Arrays.toString(randomData));
       SymmetricDataPacket sym = new SymmetricDataPacket(cipher, true);
       encrypted.add(new OpenPGPPacket(OpenPGP.SYMMETRIC_DATA_TAG, sym));
       des.changeData(Common.makeBytesLong(fr));

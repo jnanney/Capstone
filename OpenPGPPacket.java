@@ -20,8 +20,6 @@ public class OpenPGPPacket
     * */
    public OpenPGPPacket(byte tag, PacketSpecificInterface packetInfo)
    {
-      System.out.println("Creating with tag " + (tag ^ OpenPGP.NEW_TAG_MASK));
-      System.out.println("Size will be " + packetInfo.getBodyLength());
       this.tag = tag;
       this.packetInfo = packetInfo;
    }

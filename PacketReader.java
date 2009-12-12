@@ -46,7 +46,6 @@ public class PacketReader
       long length = 0;
       while(readIn.available() > 0)
       {
-         System.out.println("Read in " + packets.size());
          tag = (byte) readIn.read(); 
          firstLengthOctet = readIn.read();
          if(firstLengthOctet <= OpenPGP.MAX_ONE_OCTET)
@@ -81,8 +80,6 @@ public class PacketReader
          int amount = readIn.read(data);
          OpenPGPPacket temp = new OpenPGPPacket(tag, data);
          packets.add(new OpenPGPPacket(tag, data));
-         System.out.println("Read tag " + (tag ^ OpenPGP.NEW_TAG_MASK));
-         System.out.println("Size is " + temp.getPacket().getBodyLength());
       }
       readIn.close();
       return packets;
