@@ -29,19 +29,25 @@ public class FileEncryptor
    private RSABaseKey publicKey;
    /** The data to encrypt */
    private byte[] toEncrypt;
-   
+   /** File to write the encrypted file to */
+   private File output; 
    /**
     * Constructor that takes a file to encrypt and a key to encrypt it with
     * @param input - the file to encrypt
     * @param key - the key to encrypt the file with
     * */
    public FileEncryptor(File input, RSABaseKey key) 
-      throws FileNotFoundException, IOException, InvalidSelectionException
    {
       this.input = input;
-      this.publicKey=key;
+      this.publicKey = key;
    }
    
+   public FileEncryptor(File input, RSABaseKey key, File output) 
+   {
+      this(input, key);
+      this.output = output;
+   }
+
    /**
     * This method will compress the data and puts the result in the toEncrypt 
     * array.  Algorithm used is DEFLATE
@@ -67,19 +73,27 @@ public class FileEncryptor
     * This method writes the encrypted file to a file.
     * @param output - the file to write to
     * */
-   public void write(File output) throws IOException, FileNotFoundException
+   public void write(File outputFile) throws IOException, FileNotFoundException
    {
       FileInputStream in = new FileInputStream(input);
       makeLiteralPacket(in);
       in.close();
       compress();
       encryptFile();
-      FileOutputStream out = new FileOutputStream(output);
+      FileOutputStream out = new FileOutputStream(outputFile);
       for(OpenPGPPacket current : encrypted)
       {
          current.write(out);
       }
       out.close();
+   }
+
+   public void write() throws IOException, FileNotFoundException
+   {
+      if(this.output != null)
+      {
+         write(output);
+      }
    }
    
    /**
@@ -172,4 +186,8 @@ public class FileEncryptor
       }
    }
 
+   public String getInputFilename()
+   {
+      return input.getName();
+   }
 }

@@ -174,18 +174,6 @@ public class FileDecryptor
       }
    }
 
-   public String getOutputFilename()
-   {
-      if(output == null)
-      {
-         return "";
-      }
-      else
-      {
-         return output.getName();
-      }
-   }
-
    public String getInputFilename()
    {
       return input.getName();

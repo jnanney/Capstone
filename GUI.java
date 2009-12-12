@@ -114,7 +114,6 @@ public class GUI
 
       final JFormattedTextField statusField = new JFormattedTextField();
       statusField.setEditable(false);
-      statusField.setValue("Nothing yet");
       statusField.setBorder(new EmptyBorder(0, 0, 0, 0));
       centerPanel.add(statusField);
       panel.add(centerPanel, BorderLayout.CENTER);
@@ -218,18 +217,33 @@ public class GUI
       buttonPanel.add(addFileButton);
       buttonPanel.add(removeFileButton);
       buttonPanel.add(encryptButton);
+      
+      JPanel centerPanel = new JPanel();
+      BoxLayout centerLayout = new BoxLayout(centerPanel, BoxLayout.Y_AXIS);
+      centerPanel.setLayout(centerLayout);
 
       JFormattedTextField keyField = new JFormattedTextField();
       keyField.setEditable(false);
       keyField.setDocument(keyNotifier.getDocument());
       keyField.setBorder(new EmptyBorder(0, 0, 0, 0));
+      centerPanel.add(keyField);
+      
+      final JProgressBar progress = new JProgressBar();
+      centerPanel.add(progress);
+      
+      final JFormattedTextField statusField = new JFormattedTextField();
+      statusField.setEditable(false);
+      statusField.setValue("");
+      statusField.setBorder(new EmptyBorder(0, 0, 0, 0));
+      centerPanel.add(statusField);
+
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
       final DefaultListModel model = new DefaultListModel();
       final JList list = new JList(model);
       JScrollPane scrollingList = new JScrollPane(list);
       panel.add(scrollingList, BorderLayout.PAGE_START);
-      panel.add(keyField, BorderLayout.CENTER);
+      panel.add(centerPanel, BorderLayout.CENTER);
       panel.add(buttonPanel, BorderLayout.PAGE_END);
       addFileButton.addActionListener(new ActionListener()
       {
@@ -268,45 +282,59 @@ public class GUI
                   "a key", "Key Problem", JOptionPane.ERROR_MESSAGE);
                return;
             }
-
-            for(int i = 0; i < model.size(); i++)
+            final ArrayList<FileEncryptor> workList = new 
+               ArrayList<FileEncryptor>(); 
+            while(model.size() > 0)
             {
-               final File current = (File) model.get(i);
+               final File current = (File) model.get(0);
                JOptionPane newFilenamePrompt = new JOptionPane();
                final String newName = newFilenamePrompt.showInputDialog(pane, 
                   "Type a new filename for " + current.getName());
-               if(newName == null || newName.trim().length() == 0) 
+               if(!(newName == null || newName.trim().length() == 0))
                {
-                  continue;
+                  File output = new File(current.getParentFile() + 
+                     "/" + newName);
+                  workList.add(new FileEncryptor(current, key, output));
                }
-               SwingWorker worker = new SwingWorker<Void, Void>() {
-                  public Void doInBackground() 
+               model.removeElement(current);
+            }
+            SwingWorker worker = new SwingWorker<Void, Void>() {
+                
+               public Void doInBackground() 
+               {
+                  progress.setIndeterminate(true);
+                  int i = 1;
+                  for(FileEncryptor encryptor : workList)
                   {
+                     statusField.setValue("Working on " + i++ + " of " + 
+                        workList.size()); 
                      try
                      {
-                        model.removeElement(current);
-                        FileEncryptor encryptor = new FileEncryptor(current, 
-                                                                    key);
-                        encryptor.write(new File(current.getParentFile() + 
-                                        "/" + newName));
+                        encryptor.write();
                      }
                      catch(FileNotFoundException fnfe)
                      {
-                        JOptionPane.showMessageDialog(null, current.getName() + 
-                           " was not found", "File Not Found", 
-                           JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, 
+                           encryptor.getInputFilename() + " was not found", 
+                           "File Not Found", JOptionPane.ERROR_MESSAGE);
                      }
                      catch(IOException ioe)
                      {
-                        JOptionPane.showMessageDialog(null, "There was a problem "
-                           + "reading or writing file: " + current.getName(), 
-                           "IO Exception", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "There was a " +
+                           "problem reading or writing a file", "IO Exception",
+                           JOptionPane.ERROR_MESSAGE);
                      }
-                     return null;
                   }
-               };
-               worker.execute();
-            }
+                  return null;
+               }
+
+               public void done()
+               {
+                  progress.setIndeterminate(false);
+                  statusField.setValue("");
+               }
+            };
+            worker.execute();
          }
       });
       return panel;
