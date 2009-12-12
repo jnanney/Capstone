@@ -149,6 +149,7 @@ public class GUI
                   {
                      try
                      {
+                        model.removeElement(current);
                         FileDecryptor decryptor = new FileDecryptor(current, privateKey);
                         decryptor.write(new File(current.getParentFile() + "/" + 
                            newFilename));
@@ -166,11 +167,6 @@ public class GUI
                            JOptionPane.ERROR_MESSAGE);
                      }
                      return null;
-                  }
-
-                  protected void done()
-                  {
-                     model.removeElement(current);
                   }
                };
                worker.execute();
@@ -251,6 +247,7 @@ public class GUI
                   {
                      try
                      {
+                        model.removeElement(current);
                         FileEncryptor encryptor = new FileEncryptor(current, 
                                                                     key);
                         encryptor.write(new File(current.getParentFile() + 
@@ -269,11 +266,6 @@ public class GUI
                            "IO Exception", JOptionPane.ERROR_MESSAGE);
                      }
                      return null;
-                  }
-
-                  protected void done()
-                  {
-                     model.removeElement(current);
                   }
                };
                worker.execute();
