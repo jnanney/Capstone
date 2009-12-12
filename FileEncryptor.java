@@ -40,11 +40,6 @@ public class FileEncryptor
    {
       this.input = input;
       this.publicKey=key;
-      FileInputStream in = new FileInputStream(input);
-      makeLiteralPacket(in);
-      in.close();
-      compress();
-      encryptFile();
    }
    
    /**
@@ -74,6 +69,11 @@ public class FileEncryptor
     * */
    public void write(File output) throws IOException, FileNotFoundException
    {
+      FileInputStream in = new FileInputStream(input);
+      makeLiteralPacket(in);
+      in.close();
+      compress();
+      encryptFile();
       FileOutputStream out = new FileOutputStream(output);
       for(OpenPGPPacket current : encrypted)
       {

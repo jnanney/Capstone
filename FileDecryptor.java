@@ -21,6 +21,8 @@ public class FileDecryptor
    private File input;
    /** The data after it has been decrypted */
    private byte[] data;
+   /** The file to write to, user may also call write with a filename */
+   private File output;
    
    /**
 * Constructor that takes a file and a key to decrypt with
@@ -28,15 +30,17 @@ public class FileDecryptor
 * @param key - the private key used to decrypt
 * */
    public FileDecryptor(File input, RSAPrivateKey key)
-      throws MalformedPacketException, IOException, InvalidSelectionException
    {
       this.input = input;
       this.key = key;
-      //processRandomData();
-      decryptFile();
-      processResult();
    }
    
+   public FileDecryptor(File input, RSAPrivateKey key, File output)
+   {
+      this(input, key);
+      this.output = output;
+   }
+
    public void decryptFile() throws MalformedPacketException, IOException
    {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -148,14 +152,42 @@ public class FileDecryptor
    }
    
    /**
-* Writes the decrypted file to a file
-* @param output - the file to write to
-* */
-   public void write(File output) throws MalformedPacketException, IOException,
+   * Writes the decrypted file to a file
+   * @param output - the file to write to
+   * */
+   public void write(File outputFile) throws MalformedPacketException, IOException,
       InvalidSelectionException
    {
-      FileOutputStream out = new FileOutputStream(output);
+      decryptFile();
+      processResult();
+      FileOutputStream out = new FileOutputStream(outputFile);
       out.write(data);
       out.close();
+   }
+
+   public void write() throws MalformedPacketException, IOException, 
+      InvalidSelectionException
+   {
+      if(output != null)
+      {
+         this.write(output);
+      }
+   }
+
+   public String getOutputFilename()
+   {
+      if(output == null)
+      {
+         return "";
+      }
+      else
+      {
+         return output.getName();
+      }
+   }
+
+   public String getInputFilename()
+   {
+      return input.getName();
    }
 }
