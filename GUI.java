@@ -100,11 +100,24 @@ public class GUI
       final JPanel panel = new JPanel(); 
       panel.setLayout(new BorderLayout());
 
+      JPanel centerPanel = new JPanel();
+      BoxLayout centerLayout = new BoxLayout(centerPanel, BoxLayout.Y_AXIS);
+      centerPanel.setLayout(centerLayout);
       JFormattedTextField keyField = new JFormattedTextField();
       keyField.setEditable(false);
       keyField.setDocument(keyNotifier.getDocument());
       keyField.setBorder(new EmptyBorder(0, 0, 0, 0));
-      panel.add(keyField, BorderLayout.CENTER); 
+      centerPanel.add(keyField);
+      
+      final JProgressBar progress = new JProgressBar();
+      centerPanel.add(progress);
+
+      final JFormattedTextField statusField = new JFormattedTextField();
+      statusField.setEditable(false);
+      statusField.setValue("Nothing yet");
+      statusField.setBorder(new EmptyBorder(0, 0, 0, 0));
+      centerPanel.add(statusField);
+      panel.add(centerPanel, BorderLayout.CENTER);
 
       final DefaultListModel model = new DefaultListModel();
       final JList list = new JList(model);
@@ -157,10 +170,12 @@ public class GUI
             SwingWorker worker = new SwingWorker<Void, Void>() {
                public Void doInBackground()
                {
-                  int i = 0;
+                  progress.setIndeterminate(true);
+                  int i = 1;
                   for(FileDecryptor decryptor : workList)
                   {
-                     System.out.println("Working on file " + i++);
+                     statusField.setValue("Working on " + i++ + " of " + 
+                        workList.size());
                      try
                      {
                         decryptor.write();
@@ -180,6 +195,12 @@ public class GUI
                      }
                   }
                   return null;
+               }
+
+               public void done()
+               {
+                  progress.setIndeterminate(false);
+                  statusField.setValue("");
                }
             };
             worker.execute();
