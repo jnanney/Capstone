@@ -9,7 +9,6 @@ public class LiteralDataPacket implements PacketSpecificInterface
    private byte[] date;
    private int DATE_SIZE = 4;
 
-   //TODO: check that filenames are not greater than 255 bytes.   
    public LiteralDataPacket(byte format, String fileName, byte[] literalData)
    {
       this.fileName = fileName.getBytes();

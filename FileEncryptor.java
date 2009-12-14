@@ -54,7 +54,6 @@ public class FileEncryptor
     * */
    private void compress() throws IOException
    {
-      //TODO: clean this code up
       ByteArrayOutputStream arrayOut = new ByteArrayOutputStream();
       DeflaterOutputStream deflater = new DeflaterOutputStream(arrayOut);
       deflater.write(toEncrypt, 0, toEncrypt.length);

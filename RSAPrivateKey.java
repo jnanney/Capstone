@@ -18,7 +18,6 @@ public class RSAPrivateKey extends RSABaseKey implements
 
    public RSAPrivateKey(int bitLength)
    {
-      //TODO: set the time
       byte[] keyTime = new byte[4];
       //compensate for not being unsigned
       int numBits = bitLength + 1;
@@ -100,7 +99,7 @@ public class RSAPrivateKey extends RSABaseKey implements
       byte[] dArray = OpenPGP.makeMultiprecisionInteger(decryptionExponent);
       byte[] pArray = OpenPGP.makeMultiprecisionInteger(prime1);
       byte[] qArray = OpenPGP.makeMultiprecisionInteger(prime2);
-      checksum = new byte[]{0, 0}; //TODO: make this an actual checksum
+      checksum = new byte[]{0, 0}; 
       byte string2Key = 0;
       output.write(string2Key);
       output.write(dArray);

@@ -13,7 +13,6 @@ public class RSABaseKey implements PacketSpecificInterface
    
    public RSABaseKey()
    {
-      //TODO: create actual key ids
       keyID = new byte[]{0, 0, 0, 0, 0, 0, 0, 0};
       time = Common.getByteTime();
    }
