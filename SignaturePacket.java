@@ -22,12 +22,13 @@ public class SignaturePacket implements PacketSpecificInterface
       }
       if(data[i++] != TYPE)
       {
-         throw new MalformedPacketException("Only binary signatures are supported");
+         throw new MalformedPacketException("Only binary signatures are " +
+            "supported");
       }
       if(data[i++] != PUBLIC_KEY_ALGORITHM)
       {
-         throw new MalformedPacketException("RSA is the only supported public " + 
-            "key algorithm");
+         throw new MalformedPacketException("RSA is the only supported public" 
+            + " key algorithm");
       }
       if(data[i++] != HASH_ALGORITHM)
       {

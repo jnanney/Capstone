@@ -22,9 +22,11 @@ public class OpenPGP
    public static final byte PRIVATE_KEY_PACKET_TAG = 5 | NEW_TAG_MASK;
    /** The tag for packets that hold unencrypted data */
    public static final byte LITERAL_DATA_PACKET_TAG = 11 | NEW_TAG_MASK;
-   /** The tag for packets that hold a session key encrypted with a public key */
+   /** The tag for packets that hold a session key encrypted with a public key 
+    * */
    public static final byte PK_SESSION_KEY_TAG = 1 | NEW_TAG_MASK;
-   /** The tag for packets that hold data encrypted with a symmetric algorithm */
+   /** The tag for packets that hold data encrypted with a symmetric algorithm 
+    * */
    public static final byte SYMMETRIC_DATA_TAG = 9 | NEW_TAG_MASK;
    /** The tag for packets that hold compressed data */
    public static final byte COMPRESSED_DATA_TAG = 8 | NEW_TAG_MASK;
@@ -56,7 +58,8 @@ public class OpenPGP
    public static byte[] getMultiprecisionInteger(byte[] data, int start)
    {
       int i = start;
-      int mpiLength = (data[i++] << Byte.SIZE) | ((int) data[i++] & Common.BYTE_MASK);
+      int mpiLength = (data[i++] << Byte.SIZE) | 
+                      ((int) data[i++] & Common.BYTE_MASK);
       mpiLength = 0XFFFF & mpiLength;
       byte[] mpi = new byte[mpiLength / Byte.SIZE];
       for(int j = 0; j < mpi.length && i < data.length; i++, j++)
@@ -168,7 +171,6 @@ public class OpenPGP
             result = result | temp;
             shiftSpaces -= Byte.SIZE;
          }
-         //result = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << Byte.SIZE) | bytes[3];
       }
       return result;
    }

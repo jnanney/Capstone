@@ -82,7 +82,8 @@ public class SHA1
          int[] w = messageScheduler(original, i * BLOCK_BYTES);
          for(int j = 0; j < BLOCK_ITERATIONS; j++)
          {
-            temp = addMod2(Common.rotateLeftCircular(a, 5), sha1Function(j, b, c, d)); 
+            temp = addMod2(Common.rotateLeftCircular(a, 5), 
+                           sha1Function(j, b, c, d)); 
             temp = addMod2(temp, e);
             temp = addMod2(temp, constant(j));
             temp = addMod2(temp, w[j]);
@@ -188,8 +189,8 @@ public class SHA1
       int i;
       for(i = 0; i < BOUNDARY; i++)
       {
-         //((i+start) * 4), ((i+start) * 4) + bytesInInt);
-         result[i] = Common.makeBytesInt(data, (i*4) + start, (i*4) + start + 4);
+         result[i] = Common.makeBytesInt(data, 
+            (i*4) + start, (i*4) + start + 4);
       }
       for(; i < result.length; i++)
       {

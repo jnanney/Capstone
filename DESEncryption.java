@@ -178,7 +178,8 @@ public class DESEncryption
       throws InvalidSelectionException
    {
       int START = 1;
-      long result = Common.switchBits(original, DESArrays.getInitialPermutation());
+      long result = Common.switchBits(original, 
+         DESArrays.getInitialPermutation());
       long left = Common.getBits(result, FIRST_BIT, MIDDLE_BIT);
       long right = Common.getBits(result, MIDDLE_BIT, LAST_BIT);
       int iteration;

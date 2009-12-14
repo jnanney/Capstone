@@ -155,8 +155,8 @@ public class FileDecryptor
    * Writes the decrypted file to a file
    * @param output - the file to write to
    * */
-   public void write(File outputFile) throws MalformedPacketException, IOException,
-      InvalidSelectionException
+   public void write(File outputFile) throws MalformedPacketException, 
+      IOException, InvalidSelectionException
    {
       decryptFile();
       processResult();

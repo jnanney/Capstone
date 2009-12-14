@@ -52,7 +52,8 @@ public class PacketReader
          {
             length = OpenPGP.getNewFormatLength(new int[] {firstLengthOctet});
          }
-         else if(firstLengthOctet > OpenPGP.MAX_ONE_OCTET && firstLengthOctet <= 223)
+         else if(firstLengthOctet > OpenPGP.MAX_ONE_OCTET && 
+                 firstLengthOctet <= 223)
          {
             int secondLengthOctet = readIn.read();
             length = OpenPGP.getNewFormatLength(new int[] {firstLengthOctet, 
@@ -75,7 +76,6 @@ public class PacketReader
             throw new MalformedPacketException("First octet is " + 
                firstLengthOctet);
          }
-         //TODO: make this work in cases where length is interpreted as negative.
          byte[] data = new byte[(int) length];
          int amount = readIn.read(data);
          OpenPGPPacket temp = new OpenPGPPacket(tag, data);

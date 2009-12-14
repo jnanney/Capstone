@@ -67,7 +67,8 @@ public class RSAEncryption
 
       RSAPrivateKey privateKey = (RSAPrivateKey) key;
 	   BigInteger n = key.getPrimeProduct();
-      BigInteger result = original.modPow(privateKey.getDecryptionExponent(), n);
+      BigInteger result = original.modPow(privateKey.getDecryptionExponent(), 
+         n);
 	   return result;
    }
    

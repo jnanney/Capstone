@@ -150,13 +150,14 @@ public class GUI
                return;
             }
             final RSAPrivateKey privateKey = (RSAPrivateKey) key;
-            final ArrayList<FileDecryptor> workList = new ArrayList<FileDecryptor>();
+            final ArrayList<FileDecryptor> workList = new 
+               ArrayList<FileDecryptor>();
             while(model.size() > 0)
             {
                final File current = (File) model.get(0);
                JOptionPane newFilenamePrompt = new JOptionPane();
-               final String newFilename = newFilenamePrompt.showInputDialog(pane, 
-                  "Type a new filename for " + current.getName(), "");
+               final String newFilename = newFilenamePrompt.showInputDialog(
+                  pane, "Type a new filename for " + current.getName(), "");
                if(!(newFilename == null || newFilename.trim().length() == 0))
                {
                   File outputFile = new File(current.getParentFile() + "/" + 
@@ -188,9 +189,9 @@ public class GUI
                      }
                      catch(IOException ioe)
                      {
-                        JOptionPane.showMessageDialog(null, "There was a problem "
-                           + "reading or writing a file", "IO Exception", 
-                           JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "There was a "
+                           + "problem reading or writing a file", 
+                           "IO Exception", JOptionPane.ERROR_MESSAGE);
                      }
                   }
                   return null;
@@ -431,7 +432,8 @@ public class GUI
                   File privateFile = new File(basicFile.toString() + ".priv");
                   File publicFile = new File(basicFile.toString() + ".pub");
                   FileOutputStream publicOut = new FileOutputStream(publicFile);
-                  FileOutputStream privateOut = new FileOutputStream(privateFile);
+                  FileOutputStream privateOut = new 
+                     FileOutputStream(privateFile);
                   publicPacket.write(publicOut);
                   privatePacket.write(privateOut);
                   publicOut.close();
@@ -531,7 +533,7 @@ public class GUI
                }
                catch(IOException ioe)
                {
-                  JOptionPane.showMessageDialog(null, "Problem reading the file",
+                  JOptionPane.showMessageDialog(null, "Problem reading file",
                      "Malformed Packet", JOptionPane.ERROR_MESSAGE);
                   logInfo += " could not be read";
                }

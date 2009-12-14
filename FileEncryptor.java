@@ -108,7 +108,7 @@ public class FileEncryptor
       //option could be 0x72 or t in ascii which would treat the data as text.
       //That isn't currently implemented.
       byte FORMAT = 0x62;
-      LiteralDataPacket literal = new LiteralDataPacket(FORMAT, input.getName(), 
+      LiteralDataPacket literal = new LiteralDataPacket(FORMAT, input.getName(),
                                                         data);
       OpenPGPPacket literalPacket = new OpenPGPPacket(
                                     OpenPGP.LITERAL_DATA_PACKET_TAG, literal);
@@ -126,7 +126,8 @@ public class FileEncryptor
       //Declare a new TripleDESEncryption object to encrypt the feedback 
       //register encrypt the 3DES keys with the public key and add them to 
       //the list of packets
-      TripleDESEncryption des = new TripleDESEncryption(Common.makeBytesLong(fr));
+      TripleDESEncryption des = new TripleDESEncryption(
+         Common.makeBytesLong(fr));
       EncryptedSessionKeyPacket key1 = new EncryptedSessionKeyPacket(publicKey,
                                            des.getKey1());
       EncryptedSessionKeyPacket key2 = new EncryptedSessionKeyPacket(publicKey,

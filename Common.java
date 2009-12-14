@@ -178,7 +178,8 @@ public class Common
     * @param end - the ending bit position 
     * @return a number containing the selected bits. 
     * */
-   public static long getBits(long number, int start, int end) throws InvalidSelectionException
+   public static long getBits(long number, int start, int end) 
+      throws InvalidSelectionException
    {
       if (start > end || start < 1 || end > Long.SIZE)
       {
@@ -205,8 +206,8 @@ public class Common
    {
       if (position > Byte.SIZE || position < 1)
       {
-         throw new InvalidSelectionException(position + " is not a valid bit " + 
-            "position");
+         throw new InvalidSelectionException(position + " is not a valid bit " 
+            + "position");
       }
       byte mask = 1;
       int value = (mask << (Byte.SIZE - position)) & number;
@@ -232,8 +233,8 @@ public class Common
    {
       if (position > Long.SIZE || position < 1)
       {
-         throw new InvalidSelectionException(position + " is not a valid bit " + 
-            "position");
+         throw new InvalidSelectionException(position + " is not a valid bit "
+            + "position");
       }
       long mask = 1;
       long value = (mask << (Long.SIZE - position)) & number;
